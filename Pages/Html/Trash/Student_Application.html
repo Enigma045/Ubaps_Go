@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Css/Navbar/Navbar.css">
+    <link rel="stylesheet" href="../Css/Student_Application.css">
+    <title>Student Application</title>
+    <script src="../Js/Student_Application.js" defer></script>
+</head>
+<body>
+<div class="page">
+     <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="logo">
+      <span class="icon"><img src="../Image/logo-icon.png" alt="Logo"></span>
+      <span class="label">UNILIA</span>
+    </div>
+
+    <div class="nav-item">
+      <span class="icon">🏠</span>
+      <span class="label">Home</span>
+    </div>
+
+    <div class="nav-item">
+      <span class="icon">📝</span>
+      <span class="label">Application Form</span>
+    </div>
+
+    <div class="nav-item">
+      <span class="icon">📊</span>
+      <span class="label">Status Tracker</span>
+    </div>
+
+    <div class="nav-item">
+      <span class="icon">🎓</span>
+      <span class="label">Students Portal</span>
+    </div>
+
+    <div class="nav-item">
+      <span class="icon">🔔</span>
+      <span class="label">Notifications</span>
+    </div>
+
+    <!-- Logout -->
+    <div class="nav-item logout">
+      <span class="icon">🚪</span>
+      <span class="label">Logout</span>
+    </div>
+  </nav>
+
+  <!-- Main Area -->
+  <div class="main">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="breadcrumb">
+        <strong>UBAPS</strong> &gt; Application form
+      </div>
+      <div class="user">
+        Richard Sambo 👤
+      </div>
+    </header>
+    
+    <div class="form-wizard">
+
+  <h1>Bursary Application</h1>
+
+  <!-- Progress -->
+  <div class="progress-container">
+    <div class="progress"></div>
+    <ol>
+      <li class="current">Personal</li>
+      <li>Guardian</li>
+      <li>Finance</li>
+      <li>Review</li>
+    </ol>
+  </div>
+
+  <!-- FORM -->
+  <form id="bursaryForm">
+    <!-- STEP 1 -->
+    <section class="step active bursaryForm">
+      <div class="form-group">
+        <label for="fullName">FirstName</label>
+        <input type="text" id="fullName" name="fullName" required placeholder="Richard">
+      </div>
+      <div class="form-group">
+        <label for="regNumber">Surname</label>
+        <input type="text" id="regNumber" name="regNumber" required placeholder="Sambo">
+      </div>
+      <div class="form-group">
+        <label>Date of Birth</label>
+        <input type="date" name="dob" required>
+      </div>
+      <div class="form-group">
+        <label>Gender</label>
+      <div class="radio-group" >
+         <label>
+           <input class="radio" type="radio" name="gender" value="Male" required>
+           Male
+         </label>
+
+         <label>
+           <input class="radio" type="radio" name="gender" value="Female">
+           Female
+         </label>
+      </div>
+      </div>
+      <div class="form-group">
+        <label for="Phone Number">Phone Number</label>
+        <input type="tel" id="phone" name="phone" placeholder="0998111960"required>
+      </div>
+      <div class="form-group">
+       <label for="Home District">Home District</label>
+        <input type="text" id="Home District" name="Home District" placeholder="Lilongwe"required>
+      </div>
+      <div class="form-group">
+        <label for="Tradition Authority">Tradition Authority</label>
+        <input type="text" id="TA" name="TA" required placeholder="Mr pencil">
+      </div><div class="form-group">
+        <label for="Village">Village</label>
+        <input type="text" id="village" name="village" placeholder="Dedza" required>
+      </div>
+    </section>
+
+    <!-- STEP 2 -->
+    <section class="step bursaryForm">
+      <div class="form-group">
+        <label for="Programme">Programme</label>
+        <input type="text" id="Programme" name="Programme" disabled required>
+      </div>
+      <div class="form-group">
+        <label for="regNumber">Registration Number</label>
+        <input type="text" id="regNumber" name="regNumber" disabled required>
+      </div>
+      <div class="form-group">
+        <label for="Complition">Expected Complition</label>
+        <input type="text" id="Complition" name="Complition"  disabled required>
+      </div>
+      <div class="form-group">
+        <label for="Email">Email</label>
+        <input type="email" id="email" name="email" disabled required>
+      </div>
+      <div class="form-group">
+        <label>Type of Intake</label>
+      <div class="radio-group" >
+         <label>
+           <input class="radio" type="radio" name="Type of intake" value="Normal Intake" required>
+           Normal
+         </label>
+
+         <label>
+           <input class="radio" type="radio" name="Type of intake" value="Bridging Intake" required>
+           Bridging
+         </label>
+      </div>
+      </div>
+      <div class="form-group">
+        <label>Accomodation</label>
+      <div class="radio-group" >
+         <label>
+           <input class="radio" type="radio" name="Accomodation" value="Oncampus" required>
+           OnCampus
+         </label>
+
+         <label>
+           <input class="radio" type="radio" name="Accomodation" value="Offcampus" required>
+           OffCampus
+         </label>
+      </div>
+      </div>
+    </section>
+
+    <!-- STEP 3 -->
+    <section class="step bursaryForm">
+      <div class="form-group">
+        <label>Parent / Guardian Status</label>
+      <select required>
+        <option value="">Select</option>
+        <option>Both Alive</option>
+        <option>One Alive</option>
+        <option>Both Deceased</option>
+      </select>
+    </div>
+      <div class="form-group">
+        <label>Guardian Employment Status</label>
+      <select required>
+        <option value="">Select</option>
+        <option>Employed (Formal)</option>
+        <option>Employed (Informal)</option>
+        <option>Self-Employed</option>
+        <option>Unemployed</option>
+      </select>
+    </div>
+      <div class="form-group">
+        <label for="monthlyIncome">Household Monthly Income (MWK)</label>
+        <input type="number" id="monthlyIncome" name="monthlyIncome" min="0" required>
+      </div>
+      <div class="form-group">
+        <label for="otherSupport">Other Financial Support?</label>
+        <select id="otherSupport" name="otherSupport" required>
+          <option value="">Select</option>
+          <option value="no">No</option>
+          <option value="yes">Yes</option>
+        </select>
+      </div>
+      <div class="form-group full-width">
+        <label for="tuitionFee">Total Tuition Fee (MWK)</label>
+        <input type="number" id="tuitionFee" name="tuitionFee" min="0" required>
+      </div>
+    </section>
+
+    <!-- STEP 4 -->
+    <section class="step review-step">
+      <div class="review-content">
+        <p><strong>Review your information before submitting.</strong></p>
+        <div class="review-checklist">
+          <p>✓ Personal details</p>
+          <p>✓ Guardian information</p>
+          <p>✓ Financial information</p>
+        </div>
+        <p class="review-note">Please ensure all information is correct before submitting your application.</p>
+      </div>
+    </section>
+
+    <!-- CONTROLS -->
+    <div class="controls">
+      <button type="button" id="prev">Previous</button>
+      <button type="button" id="next">Next</button>
+      <button type="submit" id="submit">Submit</button>
+    </div>
+  </form>
+
+ </div>
+</div>
+</body>
+</html>

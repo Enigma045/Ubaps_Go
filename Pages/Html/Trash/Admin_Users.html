@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Css/Navbar/Navbar.css">
+    <link rel="stylesheet" href="../Css/Admin_Users.css">
+    <title>Document</title>
+</head>
+<body>
+ <div class="page">
+     <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="logo">
+      <span class="icon"><img src="../Image/logo-icon.png" alt="Logo"></span>
+      <span class="label">UNILIA</span>
+    </div>
+
+    <div class="nav-item">
+      <span class="icon">🏠</span>
+      <span class="label">Home</span>
+    </div>
+
+    <div class="nav-item">
+      <span class="icon">📝</span>
+      <span class="label">Application Form</span>
+    </div>
+
+    <div class="nav-item">
+      <span class="icon">📊</span>
+      <span class="label">Status Tracker</span>
+    </div>
+
+    <div class="nav-item">
+      <span class="icon">🎓</span>
+      <span class="label">Students Portal</span>
+    </div>
+
+    <div class="nav-item">
+      <span class="icon">🔔</span>
+      <span class="label">Notifications</span>
+    </div>
+
+    <!-- Logout -->
+    <div class="nav-item logout">
+      <span class="icon">🚪</span>
+      <span class="label">Logout</span>
+    </div>
+  </nav>
+
+  <!-- Main Area -->
+  <div class="main">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="breadcrumb">
+        <strong>UBAPS</strong> &gt; Application form
+      </div>
+      <div class="user">
+        Richard Sambo 👤
+      </div>
+    </header>
+    
+    <div class="form-wizard">
+
+  <h1>Create New User</h1>
+
+  <!-- Progress
+  <div class="progress-container">
+    <div class="progress"></div>
+    <ol>
+      <li class="current">Personal</li>
+      <li>Guardian</li>
+      <li>Finance</li>
+      <li>Review</li>
+    </ol>
+  </div> -->
+
+  <!-- FORM -->
+  <form id="bursaryForm">
+    <!-- STEP 1 -->
+    <section class="step active bursaryForm">
+      <div class="form-group">
+        <label for="fullName">FirstName</label>
+        <input type="text" id="fullName" name="fullName" required placeholder="Richard">
+      </div>
+      <div class="form-group">
+        <label for="regNumber">Surname</label>
+        <input type="text" id="regNumber" name="regNumber" required placeholder="Sambo">
+      </div>
+      <div class="form-group">
+        <label for="Email">Email</label>
+        <input type="email" id="Email" name="Email" required placeholder="CEN-01-14-22@unilia.ac">
+      </div>
+      <div class="form-group">
+        <label for="Phone">Phone Number</label>
+        <input type="tel" id="Phone" name="Phone" required placeholder="0998111960">
+      </div>
+      <div class="form-group">
+        <label for="Password">Password</label>
+        <input type="password" id="Password" name="Password" required placeholder="Enter password">
+      </div>
+      <div class="form-group">
+        <label for="Confirm Password">Confirm Password</label>
+        <input type="password" id="Confirm Password" name="Confirm Password" required placeholder="Re-enter password">
+      </div>
+     <!-- Small option boxes -->
+            <div class="form-group">
+              <label>Options</label>
+              <div class="option-group">
+                <select name="Programs" id="pro">
+                    <option value="CEN">CEN</option>
+                    <option value="BPH">BPH</option>
+                    <option value="EDH">EDH</option>
+                    <option value="FSN">FSN</option>
+                </select>
+                <input type="number" min="0" placeholder="01">
+                <input type="number" min="0" placeholder="14">
+                <input type="number" min="0" placeholder="22">
+              </div>
+            </div>
+
+            <!-- Programme -->
+            <div class="form-group">
+              <label>Programme</label>
+              <input type="text" class="auth-input" placeholder="CEN-01-14-22" disabled>
+            </div>
+    
+    </section>
+
+    <!-- STEP 2 -->
+    <section class="step bursaryForm">
+      <div class="form-group">
+        <label for="fullName">FirstName</label>
+        <input type="text" id="fullName" name="fullName" required placeholder="Richard">
+      </div>
+      <div class="form-group">
+        <label for="regNumber">Surname</label>
+        <input type="text" id="regNumber" name="regNumber" required placeholder="Sambo">
+      </div>
+      <div class="form-group">
+        <label for="Email">Email</label>
+        <input type="email" id="Email" name="Email" required placeholder="CEN-01-14-22@unilia.ac">
+      </div>
+      <div class="form-group">
+        <label for="Phone">Phone Number</label>
+        <input type="tel" id="Phone" name="Phone" required placeholder="0998111960">
+      </div>
+      <div class="form-group">
+        <label for="Password">Password</label>
+        <input type="password" id="Password" name="Password" required placeholder="Enter password">
+      </div>
+      <div class="form-group">
+        <label for="Confirm Password">Confirm Password</label>
+        <input type="password" id="Confirm Password" name="Confirm Password" required placeholder="Re-enter password">
+      </div>
+    </section>
+
+    <!-- STEP 3 -->
+    <section class="step bursaryForm">
+      <div class="form-group">
+        <label for="fullName">FirstName</label>
+        <input type="text" id="fullName" name="fullName" required placeholder="Richard">
+      </div>
+      <div class="form-group">
+        <label for="regNumber">Surname</label>
+        <input type="text" id="regNumber" name="regNumber" required placeholder="Sambo">
+      </div>
+      <div class="form-group">
+        <label for="Email">Email</label>
+        <input type="email" id="Email" name="Email" required placeholder="CEN-01-14-22@unilia.ac">
+      </div>
+      <div class="form-group">
+        <label for="Phone">Phone Number</label>
+        <input type="tel" id="Phone" name="Phone" required placeholder="0998111960">
+      </div>
+      <div class="form-group">
+        <label for="Password">Password</label>
+        <input type="password" id="Password" name="Password" required placeholder="Enter password">
+      </div>
+      <div class="form-group">
+        <label for="Confirm Password">Confirm Password</label>
+        <input type="password" id="Confirm Password" name="Confirm Password" required placeholder="Re-enter password">
+      </div>
+    </section>
+
+    <!-- STEP 4 -->
+    <section class="step bursaryForm">
+      <div class="form-group">
+        <label for="fullName">FirstName</label>
+        <input type="text" id="fullName" name="fullName" required placeholder="Richard">
+      </div>
+      <div class="form-group">
+        <label for="regNumber">Surname</label>
+        <input type="text" id="regNumber" name="regNumber" required placeholder="Sambo">
+      </div>
+      <div class="form-group">
+        <label for="Email">Email</label>
+        <input type="email" id="Email" name="Email" required placeholder="CEN-01-14-22@unilia.ac">
+      </div>
+      <div class="form-group">
+        <label for="Phone">Phone Number</label>
+        <input type="tel" id="Phone" name="Phone" required placeholder="0998111960">
+      </div>
+      <div class="form-group">
+        <label for="Password">Password</label>
+        <input type="password" id="Password" name="Password" required placeholder="Enter password">
+      </div>
+      <div class="form-group">
+        <label for="Confirm Password">Confirm Password</label>
+        <input type="password" id="Confirm Password" name="Confirm Password" required placeholder="Re-enter password">
+      </div>
+    </section>
+
+    <!-- CONTROLS -->
+    <div class="controls">
+      <div class="form-group">
+        <label>Users</label>
+      <div class="radio-group" >
+         <label>
+           <input class="radio" type="radio" name="Users" value="Male" required>
+           Registrar
+         </label>
+
+         <label>
+           <input class="radio" type="radio" name="Users" value="Female">
+           Finance Office
+         </label>
+         <label>
+           <input class="radio" type="radio" name="Users" value="Male" required>
+           Dean of Students
+         </label>
+
+         <label>
+           <input class="radio" type="radio" name="Users" value="Female">
+           Student
+         </label>
+      </div>
+      </div>
+      <button type="button" id="next">Create</button>
+      <button type="submit" id="submit">Submit</button>
+    </div>
+  </form>
+
+ </div>
+</div>
+<script src="../Js/Admin_Users.js"></script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Css/Navbar/Navbar.css">
+    <link rel="stylesheet" href="../Css/Test_judge.css">
+    <title>Document</title>
+</head>
+<body>
+
+   <div class="page">
+     <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="logo">
+      <span class="icon"><img src="../Image/logo-icon.png" alt=""></span>
+      <span class="label">UNILIA</span>
+    </div>
+
+    <div class="nav-item">
+      <span class="icon">🏠</span>
+      <span class="label">Home</span>
+    </div>
+
+    <div class="nav-item">
+      <span class="icon">📝</span>
+      <span class="label">Application Form</span>
+    </div>
+
+    <div class="nav-item">
+      <span class="icon">📊</span>
+      <span class="label">Status Tracker</span>
+    </div>
+
+    <div class="nav-item">
+      <span class="icon">🎓</span>
+      <span class="label">Students Portal</span>
+    </div>
+
+    <div class="nav-item">
+      <span class="icon">🔔</span>
+      <span class="label">Notifications</span>
+    </div>
+
+    <!-- Logout -->
+    <div class="nav-item logout">
+      <span class="icon">🚪</span>
+      <span class="label">Logout</span>
+    </div>
+  </nav>
+
+  <!-- Main Area -->
+  <div class="main">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="breadcrumb">
+        <strong>UBAPS</strong> &gt; Home
+      </div>
+      <div class="user">
+        Richard Sambo 👤
+      </div>
+    </header>
+
+    
+  <button id="openModal">Open Card</button>
+
+  <!-- Modal Overlay -->
+  <div class="modal" id="modal">
+    
+    <div class="modal-card">
+      
+      <form>
+      <div class="filter-row" >
+      <h1 >Richard Sambo Details</h1>
+      </div>
+      <div class="filter-row">
+      <div class="form-group">
+       <label for="Home District">Phone Number</label>
+        <input type="text" id="Phone" name="Phone" placeholder="" value="0998111960" disabled required>
+      </div>
+      <div class="form-group">
+       <label for="Gender">Gender</label>
+        <input type="text" id="Gender" name="Gender" placeholder="" value="Male" disabled required>
+      </div>
+      </div>
+      <div class="filter-row">
+      <div class="form-group">
+       <label for="Home District">Home District</label>
+        <input type="text" id="Home District" name="Home District" placeholder="" value="Lilongwe" disabled required>
+      </div>
+      <div class="form-group">
+       <label for="Programme">Programme</label>
+        <input type="text" id="Programme" name="Programme" placeholder="" value="Computer Engineering" disabled required>
+      </div>
+      </div>
+      <div class="filter-row">
+      <div class="form-group">
+       <label for="Email">Email</label>
+        <input type="text" id="Email" name="Email" placeholder="" value="CEN-01-14-22@unilia.ac.mw" disabled required>
+      </div>
+      <div class="form-group">
+       <label for="Type of Intake">Type of Intake</label>
+        <input type="text" id="Intake" name="Type of Intake" placeholder="" value="Normal" disabled required>
+      </div>
+    </div>
+    <div class="filter-row">
+    <div class="form-group">
+       <label for="Accomedation">Accommodation</label>
+        <input type="text" id="Accommodation" name="Accommodation" placeholder="" value="OffCampus" disabled required>
+      </div>
+    <div class="form-group">
+       <label for="Other Financial Support">Other Financial Support</label>
+        <input type="text" id="Support" name="Other Financial Support" placeholder="" value="yes" disabled required>
+      </div>
+      </div>
+      <div class="filter-row">
+     <div class="form-group">
+       <label for="Sentement">Sentement</label>
+        <textarea id="Sentement" name="Sentement" placeholder=""required></textarea>
+      </div>
+      </div>
+      <div class="filter-row">
+        <div class="form-group">
+       <button class="form-group" id="closeModal">Disapprove</button>
+     </div>
+      <div class="form-group">
+       <button class="form-group" id="closeModal">Consider</button>
+     </div>
+        
+        <!-- <button class="form-group" id="closeModal">Close</button> -->
+      </div>
+      <!-- <div class="filter-row-last">
+        <div class="form-group2" class="fit">
+        <div class="filter-attr">
+         <p class="status status-paid">
+            paid</p></div>
+                <div class="filter-attr"><p class="status status-paid">
+            paid</p></div>
+                <div class="filter-attr"><p class="status status-paid">
+            paid</p> 
+        </div>
+      </div> -->
+      </form>
+  </div>
+  
+  <!-- ends here -->
+</div>   
+
+<script src="../Js/Test_judge.js"></script>
+</body>
+</html>

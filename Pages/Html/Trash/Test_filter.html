@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../Css/Navbar/Navbar.css">
+    <link rel="stylesheet" href="../Css/Test_filter.css">
+</head>
+<body>
+    <div class="page">
+     <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="logo">
+      <span class="icon"><img src="../Image/logo-icon.png" alt=""></span>
+      <span class="label">UNILIA</span>
+    </div>
+
+    <div class="nav-item">
+      <span class="icon">🏠</span>
+      <span class="label">Home</span>
+    </div>
+
+    <div class="nav-item">
+      <span class="icon">📝</span>
+      <span class="label">Application Form</span>
+    </div>
+
+    <div class="nav-item">
+      <span class="icon">📊</span>
+      <span class="label">Status Tracker</span>
+    </div>
+
+    <div class="nav-item">
+      <span class="icon">🎓</span>
+      <span class="label">Students Portal</span>
+    </div>
+
+    <div class="nav-item">
+      <span class="icon">🔔</span>
+      <span class="label">Notifications</span>
+    </div>
+
+    <!-- Logout -->
+    <div class="nav-item logout">
+      <span class="icon">🚪</span>
+      <span class="label">Logout</span>
+    </div>
+  </nav>
+
+  <!-- Main Area -->
+  <div class="main">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="breadcrumb">
+        <strong>UBAPS</strong> &gt; Home
+      </div>
+      <div class="user">
+        Richard Sambo 👤
+      </div>
+    </header>
+
+    
+  <button id="openModal">Open Card</button>
+
+  <!-- Modal Overlay -->
+  <div class="modal" id="modal">
+    
+    <div class="modal-card">
+      
+      <form>
+      <div class="filter-row" >
+      <h1 class="form-group">Filter</h1>
+      </div>
+      <div class="filter-row">
+      <div class="form-group">
+        <label>Gender</label>
+      <div class="radio-group" >
+         <label>
+           <input class="radio" type="radio" name="gender" value="Male" required>
+           Male
+         </label>
+
+         <label>
+           <input class="radio" type="radio" name="gender" value="Female">
+           Female
+         </label>
+      </div>
+      </div>
+      <div class="form-group">
+       <label for="Home District">Home District</label>
+        <input type="text" id="Home District" name="Home District" placeholder="Lilongwe"required>
+      </div>
+      </div>
+      <div class="filter-row">
+      <div class="form-group">
+        <label for="Programme">Programme</label>
+        <input type="text" id="Programme" name="Programme" disabled required>
+      </div>
+      <div class="form-group">
+        <label>Accomodation</label>
+      <div class="radio-group" >
+         <label>
+           <input class="radio" type="radio" name="Accomodation" value="Oncampus" required>
+           OnCampus
+         </label>
+
+         <label>
+           <input class="radio" type="radio" name="Accomodation" value="Offcampus" required>
+           OffCampus
+         </label>
+      </div>
+      </div>
+      </div>
+      <div class="filter-row">
+      <div class="form-group">
+        <label>Type of Intake</label>
+      <div class="radio-group" >
+         <label>
+           <input class="radio" type="radio" name="Type of intake" value="Normal Intake" required>
+           Normal
+         </label>
+
+         <label>
+           <input class="radio" type="radio" name="Type of intake" value="Bridging Intake" required>
+           Bridging
+         </label>
+      </div>
+      </div>
+      <div class="form-group">
+        <label>Parent / Guardian Status</label>
+      <select required>
+        <option value="">Select</option>
+        <option>Both Alive</option>
+        <option>One Alive</option>
+        <option>Both Deceased</option>
+      </select>
+    </div>
+    </div>
+    <div class="filter-row">
+    <div class="form-group">
+        <label>Guardian Employment Status</label>
+      <select required>
+        <option value="">Select</option>
+        <option>Employed (Formal)</option>
+        <option>Employed (Informal)</option>
+        <option>Self-Employed</option>
+        <option>Unemployed</option>
+      </select>
+    </div>
+    <div class="form-group">
+        <label for="monthlyIncome">Household Monthly Income (MWK)</label>
+        <input type="number" id="monthlyIncome" name="monthlyIncome" min="0" required>
+      </div>
+      </div>
+      <div class="filter-row">
+     <div class="form-group">
+        <label for="otherSupport">Other Financial Support?</label>
+        <select id="otherSupport" name="otherSupport" required>
+          <option value="">Select</option>
+          <option value="no">No</option>
+          <option value="yes">Yes</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="Priority">Priority</label>
+        <select id="Priority" name="Priority" required>
+          <option value="">critical</option>
+          <option value="no">can wait</option>
+          <option value="yes">No need</option>
+        </select>
+      </div>
+      </div>
+      <div class="filter-row">
+        <button class="form-group" id="closeModal">Close</button>
+      </div>
+      <div class="filter-row-last">
+        <div class="form-group2" class="fit">
+        <div class="filter-attr">
+         <p class="status status-paid">
+            paid</p></div>
+                <div class="filter-attr"><p class="status status-paid">
+            paid</p></div>
+                <div class="filter-attr"><p class="status status-paid">
+            paid</p> 
+        </div>
+      </div>
+      </form>
+  </div>
+  
+  <!-- ends here -->
+</div>
+<script src="../Js/Test_filter.js"></script>
+</body>
+</html>

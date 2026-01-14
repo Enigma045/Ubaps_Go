@@ -1,0 +1,185 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+}
+
+/* BACKGROUND */
+body {
+  /* background: radial-gradient(#1f2937 1px, transparent 1px); */
+    background-color: #fcfdfe;
+  background-size: 22px 22px;
+  /* color: #e5e7eb; */
+  color: #000;
+}
+
+/* APP CONTAINER */
+.app {
+  max-width: 1200px;
+  margin: 40px auto;
+  /* background: #0b0f19; */
+    background: #ffffff;
+  border-radius: 14px;
+  border: 0px solid transparent;
+  padding: 24px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.header h1 {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: #9ca3af;
+  margin-top: 4px;
+}
+
+.time {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* TABS */
+.tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.tabs button {
+  background: none;
+  border: none;
+  color: #000;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.tabs button.active {
+  color: #e5e7eb;
+  border-bottom: 2px solid #7c3aed;
+}
+
+/* SEARCH */
+.search-bar {
+  margin-bottom: 16px;
+}
+
+.search-bar input {
+  width: 100%;
+  background: #fff;
+  border: 1px solid #374151;
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: #e5e7eb;
+  font-size: 13px;
+}
+
+.search-bar input::placeholder {
+  color: #6b7280;
+}
+
+/* TABLE */
+.table-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+thead {
+  background: #1f2937;
+  border: 1px solid #374151;
+}
+
+th {
+  text-align: left;
+  padding: 12px;
+  color: #9ca3af;
+  font-weight: 500;
+  border-bottom: 1px solid #1f2937;
+}
+
+td {
+  padding: 12px;
+  border-bottom: 1px solid #1f2937;
+  white-space: nowrap;
+}
+
+/* ROW STATES */
+tr:hover {
+  background: #e9eef7;
+}
+
+.success td:last-child,
+.success td:nth-last-child(2) {
+  color: #22c55e;
+}
+
+.warning td:last-child,
+.warning td:nth-last-child(2) {
+  color: #facc15;
+}
+
+.error td:last-child,
+.error td:nth-last-child(2) {
+  color: #ef4444;
+}
+
+td:last-child {
+  font-weight: 500;
+}
+
+.success td:nth-last-child(2) {
+  color: #22c55e;
+}
+
+.warning td:nth-last-child(2) {
+  color: #facc15;
+}
+
+.error td:nth-last-child(2) {
+  color: #ef4444;
+}
+
+.log-table {
+  display: none;
+}
+
+.log-table.active {
+  display: table;
+}
+
+button {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+button:hover {
+  background-color: #1e40af;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}

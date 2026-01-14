@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Financial page</title>
+  <link rel="stylesheet" href="../Css/Finance_Request.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Header -->
+  <header class="header">
+    <div>
+      <h1>Users Table</h1>
+      <p class="subtitle">Bursary Award Processing System · Production</p>
+    </div>
+    <div class="time">
+      Jan 6, 2026 · 01:34 AM
+    </div>
+  </header>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="active" data-tab="applications">Financial History</button>
+    <button data-tab="payments">Assign fees</button>
+    <button data-tab="users">User Logs</button>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs2">
+    <button>Filter</button>
+    <div class="filter-border"></div>
+    <div class="filter-attr"><p class="status status-paid">
+            paid</p></div>
+                <div class="filter-attr"><p class="status status-paid">
+            paid</p></div>
+                <div class="filter-attr"><p class="status status-paid">
+            paid</p></div>
+  </div>
+
+  <!-- Search -->
+  <div class="search-bar">
+    <input
+      type="text"
+      placeholder="Search audit logs e.g. role:finance action:approve application:1245"
+    />
+  </div>
+
+  <!-- Logs Table -->
+  <div class="table-container">
+    <!-- first -->
+    <table class="log-table active" id="applications">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Reg #</th>
+          <th>Parent Status</th>
+          <th>Employment Status</th>
+          <th>Monthly Income</th>
+          <th>Priority</th>
+          <th>Response</th>
+          
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr class="success">
+          <td>Richard sambo</td>
+          <td>CEN-01-14-22</td>
+          <td>Both-Alive</td>
+          <td>self employed</td>
+          <td>MWK52000</td>
+          <td>low</td>
+          <td><Button>Response</Button></td>
+        </tr>
+
+        <tr class="warning">
+          <td>2</td>
+          <td>Richard sambo</td>
+          <td>Student</td>
+          <td>CEN-01-14-22@unilia.ac.mw</td>
+          <td>characte</td>
+          <td><Button>Edit</Button></td>
+          <td><Button>Delete</Button></td>
+        </tr>
+
+        <tr class="success">
+          <td>3</td>
+          <td>Richard sambo</td>
+          <td>Student</td>
+          <td>CEN-01-14-22@unilia.ac.mw</td>
+          <td>characte</td>
+          <td><Button>Edit</Button></td>
+          <td><Button>Delete</Button></td>
+        </tr>
+
+        <tr class="error">
+          <td>4</td>
+          <td>Richard sambo</td>
+          <td>Student</td>
+          <td>CEN-01-14-22@unilia.ac.mw</td>
+          <td>characte</td>
+          <td><Button>Edit</Button></td>
+          <td><Button>Delete</Button></td>
+        </tr>
+
+      </tbody>
+      
+    </table>
+    <!-- first -->
+    <!-- SECOND -->
+     <table class="log-table" id="payments">
+      <thead>
+  <tr>
+    <th>Name</th>
+    <th>Reg #</th>
+    <th>Parent Status</th>
+    <th>Employment Status</th>
+    <th>Monthly Income</th>
+    <th>Bursary Scheme</th>
+    <th>Amount</th>
+    <th>Assign</th>
+  </tr>
+</thead>
+
+      <tbody>
+
+  <tr class="success">
+    <td>Richard sambo</td>
+    <td>CEN-01-14-22</td>
+    <td>Both-Alive</td>
+    <td>self employed</td>
+    <td>MWK52000</td>
+    <td>chiswankhata</td>
+    <td><form action=""><input type="text"></form></td>
+    <td><Button>Assign</Button></td>
+  </tr>
+
+  <tr class="warning">
+    <td>Jan 6 10:09</td>
+    <td>Finance</td>
+    <td>Peter M</td>
+    <td>Adjust Amount</td>
+    <td>App #1246</td>
+    <td>MWK 180,000</td>
+    <td>Updated</td>
+    <td>310ms</td>
+  </tr>
+
+  <tr class="error">
+    <td>Jan 6 09:55</td>
+    <td>Finance</td>
+    <td>Linda K</td>
+    <td>Reject Payment</td>
+    <td>App #1247</td>
+    <td>MWK 0</td>
+    <td>Rejected</td>
+    <td>398ms</td>
+  </tr>
+
+  <tr class="success">
+    <td>Jan 6 09:40</td>
+    <td>Finance</td>
+    <td>Linda K</td>
+    <td>Disburse Funds</td>
+    <td>App #1243</td>
+    <td>MWK 300,000</td>
+    <td>Completed</td>
+    <td>512ms</td>
+  </tr>
+
+</tbody>
+
+    </table>
+    <!-- SECOND -->
+     <!-- THIRD -->
+      <table class="log-table" id="users">
+      <thead>
+  <tr>
+    <th>Time</th>
+    <th>Role</th>
+    <th>User</th>
+    <th>Action</th>
+    <th>Target</th>
+    <th>Status</th>
+    <th>Duration</th>
+  </tr>
+</thead>
+
+      <tbody>
+
+  <tr class="success">
+    <td>Jan 6 08:15</td>
+    <td>Admin</td>
+    <td>Admin01</td>
+    <td>Create User</td>
+    <td>Finance Officer</td>
+    <td>Success</td>
+    <td>215ms</td>
+  </tr>
+
+  <tr class="warning">
+    <td>Jan 6 08:18</td>
+    <td>Admin</td>
+    <td>Admin01</td>
+    <td>Change Role</td>
+    <td>Registrar → Finance</td>
+    <td>Updated</td>
+    <td>187ms</td>
+  </tr>
+
+  <tr class="success">
+    <td>Jan 6 08:25</td>
+    <td>Student</td>
+    <td>STU-452</td>
+    <td>Login</td>
+    <td>Web Portal</td>
+    <td>Success</td>
+    <td>92ms</td>
+  </tr>
+
+  <tr class="error">
+    <td>Jan 6 08:27</td>
+    <td>Student</td>
+    <td>STU-452</td>
+    <td>Login</td>
+    <td>Web Portal</td>
+    <td>Failed</td>
+    <td>101ms</td>
+  </tr>
+
+  <tr class="warning">
+    <td>Jan 6 08:30</td>
+    <td>Admin</td>
+    <td>Admin01</td>
+    <td>Disable Account</td>
+    <td>User STU-453</td>
+    <td>Disabled</td>
+    <td>260ms</td>
+  </tr>
+
+</tbody>
+
+    </table>
+     <!-- THIRD  -->
+</div>
+
+</div>
+<Script src="../Js/Finance_Request.js"></Script>
+</body>
+</html>

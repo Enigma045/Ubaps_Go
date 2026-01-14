@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Css/Committe_Decision.css">
+    <title>Committe Decision</title>
+</head>
+<body>
+    <div class="table-container">
+
+    <div class="cartigory">
+        <form>
+            <label for="Applicants">Applicants</label>
+            <input type="checkbox">
+            <label for="Considered">Considered</label>
+            <input type="checkbox">
+            <label for="Selected">Selected</label>
+            <input type="checkbox">
+            <label for="Not Selected">Not Selected</label>
+            <input type="checkbox">
+            <div class="search_box">
+            <input type="text" name="Search" id="Search_text" placeholder="Enter a name">
+            <button id="search_but">Search</button>
+            </div>
+        </form>
+    </div>
+    
+    <div class="filter">
+        <div class="filter-but"><button>Filter</button></div>
+        <div class="filter-border"></div>
+        <div class="filter-attr"><p class="status status-paid">
+            paid</p></div>
+                <div class="filter-attr"><p class="status status-paid">
+            paid</p></div>
+                <div class="filter-attr"><p class="status status-paid">
+            paid</p></div>
+
+    </div>    
+
+    <table>
+        <thead>
+             <!-- <th>Id</th> -->
+             <th>Name</th>
+             <th>Reg #</th>
+             <th>Parent Status</th>
+             <th>Employment Status</th>
+             <th>Monthly Income (Mwk)</th>
+             <th>Priority</th>
+             <th>Finance info</th>
+             <th>Review</th>
+             <!-- <th>Other Financial Support</th> -->
+             <!-- <th>Total Tuition Fee(MWK)</th> -->
+        </thead>
+        <tbody>
+            <tr>
+            <td><a href="#">Richard Sambo</a></td>
+            <td>CEN-01-14-22</td>
+            <td>Both Alive</td>
+            <td><p class="status status-paid">self employed</p></td>
+            <td class="amount">MWK520.18</td>
+            <td><p class="status status-paid">low</p></td>
+            <td class="amount"><button>Request</button></td>
+            <td class="amount"><button>Judge</button></td>
+            </tr>
+            <tr>
+            <td><a href="#">INV_1002</a></td>
+            <td>Sonic</td>
+            <td>1/4/2021</td>
+            <td><p class="status status-paid">paid</p></td>
+            <td class="amount">MWK415.25</td>
+            <td><p class="status status-paid">low</p></td>
+            <td class="amount"><button>Request</button></td>
+            <td class="amount"><button>Judge</button></td>
+            </tr>
+            <tr>
+            <td><a href="#">INV_1003</a></td>
+            <td>Innercicle</td>
+            <td>1/2/2021</td>
+            <td><p class="status status-pending">Pending</p></td>
+            <td class="amount">MWK1324.84</td>
+            <td><p class="status status-paid">low</p></td>
+            <td class="amount"><button>Request</button></td>
+            <td class="amount"><button>Judge</button></td>
+            </tr>
+            <tr>
+            <td><a href="#">INV_1004</a></td>
+            <td>Varsity Plus</td>
+            <td>12/30/2020</td>
+            <td><p class="status status-pending">Pending</p></td>
+            <td class="amount">MWK998.26</td>
+            <td><p class="status status-paid">low</p></td>
+            <td class="amount"><button>Request</button></td>
+            <td class="amount"><button>Judge</button></td>
+            </tr>
+            <tr>
+            <td><a href="#">INV_1005</a></td>
+            <td>Highlander</td>
+            <td>12/18/2020</td>
+            <td><p class="status status-paid">Paid</p></td>
+            <td class="amount">MWK1152.35</td>
+            <td><p class="status status-paid">low</p></td>
+            <td class="amount"><button>Request</button></td>
+            <td class="amount"><button>Judge</button></td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="conclusive">
+        <div class="conc-cont">
+        <button class="conc-but">Generate Pdf</button>
+        <button class="conc-but">Request All</button>
+        <button class="conc-but">Judge All</button>
+        </div>
+    </div>
+    </div>
+</body>
+</html>
+<!-- <div class="table">
+        <div class="titles">
+        <span class="title_names">INVOICE</span>    
+        <span class="title_names">COMPANY</span>    
+        <span class="title_names">DUE DATE</span>    
+        <span class="title_names">STATUS</span>    
+        <span class="title_names">AMOUNT</span>        
+        </div>
+        <div class="items_1">
+        <span class="item_names">INV_1001</span>    
+        <span class="item_names">Paragon</span>    
+        <span class="item_names">1/5/2021</span>    
+        <span class="item_names">Unpaid</span>    
+        <span class="item_names">MWK520.18</span> 
+        </div>
+        <div class="items_2">
+        <span class="item_names">INV_1002</span>    
+        <span class="item_names">Sonic</span>    
+        <span class="item_names">1/4/2021</span>    
+        <span class="item_names">Paid</span>    
+        <span class="item_names">MWK415.25</span>
+        </div>
+        <div class="items_1">
+        <span class="item_names">INV_1003</span>    
+        <span class="item_names">Innercicle</span>    
+        <span class="item_names">1/2/2021</span>    
+        <span class="item_names">Pending</span>    
+        <span class="item_names">MWK1324.84</span> 
+        </div>
+        <div class="items_2">
+        <span class="item_names">INV_1004</span>    
+        <span class="item_names">Varsity Plus</span>    
+        <span class="item_names">12/30/2020</span>    
+        <span class="item_names">Pending</span>    
+        <span class="item_names">MWK998.26</span> 
+        </div>
+        <div class="items_1">
+        <span class="item_names">INV_1005</span>    
+        <span class="item_names">Highlander</span>    
+        <span class="item_names">12/18/2020</span>    
+        <span class="item_names">Paid</span>    
+        <span class="item_names">MWK1152.35</span> 
+        </div>
+    </div> -->

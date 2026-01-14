@@ -1,0 +1,199 @@
+/* ---------- RESET ---------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #ededed;
+  color: #555;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ---------- TOP BAR ---------- */
+.top-bar {
+  background: #2c2f33;
+  color: #fff;
+  padding: 14px 26px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.actions button {
+  margin-left: 10px;
+  padding: 6px 14px;
+  background: #3a3f45;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.actions .signup {
+  background: #4caf50;
+}
+
+/* ---------- TIMELINE ---------- */
+.timeline-section {
+  margin-top: 90px;
+  display: flex;
+  justify-content: center;
+}
+
+.timeline-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+}
+
+.nav {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid #bbb;
+  background: transparent;
+  color: #666;
+  cursor: pointer;
+}
+
+/* ---------- LINE & DOTS ---------- */
+/* ---------- LINE & PROGRESS ---------- */
+.timeline {
+  position: relative;
+  width: 620px;
+}
+
+/* Base line */
+.timeline-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #b7c1b7;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+/* Animated progress line */
+.timeline-progress {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 2px;
+  background: #6c8f6c;
+  width: 0%;
+  transform: translateY(-50%);
+  transition: width 0.6s ease;
+  z-index: 2;
+}
+
+/* Points must be above lines */
+.timeline-points {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  z-index: 3;
+}
+
+.point {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1.5px solid #8fae8f;
+  background: #ededed;
+  cursor: pointer;
+  position: relative;
+}
+
+.point.active {
+  background: #6c8f6c;
+  border-color: #6c8f6c;
+}
+
+.point.future {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ---------- DATE LABEL ---------- */
+.date {
+  position: absolute;
+  top: -32px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  color: #777;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+/* ---------- EVENT CONTENT ---------- */
+.event-content {
+  max-width: 720px;
+  margin: 100px auto 0;
+  padding: 0 20px;
+}
+
+.event-title {
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: 46px;
+  font-weight: normal;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+  color: #444;
+}
+
+.event-date {
+  font-style: italic;
+  margin-bottom: 26px;
+  color: #666;
+}
+
+.event-description {
+  line-height: 1.8;
+  font-size: 15px;
+  color: #777;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 768px) {
+  .timeline {
+    width: 90vw;
+  }
+
+  .event-title {
+    font-size: 34px;
+  }
+}
+
+/* Base line */
+.timeline-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #b7c1b7;
+  transform: translateY(-50%);
+}
+
+/* Animated progress line */
+.timeline-progress {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 1px;
+  background: #6c8f6c;
+  width: 0%;
+  transform: translateY(-50%);
+  transition: width 0.6s ease;
+}

@@ -1,0 +1,86 @@
+/* Sidebar */
+.sidebar {
+  width: 40px;
+  background: #f2f2f2;
+  border-right: 2px solid #efefef;
+  transition: width 0.3s ease;
+  overflow: hidden;
+}
+
+.sidebar:hover {
+  width: 220px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 6px;
+  cursor: pointer;
+}
+
+.nav-item:hover {
+  background: #ddd;
+}
+
+.icon {
+  font-size: 20px;
+  width: 30px;
+  text-align: center;
+}
+
+.label {
+  margin-left: 10px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.sidebar:hover .label {
+  opacity: 1;
+}
+
+/* Logout styling */
+.logout {
+  margin-top: auto;
+  color: darkred;
+}
+
+/* Main area */
+.main {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.header {
+  height: 40px;
+  background: #fff;
+  border-bottom: 2px solid #efefef;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+/* Logo */
+.logo {
+  display: flex;
+  align-items: center;
+  padding: 5px 0px;
+  border-bottom: 2px solid transparent;
+  font-weight: bold;
+}
+
+.logo .icon {
+  font-size: 22px;
+  
+}
+
+.logo .label {
+  margin-left: 10px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.sidebar:hover .logo .label {
+  opacity: 1;
+}

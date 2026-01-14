@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/Css/Register.css">
+    <title>Register</title>
+</head>
+<body>
+   
+  <main class="page">
+
+    <!-- LEFT SIDE -->
+    <section class="left-panel">
+
+      <!-- Logo / Branding -->
+      <div class="brand">
+        <div class="brand-logo">
+            <img src="/Image/logo-icon.png" alt="LoanPro logo">
+        </div>
+        <div class="brand-text">
+          <div class="brand-name">UBAPS</div>
+          <div class="brand-tagline">Unilia Bursary Award Processing</div>
+        </div>
+      </div>
+
+      <!-- Register Form Card -->
+      <div class="form-card">
+        <h1 class="form-title">Register</h1>
+
+        <form>
+
+          <div class="form-grid">
+            <div class="form-group">
+              
+              <input type="text" class="auth-input" placeholder="Name" value="Richard">
+            </div>
+
+            <div class="form-group">
+              <input type="text" class="auth-input" placeholder="SurName" value="Sambo">
+            </div>
+
+            <!-- <div class="form-group">
+              
+              <input type="email" class="auth-input" placeholder="Email">
+            </div> -->
+
+            <div class="form-group">
+              
+              <input type="tel" inputmode="numeric" class="auth-input" placeholder="Phone">
+            </div>
+
+            <div class="form-group">
+              
+              <input type="password" class="auth-input" placeholder="Password">
+            </div>
+
+            <div class="form-group">
+              
+              <input type="password" class="auth-input" placeholder="Confirm Password">
+            </div>
+
+            <!-- Small option boxes -->
+            <div class="form-group">
+              <label>Reg Number</label>
+              <div class="option-group">
+                <select name="Programs" id="pro">
+                    <option value="CEN">CEN</option>
+                    <option value="BPH">BPH</option>
+                    <option value="EDH">EDH</option>
+                    <option value="FSN">FSN</option>
+                </select>
+                <input type="number" min="0" placeholder="01" value="01">
+                <input type="number" min="0" placeholder="14" value="14">
+                <input type="number" min="0" placeholder="22" value="22">
+              </div>
+            </div>
+
+            <!-- Programme -->
+            <!-- <div class="form-group full-width">
+              <label>Programme</label>
+              <input type="text" class="auth-input" placeholder="CEN-01-14-22" disabled>
+            </div> -->
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="register-btn">Register</button>
+          </div>
+
+        </form>
+      </div>
+    </section>
+
+    <!-- RIGHT SIDE -->
+    <section class="right-panel">
+      <img id="ping" src="/Image/stock.jpg" alt="">
+    </section>
+
+    
+    
+  </main>
+<script src="/Js/Register.js"></script>
+</body>
+</html>
