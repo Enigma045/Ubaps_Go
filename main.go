@@ -24,7 +24,7 @@ func main() {
 	mux.HandleFunc("/register", Routes.Register)
 	mux.HandleFunc("/verify-email", Routes.VerifyEmail)
 	mux.HandleFunc("/Authorize", Routes.Login)
-
+	mux.Handle("/SubmitForm", middleware.RequireAuth(http.HandlerFunc(Routes.SubmitForm)))
 	/*
 		|--------------------------------------------------------------------------
 		| Public static assets (CSS, JS, images)
@@ -70,6 +70,15 @@ func main() {
 		middleware.RequireAuth(
 			middleware.RequireRole("student")(
 				http.HandlerFunc(Routes.StudentDashboard),
+			),
+		),
+	)
+
+	mux.Handle(
+		"/apply",
+		middleware.RequireAuth(
+			middleware.RequireRole("student")(
+				http.HandlerFunc(Routes.ApplicationForm),
 			),
 		),
 	)

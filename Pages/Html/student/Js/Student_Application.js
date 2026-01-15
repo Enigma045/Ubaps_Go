@@ -2,6 +2,7 @@ const steps = document.querySelectorAll(".step");
 const stepIndicators = document.querySelectorAll(".progress-container li");
 const progress = document.querySelector(".progress");
 
+
 let currentStep = 0;
 
 function showStep(index) {
@@ -81,15 +82,28 @@ document.getElementById("prev").onclick = () => {
   }
 };
 
-document.getElementById("bursaryForm").onsubmit = e => {
+document.getElementById("bursaryForm").onsubmit = async e => {
   e.preventDefault();
-  
+  const formData = new FormData(e.target)
   // Final validation check
   if (!validateStep()) {
     alert("Please complete all required fields.");
     return;
   }
-  
+  //between the lines
+  console.log(Array.from(formData.entries()));
+  let res = await fetch("/SubmitForm",{
+    method:"POST",
+    body:formData,
+    credentials: "include" // send cookies
+  })
+ 
+  const text = await res.text();
+  if(!res.ok){
+    console.log("Server response:",text)
+    return
+  } 
+  console.log("Server response:",text)
   alert("Application submitted successfully!");
   
   // Optional: Reset form and go back to first step

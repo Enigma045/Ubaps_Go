@@ -17,7 +17,7 @@ import (
 type contextKey string
 
 const (
-	userIDKey contextKey = "userID"
+	userIDKey contextKey = "user_id"
 	roleKey   contextKey = "role"
 )
 
@@ -46,12 +46,12 @@ func RequireAuth(next http.Handler) http.Handler {
 
 		cookie, err := r.Cookie("session_id")
 		if err != nil {
-			http.Error(w, "Session not found Unauthorized", http.StatusUnauthorized)
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return
 		}
 
 		var (
-			userID    int
+			userID    int64
 			role      string
 			expiresAt time.Time
 		)
@@ -69,8 +69,7 @@ func RequireAuth(next http.Handler) http.Handler {
 		).Scan(&userID, &role, &expiresAt)
 
 		if err != nil {
-			log.Println(cookie.Value)
-			http.Error(w, "Session not found in database Unauthorized", http.StatusUnauthorized)
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return
 		}
 
@@ -83,7 +82,7 @@ func RequireAuth(next http.Handler) http.Handler {
 				`
 				UPDATE sessions
 				SET expires_at = $1
-				WHERE id = $2
+				WHERE session_id = $2
 				`,
 				newExpiry,
 				cookie.Value,
@@ -102,10 +101,14 @@ func RequireAuth(next http.Handler) http.Handler {
 			}
 		}
 
-		// Store values in context
+		// ✅ Store values in request context
 		ctx := context.WithValue(r.Context(), userIDKey, userID)
 		ctx = context.WithValue(ctx, roleKey, role)
-
+		if id, ok := ctx.Value(userIDKey).(int64); !ok {
+			log.Println("FAILED to store userID in context")
+		} else {
+			log.Println("Stored userID in context:", id)
+		}
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
@@ -195,8 +198,8 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 | Helper Functions (optional but clean)
 |--------------------------------------------------------------------------
 */
-func UserIDFromContext(ctx context.Context) (int, bool) {
-	id, ok := ctx.Value(userIDKey).(int)
+func UserIDFromContext(ctx context.Context) (int64, bool) {
+	id, ok := ctx.Value(userIDKey).(int64)
 	return id, ok
 }
 

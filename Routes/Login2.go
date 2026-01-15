@@ -1,7 +1,6 @@
 package Routes
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -16,8 +15,10 @@ import (
 )
 
 func Login(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+
 	start := time.Now()
-	ctx := context.Background()
+	ctx := r.Context()
 	log.Println(r.FormValue("email"))
 	log.Println(r.FormValue("password"))
 	tx, err := Db.DB.Begin(ctx)
@@ -76,11 +77,19 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Server error", 500)
 		return
 	}
+
+	err = utils.FirstFill(ctx, "student", userID, tx)
+	if err != nil {
+		log.Println("First Insertion Failed")
+		http.Error(w, "Server error", 500)
+		return
+	}
 	duration := time.Since(start)
 	user_logs.Create_user_log(tx, &userID, "student", "LOGGED_IN_ACCOUNT", fmt.Sprintf("user:%d", userID), "SUCCESS", duration)
 	tx.Commit(ctx)
 	w.Write([]byte("Login successful"))
 }
+
 func Login_page(w http.ResponseWriter, r *http.Request) {
 	data, err := os.ReadFile("Pages/Html/student/public/login.html")
 	if err != nil {
