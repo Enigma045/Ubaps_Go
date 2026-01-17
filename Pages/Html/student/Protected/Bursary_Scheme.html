@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/Css/Navbar/Navbar.css">
+    <link rel="stylesheet" href="/Css/Bursary_Scheme.css">
+    <link rel="stylesheet" href="/Css/Test_bursary.css">
+    <title>Bursary Scheme</title>
+</head>
+<body>
+    <div class="page">
+     <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="logo">
+      <span class="icon"><img src="/Image/logo-icon.png" alt="Logo"></span>
+      <span class="label">UNILIA</span>
+    </div>
+
+    <div class="nav-item">
+      <span class="icon">🏠</span>
+      <span class="label">Home</span>
+    </div>
+
+    <div class="nav-item">
+      <span class="icon">📝</span>
+      <span class="label">Bursary Scheme</span>
+    </div>
+
+    <div class="nav-item">
+      <span class="icon">⚖️</span>
+      <span class="label">Bursary Decisions</span>
+    </div>
+
+    <div class="nav-item">
+      <span class="icon">🔐</span>
+      <span class="label">Financial Approval</span>
+    </div>
+
+    <div class="nav-item">
+      <span class="icon">📬</span>
+      <span class="label">Letters</span>
+    </div>
+
+    <div class="nav-item">
+      <span class="icon">🔔</span>
+      <span class="label">Notifications</span>
+    </div>
+
+    <!-- Logout -->
+    <div class="nav-item logout">
+      <span class="icon">🚪</span>
+      <span class="label">Logout</span>
+    </div>
+  </nav>
+  <!-- Main Area -->
+  <div class="main">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="breadcrumb">
+        <strong>UBAPS</strong> &gt; Bursary Scheme
+      </div>
+      <div class="user">
+        Richard Sambo 👤
+      </div>
+    </header>
+    
+    <div class="app">
+
+  <!-- Header -->
+  <header class="head">
+    <div>
+      <h1>Bursary Schemes</h1>
+      <p class="subtitle">Bursary Award Processing System · Production</p>
+    </div>
+    <div class="time">
+      Jan 6, 2026 · 01:34 AM
+    </div>
+  </header>
+
+  <!-- Tabs -->
+  <!-- <div class="tabs">
+    <button class="active" data-tab="applications">Application Logs</button>
+  </div> -->
+
+  <!-- Search -->
+  <div class="search-bar">
+    <input
+      type="text"
+      placeholder="Search audit logs e.g. role:finance action:approve application:1245"
+    />
+  </div>
+  <div class="addSection">
+  <h3>Click to add Bursary Schme 👉</h3>
+  <div id="openModal" class="addScheme">
+✚
+</div>
+</div>
+  <!-- Logs Table -->
+  <div class="table-container">
+    <!-- first -->
+    <table class="log-table active" id="applications">
+      <thead>
+        <tr>
+          <th>Status</th>
+          <th>Name</th>
+          <th>Owned</th>
+          <th>Contact</th>
+          <th>Total Fund</th>
+          <th>Available balance</th>
+          <th>More Info</th>
+          <th>Assign</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr class="success">
+          <td>🟡</td>
+          <td>Loans Board</td>
+          <td>Richard</td>
+          <td>Lemillion045@gmail.com</td>
+          <td>2000000</td>
+          <td>200000</td>
+          <td><button>More Info</button></td>
+          <td><button>Assign</button></td>
+        </tr>
+
+      </tbody>
+      
+    </table>
+    <!-- first -->
+     <!-- THIRD  -->
+</div>
+
+<!-- model -->
+<!-- Modal Overlay -->
+  <div class="modal" id="modal">
+    
+    <div class="modal-card">
+      
+      <form id="scheme_info">
+      <div class="filter-row" >
+      <h1 class="form-group">Bursary Scheme</h1>
+      <div class="close" id="closeModal">X</div>
+      </div>
+      <div class="filter-row">
+      <div class="form-group">
+       <label for="scheme_name">Scheme Name</label>
+        <input type="text" id="Scheme_name" name="scheme_name" required value="Loans Board">
+      </div>
+      <div class="form-group">
+       <label for="benefactor_name">Benefactor Name</label>
+        <input type="text" id="benefactor_name" name="benefactor_name" required value="Malawi Govenment">
+      </div>
+      </div>
+      <div class="filter-row">
+      <div class="form-group">
+       <label for="benefactor_Email">Benefactor Email</label>
+        <input type="text" id="Benefactor_Email" name="benefactor_email" required value="lemillion045@gmail.com">
+      </div>
+      <div class="form-group">
+       <label for="total_fund_amount">Total fund amount</label>
+        <input type="text" id="total_fund_amount" name="total_fund_amount" required value="2000000">
+      </div>
+      </div>
+      <div class="filter-row">
+      <div class="form-group">
+        <label>Gender</label>
+      <div class="radio-group" >
+         <label>
+           <input class="radio" type="radio" name="gender" value="Male" required>
+           Male
+         </label>
+
+         <label>
+           <input class="radio" type="radio" name="gender" value="Female">
+           Female
+         </label>
+
+         <label>
+           <input class="radio" type="radio" name="gender" value="Female" checked>
+           Both
+         </label>
+      </div>
+      </div>
+    </div>
+    <div class="filter-row-last">
+        <label for="Conditions">Conditions</label>
+        <textarea name="conditions" id=""></textarea>
+      </div>
+      <div class="filter-row">
+        <button class="form-group" id="closeModal2">Submit</button>
+      </div>
+      
+      </form>
+  </div>
+  
+  <!-- ends here -->
+</div>
+<!-- model end-->
+</div>
+</div>
+
+  
+</div>
+<script src="/Js/Test_bursary.js"></script>
+<script src="/Js/Bursary_Scheme.js"></script>
+</body>
+</html>

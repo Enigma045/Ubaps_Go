@@ -24,6 +24,8 @@ func main() {
 	mux.HandleFunc("/register", Routes.Register)
 	mux.HandleFunc("/verify-email", Routes.VerifyEmail)
 	mux.HandleFunc("/Authorize", Routes.Login)
+	mux.HandleFunc("/fees", Routes.Fees)
+	mux.Handle("/benefactor", middleware.RequireAuth(http.HandlerFunc(Routes.Scheme_Info)))
 	mux.Handle("/SubmitForm", middleware.RequireAuth(http.HandlerFunc(Routes.SubmitForm)))
 	/*
 		|--------------------------------------------------------------------------
@@ -46,8 +48,10 @@ func main() {
 		| Login page route
 		|--------------------------------------------------------------------------
 	*/
+	mux.HandleFunc("/commitee", Routes.Commitee)
 	mux.HandleFunc("/Login", Routes.Login_page)
 	mux.HandleFunc("/", Routes.Sign_Up_page)
+	mux.HandleFunc("/request", Routes.Request_Page)
 	/*
 		|--------------------------------------------------------------------------
 		| Logout route (authenticated)
@@ -65,6 +69,14 @@ func main() {
 		| Protected student dashboard route
 		|--------------------------------------------------------------------------
 	*/
+	mux.Handle(
+		"/scheme",
+		middleware.RequireAuth(
+			middleware.RequireRole("registrar")(
+				http.HandlerFunc(Routes.Scheme_page),
+			),
+		),
+	)
 	mux.Handle(
 		"/dashboard",
 		middleware.RequireAuth(

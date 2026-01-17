@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"time"
 	user_logs "ubaps/Audit_logs"
 	"ubaps/Db"
@@ -32,12 +31,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		userID      int64
 		hash        string
 		is_verified bool
+		role        string
 	)
 	err = tx.QueryRow(ctx, `
-	SELECT user_id, password_hash, is_verified 
+	SELECT user_id, password_hash, is_verified , user_type
 	FROM users WHERE email = $1
 	`,
-		r.FormValue("email")).Scan(&userID, &hash, &is_verified)
+		r.FormValue("email")).Scan(&userID, &hash, &is_verified, &role)
 	if err != nil {
 
 		http.Error(w, "Invalid email or password", http.StatusUnauthorized)
@@ -78,24 +78,20 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = utils.FirstFill(ctx, "student", userID, tx)
+	err = utils.FirstFill(ctx, role, userID, tx)
 	if err != nil {
 		log.Println("First Insertion Failed")
 		http.Error(w, "Server error", 500)
 		return
 	}
 	duration := time.Since(start)
-	user_logs.Create_user_log(tx, &userID, "student", "LOGGED_IN_ACCOUNT", fmt.Sprintf("user:%d", userID), "SUCCESS", duration)
-	tx.Commit(ctx)
-	w.Write([]byte("Login successful"))
-}
+	user_logs.Create_user_log(tx, &userID, role, "LOGGED_IN_ACCOUNT", fmt.Sprintf("user:%d", userID), "SUCCESS", duration)
 
-func Login_page(w http.ResponseWriter, r *http.Request) {
-	data, err := os.ReadFile("Pages/Html/student/public/login.html")
-	if err != nil {
-		http.Error(w, "Page not found", http.StatusNotFound)
+	if err := tx.Commit(ctx); err != nil {
+		log.Println("Transaction commit failed:", err)
+		http.Error(w, "Server error", http.StatusInternalServerError)
 		return
 	}
-	w.Header().Set("Content-Type", "text/html")
-	w.Write(data)
+
+	w.Write([]byte("Login successful"))
 }

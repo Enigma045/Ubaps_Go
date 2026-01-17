@@ -7,7 +7,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"os"
 	"time"
 	user_logs "ubaps/Audit_logs"
 	"ubaps/Db"
@@ -151,14 +150,4 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		"message": "Registration successful. Check your email.",
 		"email":   reqEmail,
 	})
-}
-
-func Sign_Up_page(w http.ResponseWriter, r *http.Request) {
-	data, err := os.ReadFile("Pages/Html/student/public/Register.html")
-	if err != nil {
-		http.Error(w, "Page not found", http.StatusNotFound)
-		return
-	}
-	w.Header().Set("Content-Type", "text/html")
-	w.Write(data)
 }
