@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="../Css/Navbar/Navbar.css">
-  <link rel="stylesheet" href="../Css/Student_Notification.css">
+  <link rel="stylesheet" href="/Css/Navbar/Navbar.css">
+  <link rel="stylesheet" href="/Css/Student_Notification.css">
   <title>Student Notification</title>
 </head>
 <body>
@@ -59,12 +59,14 @@
       <div class="breadcrumb">
         <strong>UBAPS</strong> &gt; Notifications
       </div>
-      <div class="notification">
+      <div style="display: inline-flex; ">
+      <div class="notification-nav">
       🔔
-      <span id="badge" class="badge">0</span>
+      <span id="badge-nav" class="badge-nav">3</span>
       </div>
       <div class="user">
-        Richard Sambo 👤
+        RS
+      </div>
       </div>
     </header>
 
@@ -80,75 +82,10 @@
     </div>
 
     <!-- SCROLLABLE BODY -->
-    <div class="notifications-body">
+    <div class="notifications-body" id="parentDiv">
 
       <!-- Notification Item -->
-      <div class="notification success">
-        <span class="badge"></span>
-
-        <div class="content">
-          <h4>New Application Submitted</h4>
-          <p>A student has successfully submitted a bursary application.</p>
-        </div>
-
-        <span class="time">2 minutes ago</span>
-      </div>
-
-      <div class="notification warning">
-        <span class="badge"></span>
-
-        <div class="content">
-          <h4>Document Missing</h4>
-          <p>Please upload your guardian income verification document.</p>
-        </div>
-
-        <span class="time">1 hour ago</span>
-      </div>
-
-      <div class="notification success">
-        <span class="badge"></span>
-
-        <div class="content">
-          <h4>New Application Submitted</h4>
-          <p>A student has successfully submitted a bursary application.</p>
-        </div>
-
-        <span class="time">2 minutes ago</span>
-      </div>
-
-      <div class="notification warning">
-        <span class="badge"></span>
-
-        <div class="content">
-          <h4>Document Missing</h4>
-          <p>Please upload your guardian income verification document.</p>
-        </div>
-
-        <span class="time">1 hour ago</span>
-      </div>
-
-      <div class="notification success">
-        <span class="badge"></span>
-
-        <div class="content">
-          <h4>New Application Submitted</h4>
-          <p>A student has successfully submitted a bursary application.</p>
-        </div>
-
-        <span class="time">2 minutes ago</span>
-      </div>
-
-      <div class="notification warning">
-        <span class="badge"></span>
-
-        <div class="content">
-          <h4>Document Missing</h4>
-          <p>Please upload your guardian income verification document.</p>
-        </div>
-
-        <span class="time">1 hour ago</span>
-      </div>
-
+      
     </div>
     <!-- END BODY -->
 
@@ -160,6 +97,8 @@
 
 </div>
 
-<script src="../js/Students_Notification.js"></script>
+<script src="/Js/Students_Notification.js"></script>
+<script src="/Js/Notification_counter.js"></script>
+<script src="/Js/LogOut.js"></script>
 </body>
 </html>

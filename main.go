@@ -26,6 +26,8 @@ func main() {
 	mux.HandleFunc("/Authorize", Routes.Login)
 	mux.HandleFunc("/fees", Routes.Fees)
 	mux.Handle("/sendrequest", middleware.RequireAuth(http.HandlerFunc(Routes.Approval)))
+	mux.Handle("/getnotifications", middleware.RequireAuth(http.HandlerFunc(Routes.Notifications)))
+	mux.Handle("/countnotifications", middleware.RequireAuth(http.HandlerFunc(Routes.NotificationCounter)))
 	mux.Handle("/benefactor", middleware.RequireAuth(http.HandlerFunc(Routes.Scheme_Info)))
 	mux.Handle("/SubmitForm", middleware.RequireAuth(http.HandlerFunc(Routes.SubmitForm)))
 	/*
