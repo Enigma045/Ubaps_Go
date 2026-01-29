@@ -71,23 +71,7 @@ func main() {
 		| Protected student dashboard route
 		|--------------------------------------------------------------------------
 	*/
-	mux.Handle(
-		"/scheme",
-		middleware.RequireAuth(
-			middleware.RequireRole("registrar")(
-				http.HandlerFunc(Routes.Scheme_page),
-			),
-		),
-	)
-	mux.Handle(
-		"/financial",
-		middleware.RequireAuth(
-			middleware.RequireRole("finance_office")(
-				http.HandlerFunc(Routes.Approval_Page),
-			),
-		),
-	)
-	mux.Handle(
+    mux.Handle(
 		"/dashboard",
 		middleware.RequireAuth(
 			middleware.RequireRole("student")(
@@ -101,6 +85,62 @@ func main() {
 		middleware.RequireAuth(
 			middleware.RequireRole("student")(
 				http.HandlerFunc(Routes.ApplicationForm),
+			),
+		),
+	)
+
+	mux.Handle(
+		"/notifications",
+		middleware.RequireAuth(
+			middleware.RequireRole("student")(
+				http.HandlerFunc(Routes.Notification_Page),
+			),
+		),
+	)
+
+	mux.Handle(
+		"/letters",
+		middleware.RequireAuth(
+			middleware.RequireRole("student")(
+				http.HandlerFunc(Routes.Letter_Page),
+			),
+		),
+	)
+	/*
+		|--------------------------------------------------------------------------
+		| Protected financial office dashboard route
+		|--------------------------------------------------------------------------
+	*/
+    mux.Handle(
+		"/financial",
+		middleware.RequireAuth(
+			middleware.RequireRole("finance_office")(
+				http.HandlerFunc(Routes.Approval_Page),
+			),
+		),
+	)
+	/*
+		|--------------------------------------------------------------------------
+		| Protected addmin dashboard route
+		|--------------------------------------------------------------------------
+	*/
+
+	/*
+		|--------------------------------------------------------------------------
+		| Protected dean of students dashboard route
+		|--------------------------------------------------------------------------
+	*/
+
+	/*
+		|--------------------------------------------------------------------------
+		| Protected registrar dashboard route
+		|--------------------------------------------------------------------------
+	*/
+	mux.Handle(
+		"/scheme",
+		middleware.RequireAuth(
+			middleware.RequireRole("registrar")(
+				http.HandlerFunc(Routes.Scheme_page),
 			),
 		),
 	)

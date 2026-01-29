@@ -6,6 +6,27 @@ import (
 	"net/http"
 	"os"
 )
+
+func Letter_Page(w http.ResponseWriter, r *http.Request) {
+	data, err := os.ReadFile("Pages/Html/student/Protected/Student_Portal.html")
+	if err != nil {
+		http.Error(w, "Page not found", http.StatusNotFound)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html")
+	w.Write(data)
+}
+
+func Notification_Page(w http.ResponseWriter, r *http.Request) {
+	data, err := os.ReadFile("Pages/Html/student/Protected/Student_Notification.html")
+	if err != nil {
+		http.Error(w, "Page not found", http.StatusNotFound)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html")
+	w.Write(data)
+}
+
 func Approval_Page(w http.ResponseWriter, r *http.Request) {
 	data, err := os.ReadFile("Pages/Html/student/Protected/Financial_Approval.html")
 	if err != nil {

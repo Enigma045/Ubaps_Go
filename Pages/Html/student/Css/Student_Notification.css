@@ -1,0 +1,142 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+:root {
+  --main-color: #2563eb;
+  --dark-color: #1e40af;
+  --step-color: #ced7e0;
+  --step-size: 32px;
+  --steps: 4;
+}
+
+body {
+  background: #fcfdfe;
+  min-height: 100vh;
+}
+
+/* Page layout */
+.page {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  min-height: 100vh;
+}
+/* Content */
+.content {
+  padding: 30px;
+  width: 70%;
+  margin-left: 15%;
+}
+/* ===== NOTIFICATIONS ===== */
+
+.notifications-list {
+  background: #fff;
+  border-radius: 0px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header row (fixed) */
+.notifications-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+  flex-shrink: 0; /* prevents shrinking when scrolling */
+}
+
+.notifications-header h2 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Count badge */
+.notifications-header .count {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  background: rgba(37, 99, 235, 0.1);
+  color: var(--main-color);
+  font-weight: 500;
+}
+
+/* ===== SCROLLABLE BODY ===== */
+.notifications-body {
+  max-height: 570px;     /* 👈 adjust height here */
+  overflow-y: auto;      /* 👈 card scrolls */
+  background: #f9fafb;
+}
+
+/* Optional scrollbar styling */
+.notifications-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.notifications-body::-webkit-scrollbar-thumb {
+  background: #c7cbd1;
+  border-radius: 6px;
+}
+
+.notifications-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Notification card */
+.notification {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 16px;
+  background: #fff;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.notification:last-child {
+  border-bottom: none;
+}
+
+/* Badge dot */
+.notification .badge {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+/* Content */
+.notification .content h4 {
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.notification .content p {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* Time */
+.notification .time {
+  font-size: 12px;
+  color: #9ca3af;
+  white-space: nowrap;
+}
+
+/* Notification types */
+.notification.success .badge {
+  background: #22c55e;
+}
+
+.notification.warning .badge {
+  background: #f59e0b;
+}
+
+.notification.info .badge {
+  background: var(--main-color);
+}

@@ -84,3 +84,23 @@
 .sidebar:hover .logo .label {
   opacity: 1;
 }
+
+.notification {
+  position: relative;
+  font-size: 40px;
+  width: fit-content;
+}
+
+.badge {
+  position: absolute;
+  top: -5px;
+  right: -10px;
+  background: red;
+  color: white;
+  font-size: 14px;
+  padding: 2px 6px;
+  border-radius: 50%;
+  min-width: 20px;
+  text-align: center;
+  display: none; /* hidden when 0 */
+}
