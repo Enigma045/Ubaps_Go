@@ -1,0 +1,32 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+:root {
+  --main-color: #2563eb;
+  --dark-color: #1e40af;
+  --step-color: #ced7e0;
+  --step-size: 32px;
+  --steps: 4;
+}
+
+body {
+  background: #fcfdfe;
+  min-height: 100vh;
+}
+
+/* Page layout */
+.page {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  min-height: 100vh;
+}
+/* Content */
+.content {
+  padding: 30px;
+  width: 70%;
+  margin-left: 15%;
+}

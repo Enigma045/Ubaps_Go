@@ -44,7 +44,7 @@ func Formdata(r *http.Request) (map[string][]string, error) {
 }
 
 // helper to safely get first value from form map
-func getFormValue(formData map[string][]string, key string) (string, error) {
+func GetFormValue(formData map[string][]string, key string) (string, error) {
 	values, ok := formData[key]
 	if !ok || len(values) == 0 {
 		return "", fmt.Errorf("missing or empty field: %s", key)

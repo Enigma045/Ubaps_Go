@@ -16,19 +16,19 @@ func Finance_Operations(
 	student_id int64,
 ) error {
 
-	semester, err := getFormValue(formData, "semester")
+	semester, err := GetFormValue(formData, "semester")
 	if err != nil {
 		return err
 	}
-	date, err := getFormValue(formData, "date")
+	date, err := GetFormValue(formData, "date")
 	if err != nil {
 		return err
 	}
-	detail, err := getFormValue(formData, "detail")
+	detail, err := GetFormValue(formData, "detail")
 	if err != nil {
 		return err
 	}
-	amount, err := getFormValue(formData, "amount")
+	amount, err := GetFormValue(formData, "amount")
 	if err != nil {
 		return err
 	}

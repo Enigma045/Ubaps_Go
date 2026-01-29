@@ -7,6 +7,7 @@ import (
 	"time"
 	user_logs "ubaps/Audit_logs"
 	"ubaps/Db"
+	"ubaps/Handles"
 	"ubaps/services"
 	"ubaps/utils"
 
@@ -33,6 +34,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		is_verified bool
 		role        string
 	)
+	//password
+	pass,err := Handles.HashPassword("Rich@2002")
+	if err != nil {
+		log.Println("Password hashing failed:", err)
+	}	
+    log.Println(pass)
+	//
 	err = tx.QueryRow(ctx, `
 	SELECT user_id, password_hash, is_verified , user_type
 	FROM users WHERE email = $1
@@ -43,6 +51,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid email or password", http.StatusUnauthorized)
 		return
 	}
+	
 	if !is_verified {
 		token, err := utils.GenerateVerificationToken(r.FormValue("email"), tx)
 		if err != nil {
@@ -92,6 +101,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Server error", http.StatusInternalServerError)
 		return
 	}
-
+	
 	w.Write([]byte("Login successful"))
 }

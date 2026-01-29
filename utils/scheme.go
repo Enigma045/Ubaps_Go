@@ -15,19 +15,19 @@ func Scheme_Operations(
 	userid int64,
 ) error {
 
-	schemeName, err := getFormValue(formData, "scheme_name")
+	schemeName, err := GetFormValue(formData, "scheme_name")
 	if err != nil {
 		return err
 	}
-	benefactorName, err := getFormValue(formData, "benefactor_name")
+	benefactorName, err := GetFormValue(formData, "benefactor_name")
 	if err != nil {
 		return err
 	}
-	benefactorEmail, err := getFormValue(formData, "benefactor_email")
+	benefactorEmail, err := GetFormValue(formData, "benefactor_email")
 	if err != nil {
 		return err
 	}
-	totalFund, err := getFormValue(formData, "total_fund_amount")
+	totalFund, err := GetFormValue(formData, "total_fund_amount")
 	if err != nil {
 		return err
 	}
@@ -35,12 +35,12 @@ func Scheme_Operations(
 	// optional / default fields
 
 	genderRestriction := ""
-	if v, err := getFormValue(formData, "gender_restriction"); err == nil {
+	if v, err := GetFormValue(formData, "gender_restriction"); err == nil {
 		genderRestriction = v
 	}
 
 	conditions := ""
-	if v, err := getFormValue(formData, "conditions"); err == nil {
+	if v, err := GetFormValue(formData, "conditions"); err == nil {
 		conditions = v
 	}
 

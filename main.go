@@ -25,6 +25,7 @@ func main() {
 	mux.HandleFunc("/verify-email", Routes.VerifyEmail)
 	mux.HandleFunc("/Authorize", Routes.Login)
 	mux.HandleFunc("/fees", Routes.Fees)
+	mux.Handle("/sendrequest", middleware.RequireAuth(http.HandlerFunc(Routes.Approval)))
 	mux.Handle("/benefactor", middleware.RequireAuth(http.HandlerFunc(Routes.Scheme_Info)))
 	mux.Handle("/SubmitForm", middleware.RequireAuth(http.HandlerFunc(Routes.SubmitForm)))
 	/*
@@ -52,6 +53,7 @@ func main() {
 	mux.HandleFunc("/Login", Routes.Login_page)
 	mux.HandleFunc("/", Routes.Sign_Up_page)
 	mux.HandleFunc("/request", Routes.Request_Page)
+	//mux.HandleFunc("/financial", Routes.Approval_Page)
 	/*
 		|--------------------------------------------------------------------------
 		| Logout route (authenticated)
@@ -74,6 +76,14 @@ func main() {
 		middleware.RequireAuth(
 			middleware.RequireRole("registrar")(
 				http.HandlerFunc(Routes.Scheme_page),
+			),
+		),
+	)
+	mux.Handle(
+		"/financial",
+		middleware.RequireAuth(
+			middleware.RequireRole("finance_office")(
+				http.HandlerFunc(Routes.Approval_Page),
 			),
 		),
 	)
