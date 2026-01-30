@@ -35,7 +35,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		role        string
 	)
 	//password
-	pass,err := Handles.HashPassword("Rich@2002")
+	pass,err := Handles.HashPassword("Rich@2002248")
 	if err != nil {
 		log.Println("Password hashing failed:", err)
 	}	

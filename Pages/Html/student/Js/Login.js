@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     if (res.ok){
-         location.href = "/dashboard";
+         location.href = "/admindashboard";
          console.log("here")
         }else{
             const text = await res.text();

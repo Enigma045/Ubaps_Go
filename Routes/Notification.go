@@ -70,6 +70,7 @@ func NotificationCounter(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to fetch notificationCount", http.StatusInternalServerError)
 		return
 	}
+	log.Println("Notification count:", count)
     w.WriteHeader(http.StatusOK)
 	err = json.NewEncoder(w).Encode(count)
 	if err != nil {

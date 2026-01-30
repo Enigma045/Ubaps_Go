@@ -30,6 +30,7 @@ func main() {
 	mux.Handle("/countnotifications", middleware.RequireAuth(http.HandlerFunc(Routes.NotificationCounter)))
 	mux.Handle("/benefactor", middleware.RequireAuth(http.HandlerFunc(Routes.Scheme_Info)))
 	mux.Handle("/SubmitForm", middleware.RequireAuth(http.HandlerFunc(Routes.SubmitForm)))
+	mux.Handle("/getuserdetails",middleware.RequireAuth(http.HandlerFunc(Routes.Getuserdetails)))
 	/*
 		|--------------------------------------------------------------------------
 		| Public static assets (CSS, JS, images)
@@ -123,10 +124,44 @@ func main() {
 	)
 	/*
 		|--------------------------------------------------------------------------
-		| Protected addmin dashboard route
+		| Protected admin dashboard route
 		|--------------------------------------------------------------------------
 	*/
+mux.Handle(
+		"/admindashboard",
+		middleware.RequireAuth(
+			middleware.RequireRole("admin")(
+				http.HandlerFunc(Routes.AdminDashboard_Page),
+			),
+		),
+	)
 
+	mux.Handle(
+		"/adminusers",
+		middleware.RequireAuth(
+			middleware.RequireRole("admin")(
+				http.HandlerFunc(Routes.AdminUsers_Page),
+			),
+		),
+	)
+
+	mux.Handle(
+		"/admintrails",
+		middleware.RequireAuth(
+			middleware.RequireRole("admin")(
+				http.HandlerFunc(Routes.AdminTrails_Page),
+			),
+		),
+	)
+
+	mux.Handle(
+		"/adminmodification",
+		middleware.RequireAuth(
+			middleware.RequireRole("admin")(
+				http.HandlerFunc(Routes.AdminModification_Page),
+			),
+		),
+	)
 	/*
 		|--------------------------------------------------------------------------
 		| Protected dean of students dashboard route

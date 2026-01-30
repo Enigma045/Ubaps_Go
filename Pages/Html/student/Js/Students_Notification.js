@@ -36,7 +36,8 @@
       notificationDiv.appendChild(time);
       parent.appendChild(notificationDiv);
 
-    }).catch(error => {
+    })
+    .catch(error => {
     console.error("Error fetching notifications:", error);
   });
   })
