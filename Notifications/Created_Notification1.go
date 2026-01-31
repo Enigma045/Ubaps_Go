@@ -9,14 +9,15 @@ import (
 
 // User_Created inserts a notification for a newly created user.
 // It uses the provided transaction tx.
-func User_Created(user_id int64, tx pgx.Tx) error {
+func User_Created(user_id int64, tx pgx.Tx,message string,title string) error {
 	query := `
 	INSERT INTO notifications (
 		recipient_user_id,
 		notification_type,
-		message
+		message,
+		title
 	)
-	VALUES($1, $2, $3)
+	VALUES($1, $2, $3, $4)
 	`
 
 	_, err := tx.Exec(
@@ -24,7 +25,8 @@ func User_Created(user_id int64, tx pgx.Tx) error {
 		query,
 		user_id,
 		"SYSTEM",
-		"Your account has been created.",
+		message,
+		title,
 	)
 	if err != nil {
 		return fmt.Errorf("failed to insert notification: %w", err)

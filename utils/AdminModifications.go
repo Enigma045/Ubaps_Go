@@ -3,6 +3,7 @@ package utils
 import (
 	"context"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -68,4 +69,20 @@ func ReciveDetails(
 	}
 
 	return userdetails, nil
+}
+
+func DeleteUser(tx pgx.Tx,
+	            ctx context.Context,
+				 userid int64) (error) {
+
+	query := `DELETE FROM
+	users WHERE
+	user_id = $1`
+
+	_,err := tx.Exec(ctx,query,userid)
+	if err != nil {
+    return err
+	}
+
+	return nil
 }

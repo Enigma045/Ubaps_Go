@@ -65,7 +65,10 @@ func Filter(body []byte, info [5]string, tx pgx.Tx) string {
 	log.Println("email:", email)
 	//fall loop and array
 	fmt.Println("success1")
-	Handles.CreateUser(name, surname, email, phone, password, "student", tx)
+	_,err := Handles.CreateUser(name, surname, email, phone, password, "student", tx,false)
+	if err != nil {
+		log.Println(err)
+	}
 	return email
 }
 
@@ -117,7 +120,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(map[string]string{"error": "Failed to retrieve new user ID"})
 		return
 	}
-	err = notifications.User_Created(userID, tx)
+	err = notifications.User_Created(userID, tx, "Your account has been created.","Account Created")
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(map[string]string{"error": "Failed to create notification"})

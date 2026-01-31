@@ -31,6 +31,8 @@ func main() {
 	mux.Handle("/benefactor", middleware.RequireAuth(http.HandlerFunc(Routes.Scheme_Info)))
 	mux.Handle("/SubmitForm", middleware.RequireAuth(http.HandlerFunc(Routes.SubmitForm)))
 	mux.Handle("/getuserdetails",middleware.RequireAuth(http.HandlerFunc(Routes.Getuserdetails)))
+	mux.Handle("/deleteaccount",middleware.RequireAuth(http.HandlerFunc(Routes.DeleteAccount)))
+	mux.Handle("/createuser",middleware.RequireAuth(http.HandlerFunc(Routes.CreateUser)))
 	/*
 		|--------------------------------------------------------------------------
 		| Public static assets (CSS, JS, images)

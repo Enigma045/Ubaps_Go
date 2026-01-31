@@ -16,7 +16,7 @@ func CreateSessionTx(
 	userID int,
 ) error {
 	sessionID := uuid.New()
-	expires := time.Now().Add(6 * time.Minute)
+	expires := time.Now().Add(20 * time.Minute)
 
 	_, err := tx.Exec(ctx, `
 	INSERT INTO sessions (session_id,user_id, expires_at)

@@ -220,7 +220,7 @@ button:hover {
 }
 
 #submit {
-  display: none;
+  display: block;
 }
 
 #prev {
@@ -258,6 +258,12 @@ button:hover {
   width: 62px;
   height: 44px;
 }
+
+.hidden {
+  display: none;
+}
+
+
 /* ```
 
 ## Key Changes Made:

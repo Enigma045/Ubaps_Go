@@ -19,8 +19,8 @@ func CheckPassword(hash, password string) bool {
 }
 
 func CreateUser(
-	name, surname, email, phone, password, userType string, tx pgx.Tx,
-) error {
+	name, surname, email, phone, password, userType string, tx pgx.Tx, is_verified bool,
+) (int64,error) {
 	password_hash, err := HashPassword(password)
 	if err != nil {
 		fmt.Errorf("Password hashing failed")
@@ -40,29 +40,29 @@ func CreateUser(
 	}
 
 	if !allowed[userType] {
-		return fmt.Errorf("invalid user type")
+		return 0,fmt.Errorf("invalid user type")
 	}
 
 	var userID int64
 	query := `
     INSERT INTO users
         (name, surname, email, phone, password_hash, user_type, is_active, is_verified)
-    VALUES ($1,$2,$3,$4,$5,$6,true,false)
+    VALUES ($1,$2,$3,$4,$5,$6,true,$7)
     RETURNING user_id
 `
 
 	err = tx.QueryRow(
 		context.Background(),
 		query,
-		name, surname, email, phone, password_hash, userType,
+		name, surname, email, phone, password_hash, userType,is_verified,
 	).Scan(&userID)
 
 	if err != nil {
 		if strings.Contains(err.Error(), "users_email_unique") {
-			return fmt.Errorf("email already exists")
+			return 0,fmt.Errorf("email already exists")
 		}
-		return err
+		return 0,err
 	}
 	fmt.Println("success2")
-	return nil
+	return userID,nil
 }
