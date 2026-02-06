@@ -30,9 +30,15 @@ func main() {
 	mux.Handle("/countnotifications", middleware.RequireAuth(http.HandlerFunc(Routes.NotificationCounter)))
 	mux.Handle("/benefactor", middleware.RequireAuth(http.HandlerFunc(Routes.Scheme_Info)))
 	mux.Handle("/SubmitForm", middleware.RequireAuth(http.HandlerFunc(Routes.SubmitForm)))
+	//admin routes
 	mux.Handle("/getuserdetails",middleware.RequireAuth(http.HandlerFunc(Routes.Getuserdetails)))
 	mux.Handle("/deleteaccount",middleware.RequireAuth(http.HandlerFunc(Routes.DeleteAccount)))
 	mux.Handle("/createuser",middleware.RequireAuth(http.HandlerFunc(Routes.CreateUser)))
+	mux.Handle("/userlog",middleware.RequireAuth(http.HandlerFunc(Routes.UserLogs)))
+	mux.Handle("/paymentlog",middleware.RequireAuth(http.HandlerFunc(Routes.PaymentLogs)))
+	mux.Handle("/applicationlog",middleware.RequireAuth(http.HandlerFunc(Routes.ApplicationLogs)))
+	//registrar routes
+	mux.Handle("/applicants",middleware.RequireAuth(http.HandlerFunc(Routes.Applicants)))
 	/*
 		|--------------------------------------------------------------------------
 		| Public static assets (CSS, JS, images)
@@ -175,6 +181,15 @@ mux.Handle(
 		| Protected registrar dashboard route
 		|--------------------------------------------------------------------------
 	*/
+	mux.Handle(
+		"/decision",
+		middleware.RequireAuth(
+			middleware.RequireRole("registrar")(
+				http.HandlerFunc(Routes.Decision_Page),
+			),
+		),
+	)
+
 	mux.Handle(
 		"/scheme",
 		middleware.RequireAuth(

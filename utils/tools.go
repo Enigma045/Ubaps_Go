@@ -1,8 +1,10 @@
 package utils
 
 import (
+	"database/sql/driver"
 	"fmt"
 	"net/http"
+	"time"
 )
 
 func Formdata(r *http.Request) (map[string][]string, error) {
@@ -50,6 +52,49 @@ func GetFormValue(formData map[string][]string, key string) (string, error) {
 		return "", fmt.Errorf("missing or empty field: %s", key)
 	}
 	return values[0], nil
+}
+
+type AutoTime struct {
+	time.Time
+}
+
+func (t *AutoTime) Scan(value any) error {
+	if value == nil {
+		t.Time = time.Time{}
+		return nil
+	}
+
+	switch v := value.(type) {
+	case time.Time:
+		t.Time = v
+		return nil
+	default:
+		return fmt.Errorf("cannot scan %T into AutoTime", value)
+	}
+}
+
+/*
+OPTIONAL: allow writing back to DB if needed
+*/
+func (t AutoTime) Value() (driver.Value, error) {
+	if t.Time.IsZero() {
+		return nil, nil
+	}
+	return t.Time, nil
+}
+
+/*
+AUTOMATIC JSON FORMATTING
+*/
+func (t AutoTime) MarshalJSON() ([]byte, error) {
+	if t.Time.IsZero() {
+		return []byte(`""`), nil
+	}
+
+	return []byte(fmt.Sprintf(
+		`"%s"`,
+		t.Format("Jan 2 2006 15:04"),
+	)), nil
 }
 
 // func BuildInsertFromMap(

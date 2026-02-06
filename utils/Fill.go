@@ -29,7 +29,7 @@ func FirstFill(ctx context.Context, role string, userID int64, tx pgx.Tx) error 
     ON CONFLICT (user_id) DO NOTHING;
     `
 
-	ct, err := tx.Exec(ctx, query, userID, "Not Submitted", time.Now(), time.Now())
+	ct, err := tx.Exec(ctx, query, userID, "not submitted", time.Now(), time.Now())
 	if err != nil {
 		log.Println("FirstFill: failed to insert application:", err)
 		return err

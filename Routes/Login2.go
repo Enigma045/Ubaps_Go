@@ -1,6 +1,7 @@
 package Routes
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -89,7 +90,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	err = utils.FirstFill(ctx, role, userID, tx)
 	if err != nil {
-		log.Println("First Insertion Failed")
+		log.Println("First Insertion Failed",err)
 		http.Error(w, "Server error", 500)
 		return
 	}
@@ -102,5 +103,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	
-	w.Write([]byte("Login successful"))
+	w.WriteHeader(http.StatusOK)
+	err = json.NewEncoder(w).Encode(map[string]interface{}{
+		"role":role,
+	})
+	if err != nil {
+		log.Println("Failed to send role to front end:", err)
+		http.Error(w, "Server error", http.StatusInternalServerError)
+		return
+	}
 }

@@ -6,6 +6,16 @@ import (
 	"net/http"
 	"os"
 )
+func Decision_Page(w http.ResponseWriter, r *http.Request) {
+	data, err := os.ReadFile("Pages/Html/student/Protected/Committe_Review.html")
+	if err != nil {
+		http.Error(w, "Page not found", http.StatusNotFound)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html")
+	w.Write(data)
+}
+
 func AdminTrails_Page(w http.ResponseWriter, r *http.Request) {
 	data, err := os.ReadFile("Pages/Html/student/Protected/Audit_Trailer.html")
 	if err != nil {

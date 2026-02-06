@@ -93,15 +93,12 @@ body {
 
 /* TABLE */
 .table-container {
-  max-height: 350px;
   overflow-x: auto;
-  overflow-y: auto;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  
   font-size: 13px;
 }
 
@@ -111,7 +108,6 @@ thead {
 }
 
 th {
-  text-align: left;
   padding: 12px;
   color: #9ca3af;
   font-weight: 500;
@@ -166,4 +162,22 @@ td:last-child {
 
 .log-table.active {
   display: table;
+}
+button {
+  background-color: none;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+button:hover {
+  background-color: #1e40af;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
 }
