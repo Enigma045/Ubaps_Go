@@ -13,29 +13,31 @@ document.addEventListener("DOMContentLoaded", () => {
       credentials: "include" // send cookies
     }).then(res => {
       return res.json()
+      
     }).then(data => {
-      if(data.role == "registrar"){
-        location.href = "/decision";
+      if (data.role == "registrar") {
+        location.href = "/registrardashboard";
         console.log("here")
-        }else if(data.role == "student"){
+      } else if (data.role == "student") {
         location.href = "/dashboard";
         console.log("here")
-        }else if(data.role == "admin"){
+      } else if (data.role == "admin") {
         location.href = "/admindashboard";
-         console.log("here")
-        }else if(data.role == "dean_of_student"){
-
-        }else if(data.role == "finance_office"){
-         location.href = "/financial";
-         console.log("here")  
-        }
+        console.log("here")
+      } else if (data.role == "dean_of_student") {
+        location.href = "/deandashboard";
+        console.log("here") 
+      } else if (data.role == "finance_office") {
+        location.href = "/financial_request";
+        console.log("here")
+      }
       console.log(data)
     }).catch(error => {
       console.error(error)
     })
 
     // if (res.ok){
-      
+
     //     if(res.text == "registrar"){
     //     location.href = "/admindashboard";
     //     console.log("here")

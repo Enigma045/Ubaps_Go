@@ -6,6 +6,57 @@ import (
 	"net/http"
 	"os"
 )
+
+func Student_reports_Page(w http.ResponseWriter, r *http.Request) {
+	data, err := os.ReadFile("Pages/Html/student/Protected/Student_reports.html")
+	if err != nil {
+		http.Error(w, "Page not found", http.StatusNotFound)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html")
+	w.Write(data)
+}
+
+func Letters_page(w http.ResponseWriter, r *http.Request) {
+	data, err := os.ReadFile("Pages/Html/student/Protected/Letters_receive.html")
+	if err != nil {
+		http.Error(w, "Page not found", http.StatusNotFound)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html")
+	w.Write(data)
+}
+
+func Financial_approval_page(w http.ResponseWriter, r *http.Request) {
+	data, err := os.ReadFile("Pages/Html/student/Protected/Financial_Approval.html")
+	if err != nil {
+		http.Error(w, "Page not found", http.StatusNotFound)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html")
+	w.Write(data)
+}
+
+func General_reports_Page(w http.ResponseWriter, r *http.Request) {
+	data, err := os.ReadFile("Pages/Html/student/Protected/Combined_reports.html")
+	if err != nil {
+		http.Error(w, "Page not found", http.StatusNotFound)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html")
+	w.Write(data)
+}
+
+func Financial_reports_Page(w http.ResponseWriter, r *http.Request) {
+	data, err := os.ReadFile("Pages/Html/student/Protected/Financial_reports.html")
+	if err != nil {
+		http.Error(w, "Page not found", http.StatusNotFound)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html")
+	w.Write(data)
+}
+
 func Decision_Page(w http.ResponseWriter, r *http.Request) {
 	data, err := os.ReadFile("Pages/Html/student/Protected/Committe_Review.html")
 	if err != nil {
@@ -56,6 +107,36 @@ func AdminDashboard_Page(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
+func FinancialDashboard_Page(w http.ResponseWriter, r *http.Request) {
+	data, err := os.ReadFile("Pages/Html/student/Protected/Financial_Dashboard.html")
+	if err != nil {
+		http.Error(w, "Page not found", http.StatusNotFound)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html")
+	w.Write(data)
+}
+
+func RegistrarDashboard_Page(w http.ResponseWriter, r *http.Request) {
+	data, err := os.ReadFile("Pages/Html/student/Protected/Registrar_Dashboard.html")
+	if err != nil {
+		http.Error(w, "Page not found", http.StatusNotFound)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html")
+	w.Write(data)
+}
+
+func DeanDashboard_Page(w http.ResponseWriter, r *http.Request) {
+	data, err := os.ReadFile("Pages/Html/student/Protected/Dean_Dashboard.html")
+	if err != nil {
+		http.Error(w, "Page not found", http.StatusNotFound)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html")
+	w.Write(data)
+}
+
 func Letter_Page(w http.ResponseWriter, r *http.Request) {
 	data, err := os.ReadFile("Pages/Html/student/Protected/Student_Portal.html")
 	if err != nil {
@@ -87,7 +168,7 @@ func Approval_Page(w http.ResponseWriter, r *http.Request) {
 }
 
 func Request_Page(w http.ResponseWriter, r *http.Request) {
-	data, err := os.ReadFile("Pages/Html/student/public/Finance_Request.html")
+	data, err := os.ReadFile("Pages/Html/student/Protected/Finance_Request.html")
 	if err != nil {
 		http.Error(w, "Page not found", http.StatusNotFound)
 		return

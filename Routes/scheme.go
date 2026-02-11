@@ -1,12 +1,15 @@
 package Routes
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"ubaps/Db"
 	middleware "ubaps/Middleware"
 	"ubaps/utils"
 )
+
+
 
 func Scheme_Info(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
@@ -57,4 +60,84 @@ func Scheme_Info(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("You have successfully submitted the application form"))
+}
+
+func GetBenefactor(w http.ResponseWriter, r *http.Request){
+   ctx := r.Context()
+   w.Header().Set("Content-Type", "application/json")
+   //userId, ok := middleware.UserIDFromContext(ctx)
+   //if !ok {
+	//	log.Println("Failed to take UserId")
+	//	return
+//}
+
+	benefactor, err := utils.GetBenefactor(Db.DB, ctx)
+	if err != nil {
+		log.Println("Failed to get benefactor:", err)
+		http.Error(w, "Failed to get benefactor", http.StatusInternalServerError)
+		return
+	}
+
+	log.Println("Benefactor:", benefactor)
+
+
+	err = json.NewEncoder(w).Encode(benefactor)
+	if err != nil {
+		log.Println("Failed to encode benefactor:", err)
+		http.Error(w, "Failed to encode benefactor", http.StatusInternalServerError)
+		return
+	}
+
+	
+}
+
+
+func DeleteBenefactor(w http.ResponseWriter,r *http.Request){
+    var emailreq emailRequest
+
+	if r.Method != http.MethodPost{
+    http.Error(w,"wrong Method",http.StatusMethodNotAllowed)
+	}
+
+	ctx := r.Context()
+
+	tx,err := Db.DB.Begin(ctx)
+    if err != nil {
+		log.Println(err)
+		http.Error(w,"Failed to create Transction",http.StatusInternalServerError)
+	    return
+	}
+	defer tx.Rollback(ctx)
+
+	err = json.NewDecoder(r.Body).Decode(&emailreq)
+	if err != nil {
+		log.Println(err)
+		http.Error(w,"Invalid JSON",http.StatusBadRequest)
+		return
+	}
+	
+	// userid,err := Handles.GetUserIDByEmail(emailreq.Email,tx)
+	// if err != nil {
+	// 	log.Println(err)
+	// 	http.Error(w,"Failed to get userid",http.StatusInternalServerError)
+	//     return
+	// }
+
+	var name string = emailreq.Name
+
+	err = utils.DeleteBenefactor(tx,ctx,name)
+	if err != nil {
+		log.Println(err)
+		http.Error(w,"Invalid JSON",http.StatusBadRequest)
+	}
+
+	// Commit transaction
+	if err := tx.Commit(ctx); err != nil {
+		log.Println("Transaction commit failed:", err)
+		http.Error(w, "Failed to commit transaction", http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("You have succefully deleted the user"))
+
 }

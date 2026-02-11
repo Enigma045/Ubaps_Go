@@ -1,209 +1,177 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../Css/Navbar/Navbar.css">
-    <link rel="stylesheet" href="../Css/Template.css">
-    <link rel="stylesheet" href="../Css/Financial_Approval.css" />
-    <link rel="stylesheet" href="../Css/Test_dusbersment.css" />
-    <link rel="stylesheet" href="../Css/Test_Request.css" />
-    <title>Bursary Scheme</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/Css/Navbar/Navbar.css">
+  <link rel="stylesheet" href="/Css/Layout.css">
+  <link rel="stylesheet" href="/Css/Dashboard.css">
+  <link rel="stylesheet" href="/Css/Notification.css">
+  <link rel="stylesheet" href="/Css/Financial_Approval.css" />
+  <title>Bursary Scheme</title>
 </head>
+
 <body>
-    <div class="page">
-     <!-- Sidebar -->
-  <nav class="sidebar">
-    <div class="logo">
-      <span class="icon"><img src="../Image/logo-icon.png" alt="Logo"></span>
-      <span class="label">UNILIA</span>
-    </div>
-
-    <div class="nav-item">
-      <span class="icon">🏠</span>
-      <span class="label">Home</span>
-    </div>
-
-    <div class="nav-item">
-      <span class="icon">📝</span>
-      <span class="label">Bursary Scheme</span>
-    </div>
-
-    <div class="nav-item">
-      <span class="icon">⚖️</span>
-      <span class="label">Bursary Decisions</span>
-    </div>
-
-    <div class="nav-item">
-      <span class="icon">🔐</span>
-      <span class="label">Financial Approval</span>
-    </div>
-
-    <div class="nav-item">
-      <span class="icon">📬</span>
-      <span class="label">Letters</span>
-    </div>
-
-    <div class="nav-item">
-      <span class="icon">🔔</span>
-      <span class="label">Notifications</span>
-    </div>
-
-    <!-- Logout -->
-    <div class="nav-item logout">
-      <span class="icon">🚪</span>
-      <span class="label">Logout</span>
-    </div>
-  </nav>
-  <!-- Main Area -->
-  <div class="main">
-
-    <!-- Header -->
-    <header class="header">
-      <div class="breadcrumb">
-        <strong>UBAPS</strong> &gt; Application form
+  <div class="page">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="logo">
+        <span class="icon"><img src="/Image/logo-icon.png" alt="Logo"></span>
+        <span class="label">UNILIA</span>
       </div>
-      <div class="user">
-        Richard Sambo 👤
+
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (3).svg" alt=""></span>
+        <span class="label"><a href="/financialdashboard" class="text-link">Home</a></span>
       </div>
-    </header>
-    <div class="app">
 
-  <!-- Header -->
-  <header class="head">
-    <div>
-      <h1>Bursary Audit Logs</h1>
-      <p class="subtitle">Bursary Award Processing System · Production</p>
-    </div>
-    <div class="time">
-      Jan 6, 2026 · 01:34 AM
-    </div>
-  </header>
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (16).svg" alt=""></span>
+        <span class="label"><a href="/financial_request" class="text-link">Financial Statement</a></span>
+      </div>
 
-  <!-- Tabs -->
-  <div class="tabs">
-    <h4>MWK0</h4>
-    <p class="para">Request Amount for Disbursement 👉</p>
-    <button class="request" id="openModalRequest">Send Request</button>
+      <div class="nav-item active">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (17).svg" alt=""></span>
+        <span class="label"><a href="/financial" class="text-link">Financial Request</a></span>
+      </div>
+
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (12).svg" alt=""></span>
+        <span class="label"><a href="/financial_reports" class="text-link">Reports</a></span>
+      </div>
+      <div class="nav-item logout">
+        <span class="icon"><img class="LogOut" src="/Image/svgviewer-output (7).svg" alt=""></span>
+        <span class="label"><a href="/logout" class="text-link" style="color: inherit;">Logout</a></span>
+      </div>
+    </nav>
+
+    <!-- Main Area -->
+    <div class="main">
+      <!-- Header -->
+      <header class="header">
+        <div class="breadcrumb">
+          <strong>UBAPS</strong> &gt; Financial Approval
+        </div>
+        <div class="header-actions">
+          <div class="notification-nav">
+            <img class="svg" src="/Image/svgviewer-output (5).svg" alt="">
+            <span id="badge-nav" class="badge-nav">0</span>
+          </div>
+          <div class="user-avatar">
+            RS
+          </div>
+        </div>
+      </header>
+
+      <div class="app">
+        <!-- Header -->
+        <header class="head">
+          <div>
+            <h1>Financial Approvals</h1>
+            <p class="subtitle">Bursary Award Processing System · Production</p>
+          </div>
+          <div class="time">
+            Jan 6, 2026 · 01:34 AM
+          </div>
+        </header>
+
+        <!-- Tabs -->
+        <div class="tabs">
+          <h4>MWK 0</h4>
+          <p class="para">Request Amount for Disbursement 👉</p>
+          <button class="request" id="openModalRequest">Send Request</button>
+        </div>
+
+        <!-- Search -->
+        <div class="search-bar">
+          <input type="text" placeholder="Search audit logs e.g. role:finance action:approve application:1245" />
+        </div>
+
+        <!-- Logs Table -->
+        <div class="table-container">
+          <table class="log-table active" id="applications">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Reg #</th>
+                <th>Parent Status</th>
+                <th>Employment Status</th>
+                <th>Bursary Scheme</th>
+                <th>Amount Assigned</th>
+                <th>Details</th>
+                <th>Disbursement</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Richard Sambo</td>
+                <td>CEN-01-14-22</td>
+                <td>Both Alive</td>
+                <td><span class="status status-paid">Self Employed</span></td>
+                <td>Loans Government</td>
+                <td><span class="status status-paid">40,000</span></td>
+                <td><button>More Info</button></td>
+                <td><button id="openModal">Pay Installment</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <!-- Modal Overlay -->
+      <div class="modalRequest" id="modalRequest">
+        <div class="modal-card-Request">
+          <form id="RequestForm">
+            <div class="filter-row">
+              <h1>Confirm Request</h1>
+              <div class="close" id="closeModalRequest">X</div>
+            </div>
+            <div class="filter-row">
+              <div class="form-group">
+                <label for="Detail">Detail</label>
+                <input type="text" id="Detail" name="detail" placeholder="Enter detail..." required>
+              </div>
+            </div>
+            <div class="filter-row">
+              <div class="form-group">
+                <label for="amount">Amount</label>
+                <input type="number" id="amount" name="amount" placeholder="400000" required>
+              </div>
+            </div>
+            <div class="filter-row">
+              <button class="request" style="width: 100%;">Send Request</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Modal Overlay 2 -->
+      <div class="modal" id="modal">
+        <div class="modal-card">
+          <form>
+            <div class="filter-row">
+              <h3>Pay Richard Sambo Fees?</h3>
+              <div class="close" id="closeModal">X</div>
+            </div>
+            <p style="margin-bottom: 20px; color: var(--text-secondary);">Are you sure you want to process this payment
+              installment?</p>
+            <div class="filter-row">
+              <button class="form-group" id="closeModal2" type="button">Close</button>
+              <button class="form-group" id="closeModal3" type="submit">Confirm</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- Search -->
-  <div class="search-bar">
-    <input
-      type="text"
-      placeholder="Search audit logs e.g. role:finance action:approve application:1245"
-    />
-  </div>
 
-  <!-- Logs Table -->
-  <div class="table-container">
-    <!-- first -->
-    <table class="log-table active" id="applications">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Reg #</th>
-          <th>Parent Status</th>
-          <th>Employment Status</th>
-          <th>Bursary Scheme</th>
-          <th>Amount Assigned</th>
-          <th>details</th>
-          <th>Disbursement</th>
-        </tr>
-      </thead>
-      <tbody>
-
-        <tr>
-            <td>Richard Sambo</td>
-            <td>CEN-01-14-22</td>
-            <td>Both Alive</td>
-            <td><p class="status status-paid">self employed</p></td>
-            <td class="amount">Loans Goverment</td>
-            <td><p class="status status-paid">40000</p></td>
-            <td class="amount"><button>More Info</button></td>
-            <td class="amount"><button id="openModal">Pay installement</button></td>
-          </tr>
-
-          
-
-      </tbody>
-      
-    </table>
-    <!-- first -->
-    
   </div>
-
-</div>
-<!-- Modal Overlay -->
-  <div class="modalRequest" id="modalRequest">
-    
-    <div class="modal-card-Request">
-      
-      <form id="RequestForm">
-      <div class="filter-row" >
-      <h1 class="form-group">Confirm Request</h1>
-      <div class="close" id="closeModal" style="margin-left:10px" >X</div>
-      </div>
-      <div class="filter-row">
-      <div class="form-group">
-        <label for="Detail">Detail</label>
-        <input type="text" id="Detail" name="detail" placeholder="" required>
-      </div>
-      </div>
-      <div class="filter-row">
-      
-      <div class="form-group">
-        <label for="amount">Amount</label>
-        <input type="number" id="amount" name="amount" placeholder="400000" required>
-      </div>
-      </div>
-      <div class="filter-row">
-        <button class="form-group">Send</button>
-      </div>
-      
-      </form>
-  </div>
-  </div>
-  <!-- ends here -->
-   <!-- Modal Overlay -->
-  <div class="modal" id="modal">
-    
-    <div class="modal-card">
-      
-      <form>
-      <div class="filter-row" >
-      <h3 class="form-group">Are Sure you want to pay Richard Sambo fees</h3>
-      <div class="close" id="closeModal">X</div>
-      </div>
-      <!-- <div class="filter-row">
-      <div class="form-group">
-        <label for="Detail">Detail</label>
-        <input type="text" id="Detail" name="detail" placeholder="first installment" required>
-      </div>
-      </div> -->
-      <div class="filter-row">
-      
-      <!-- <div class="form-group2">
-        <input class="check" type="checkbox">
-        <label for="amount">Amount</label>
-        <input type="number" id="amount" name="amount" placeholder="400000" required>
-      </div> -->
-      </div>
-      <div class="filter-row">
-        <button class="form-group" id="closeModal2">close</button>
-        <button class="form-group" id="closeModal3">Comfirm</button>
-      </div>
-      
-      </form>
-  </div>
-  </div>
-  <!-- ends here -->
-</div>
-
-  
-</div>
-<script src="../Js/Financial_Approval.js"></script>
-<script src="../Js/Test_Request.js"></script>
-<script src="../Js/Test_dusbersment.js"></script>
+  <script src="../Js/Financial_Approval.js"></script>
+  <script src="../Js/Test_Request.js"></script>
+  <script src="../Js/Test_dusbersment.js"></script>
 </body>
+
 </html>

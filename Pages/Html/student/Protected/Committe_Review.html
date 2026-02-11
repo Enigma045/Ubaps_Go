@@ -1,147 +1,221 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../Css/Navbar/Navbar.css">
-    <link rel="stylesheet" href="../Css/Template.css">
-    <link rel="stylesheet" href="../Css/Committe_Review.css" />
-    <title>Bursary Scheme</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/Css/Navbar/Navbar.css">
+  <link rel="stylesheet" href="/Css/Layout.css">
+  <link rel="stylesheet" href="/Css/Dashboard.css">
+  <link rel="stylesheet" href="/Css/Notification.css">
+  <link rel="stylesheet" href="/Css/Bursary_Scheme.css">
+  <link rel="stylesheet" href="/Css/Delete_Modal.css">
+  <title>Bursary Decisions</title>
 </head>
+
 <body>
-    <div class="page">
-     <!-- Sidebar -->
-  <nav class="sidebar">
-    <div class="logo">
-      <span class="icon"><img src="../Image/logo-icon.png" alt="Logo"></span>
-      <span class="label">UNILIA</span>
-    </div>
-
-    <div class="nav-item">
-      <span class="icon">🏠</span>
-      <span class="label">Home</span>
-    </div>
-
-    <div class="nav-item">
-      <span class="icon">📝</span>
-      <span class="label">Bursary Scheme</span>
-    </div>
-
-    <div class="nav-item">
-      <span class="icon">⚖️</span>
-      <span class="label">Bursary Decisions</span>
-    </div>
-
-    <div class="nav-item">
-      <span class="icon">🔐</span>
-      <span class="label">Financial Approval</span>
-    </div>
-
-    <div class="nav-item">
-      <span class="icon">📬</span>
-      <span class="label">Letters</span>
-    </div>
-
-    <div class="nav-item">
-      <span class="icon">🔔</span>
-      <span class="label">Notifications</span>
-    </div>
-
-    <!-- Logout -->
-    <div class="nav-item logout">
-      <span class="icon">🚪</span>
-      <span class="label">Logout</span>
-    </div>
-  </nav>
-  <!-- Main Area -->
-  <div class="main">
-
-    <!-- Header -->
-    <header class="header">
-      <div class="breadcrumb">
-        <strong>UBAPS</strong> &gt; Reviews
+  <div class="page">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="logo">
+        <span class="icon"><img src="/Image/logo-icon.png" alt="Logo"></span>
+        <span class="label">UNILIA</span>
       </div>
-      <div class="user">
-        Richard Sambo 👤
+
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (3).svg" alt=""></span>
+        <span class="label"><a href="/registrardashboard" class="text-link">Home</a></span>
       </div>
-    </header>
-    <div class="app">
 
-  <!-- Header -->
-  <header class="head">
-    <div>
-      <h1>Reviews Page</h1>
-      <p class="subtitle">Bursary Award Processing System · Production</p>
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (4).svg" alt=""></span>
+        <span class="label"><a href="/scheme" class="text-link">Bursary Scheme</a></span>
+      </div>
+
+      <div class="nav-item active">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (13).svg" alt=""></span>
+        <span class="label"><a href="/decision" class="text-link">Judge</a></span>
+      </div>
+
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (14).svg" alt=""></span>
+        <span class="label"><a href="/financial_approval" class="text-link">Financial Approval</a></span>
+      </div>
+
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (15).svg" alt=""></span>
+        <span class="label"><a href="/receive_letters" class="text-link">Letters</a></span>
+      </div>
+
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (12).svg" alt=""></span>
+        <span class="label"><a href="/general_reports" class="text-link">Reports</a></span>
+      </div>
+
+      <!-- Logout -->
+      <div class="nav-item logout">
+        <span class="icon"><img class="LogOut" src="/Image/svgviewer-output (7).svg" alt=""></span>
+        <span class="label"><a href="/logout" class="text-link" style="color: inherit;">Logout</a></span>
+      </div>
+    </nav>
+    <!-- Main Area -->
+    <div class="main">
+
+      <!-- Header -->
+      <header class="header">
+        <div class="breadcrumb">
+          <strong>UBAPS</strong> &gt; Bursary Decisions
+        </div>
+        <div class="header-actions">
+          <div class="notification-nav">
+            🔔
+            <span id="badge-nav" class="badge-nav">0</span>
+          </div>
+          <div class="user-avatar">
+            RS
+          </div>
+        </div>
+      </header>
+      <div class="app">
+
+        <!-- Header -->
+        <header class="head">
+          <div>
+            <h1>Committee Review</h1>
+            <p class="subtitle">Filter and Review Applicants</p>
+          </div>
+          <div class="time">
+            Jan 6, 2026 · 01:34 AM
+          </div>
+        </header>
+
+        <!-- Tabs -->
+        <div class="tabs">
+          <label for="Applicants">Applicants</label>
+          <input type="checkbox" class="active" data-tab="applications" value="submitted">
+          <label for="Considered">Considered</label>
+          <input type="checkbox" data-tab="payments" value="considered">
+          <label for="Selected">Selected</label>
+          <input type="checkbox" data-tab="users" value="selected">
+          <label for="Not Selected">Not Selected</label>
+          <input type="checkbox" class="active" data-tab="applications" value="not selected">
+        </div>
+
+        <!-- Search -->
+        <div class="search-bar">
+          <input type="text" placeholder="Search for student" />
+        </div>
+
+        <!-- Logs Table -->
+        <div class="table-container">
+          <table class="log-table active" id="applications">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Reg #</th>
+                <th>Parent Status</th>
+                <th>Employment Status</th>
+                <th>Monthly Income</th>
+                <th>Priority</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="judge_tbody">
+
+              <tr>
+                <td>Richard Sambo</td>
+                <td>CEN-01-14-22</td>
+                <td>Both Alive</td>
+                <td>
+                  <p class="status success">self employed</p>
+                </td>
+                <td class="amount">MWK520.18</td>
+                <td>
+                  <p class="status success">low</p>
+                </td>
+                <td class="amount">
+                  <button title="Review"><svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960"
+                      width="20" fill="currentColor">
+                      <path
+                        d="M560-680v-80h320v80H560Zm0 160v-80h320v80H560Zm0 160v-80h320v80H560Zm-240-40q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35ZM80-160v-76q0-21 10-40t28-30q45-27 95.5-40.5T320-360q56 0 106.5 13.5T522-306q18 11 28 30t10 40v76H80Zm86-80h308q-35-20-74-30t-80-10q-41 0-80 10t-74 30Zm154-240q17 0 28.5-11.5T360-520q0-17-11.5-28.5T320-560q-17 0-28.5 11.5T280-520q0 17 11.5 28.5T320-480Zm0-40Zm0 280Z" />
+                    </svg></button>
+                  <button title="Approve"><svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960"
+                      width="20" fill="currentColor">
+                      <path
+                        d="M240-840h440v520L400-40l-50-50q-7-7-11.5-19t-4.5-23v-14l44-174H120q-32 0-56-24t-24-56v-80q0-7 2-15t4-15l120-282q9-20 30-34t44-14Zm360 80H240L120-480v80h360l-54 220 174-174v-406Zm0 406v-406 406Zm80 34v-80h120v-360H680v-80h200v520H680Z" />
+                    </svg></button>
+                  <button title="Reject"><svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960"
+                      width="20" fill="currentColor">
+                      <path
+                        d="M720-120H280v-520l280-280 50 50q7 7 11.5 19t4.5 23v14l-44 174h258q32 0 56 24t24 56v80q0 7-2 15t-4 15L794-168q-9 20-30 34t-44 14Zm-360-80h360l120-280v-80H480l54-220-174 174v406Zm0-406v406-406Zm-80-34v80H160v360h120v80H80v-520h200Z" />
+                    </svg></button>
+                </td>
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
     </div>
-    <div class="time">
-      Jan 6, 2026 · 01:34 AM
+
+    <!-- Approve Modal -->
+    <div class="modal" id="approveModal">
+      <div class="modal-content">
+        <button class="close-modal" id="closeApprove">&times;</button>
+        <div class="modal-header">
+          <div class="icon-container" style="background: #e0f2fe;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="#0369a1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </div>
+          <h2>Approve Application</h2>
+        </div>
+        <div class="modal-body">
+          <p class="modal-text">Are you sure you want to approve <span id="approveName">this student</span>'s
+            application? This action will mark them for consideration.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="cancel" id="cancelApprove">Cancel</button>
+          <button class="confirm-btn" id="confirmApprove" style="background: #0369a1;">Confirm Approval</button>
+        </div>
+      </div>
     </div>
-  </header>
 
-  <!-- Tabs -->
-  <div class="tabs">
-    <label for="Applicants">Applicants</label>
-    <input type="checkbox" class="active" data-tab="applications" value="submitted">
-    <label for="Considered">Considered</label>
-    <input type="checkbox"  data-tab="payments" value="considered">
-    <label for="Selected">Selected</label>
-    <input type="checkbox"  data-tab="users" value="selected">
-    <label for="Not Selected">Not Selected</label>
-    <input type="checkbox" class="active" data-tab="applications" value="not selected">
-    <!-- <button class="active" data-tab="applications">Application Logs</button>
-    <button data-tab="payments">Payment Logs</button>
-    <button data-tab="users">User Logs</button> -->
+    <!-- Reject Modal -->
+    <div class="modal" id="rejectModal">
+      <div class="modal-content">
+        <button class="close-modal" id="closeReject">&times;</button>
+        <div class="modal-header">
+          <div class="icon-container">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="15" y1="9" x2="9" y2="15"></line>
+              <line x1="9" y1="9" x2="15" y2="15"></line>
+            </svg>
+          </div>
+          <h2>Reject Application</h2>
+        </div>
+        <div class="modal-body">
+          <p class="modal-text">Are you sure you want to reject <span id="rejectName">this student</span>'s application?
+            This action cannot be easily undone.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="cancel" id="cancelReject">Cancel</button>
+          <button class="confirm-btn" id="confirmReject" style="background: #ef4444;">Confirm Rejection</button>
+        </div>
+      </div>
+    </div>
+
+
   </div>
-
-  <!-- Search -->
-  <div class="search-bar">
-    <input
-      type="text"
-      placeholder="Search for student"
-    />
-  </div>
-
-  <!-- Logs Table -->
-  <div class="table-container">
-    <!-- first -->
-    <table class="log-table active" id="applications">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Reg #</th>
-          <th>Parent Status</th>
-          <th>Employment Status</th>
-          <th>Monthly Income (Mwk)</th>
-          <th>Priority</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-
-        <tr>
-            <td>Richard Sambo</td>
-            <td>CEN-01-14-22</td>
-            <td>Both Alive</td>
-            <td><p class="status status-paid">self employed</p></td>
-            <td class="amount">MWK520.18</td>
-            <td><p class="status status-paid">low</p></td>
-            <td class="amount"><button><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000"><path d="M560-680v-80h320v80H560Zm0 160v-80h320v80H560Zm0 160v-80h320v80H560Zm-240-40q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35ZM80-160v-76q0-21 10-40t28-30q45-27 95.5-40.5T320-360q56 0 106.5 13.5T522-306q18 11 28 30t10 40v76H80Zm86-80h308q-35-20-74-30t-80-10q-41 0-80 10t-74 30Zm154-240q17 0 28.5-11.5T360-520q0-17-11.5-28.5T320-560q-17 0-28.5 11.5T280-520q0 17 11.5 28.5T320-480Zm0-40Zm0 280Z"/></svg></button>
-            <button><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000"><path d="M240-840h440v520L400-40l-50-50q-7-7-11.5-19t-4.5-23v-14l44-174H120q-32 0-56-24t-24-56v-80q0-7 2-15t4-15l120-282q9-20 30-34t44-14Zm360 80H240L120-480v80h360l-54 220 174-174v-406Zm0 406v-406 406Zm80 34v-80h120v-360H680v-80h200v520H680Z"/></svg></button>
-            <button><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000"><path d="M720-120H280v-520l280-280 50 50q7 7 11.5 19t4.5 23v14l-44 174h258q32 0 56 24t24 56v80q0 7-2 15t-4 15L794-168q-9 20-30 34t-44 14Zm-360-80h360l120-280v-80H480l54-220-174 174v406Zm0-406v406-406Zm-80-34v80H160v360h120v80H80v-520h200Z"/></svg></button></td>
-          </tr>
-
-      </tbody>
-      
-    </table>
-    <!-- first -->
-  
-</div>
-
-</div>
-</div>
-
-  
-</div>
-<script src="../Js/Committe_Review.js"></script>
+  <script src="/Js/Committe_Review.js"></script>
+  <script src="/Js/Notification_Feature.js"></script>
 </body>
+
 </html>

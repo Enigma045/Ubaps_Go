@@ -31,14 +31,18 @@ func main() {
 	mux.Handle("/benefactor", middleware.RequireAuth(http.HandlerFunc(Routes.Scheme_Info)))
 	mux.Handle("/SubmitForm", middleware.RequireAuth(http.HandlerFunc(Routes.SubmitForm)))
 	//admin routes
-	mux.Handle("/getuserdetails",middleware.RequireAuth(http.HandlerFunc(Routes.Getuserdetails)))
-	mux.Handle("/deleteaccount",middleware.RequireAuth(http.HandlerFunc(Routes.DeleteAccount)))
-	mux.Handle("/createuser",middleware.RequireAuth(http.HandlerFunc(Routes.CreateUser)))
-	mux.Handle("/userlog",middleware.RequireAuth(http.HandlerFunc(Routes.UserLogs)))
-	mux.Handle("/paymentlog",middleware.RequireAuth(http.HandlerFunc(Routes.PaymentLogs)))
-	mux.Handle("/applicationlog",middleware.RequireAuth(http.HandlerFunc(Routes.ApplicationLogs)))
+	mux.Handle("/getuserdetails", middleware.RequireAuth(http.HandlerFunc(Routes.Getuserdetails)))
+	mux.Handle("/deleteaccount", middleware.RequireAuth(http.HandlerFunc(Routes.DeleteAccount)))
+	mux.Handle("/createuser", middleware.RequireAuth(http.HandlerFunc(Routes.CreateUser)))
+	mux.Handle("/userlog", middleware.RequireAuth(http.HandlerFunc(Routes.UserLogs)))
+	mux.Handle("/paymentlog", middleware.RequireAuth(http.HandlerFunc(Routes.PaymentLogs)))
+	mux.Handle("/applicationlog", middleware.RequireAuth(http.HandlerFunc(Routes.ApplicationLogs)))
 	//registrar routes
-	mux.Handle("/applicants",middleware.RequireAuth(http.HandlerFunc(Routes.Applicants)))
+	mux.Handle("/applicants", middleware.RequireAuth(http.HandlerFunc(Routes.Applicants)))
+	mux.Handle("/getbenefactor", middleware.RequireAuth(http.HandlerFunc(Routes.GetBenefactor)))
+	mux.Handle("/deletebenefactor", middleware.RequireAuth(http.HandlerFunc(Routes.DeleteBenefactor)))
+	mux.Handle("/considerstudent", middleware.RequireAuth(http.HandlerFunc(Routes.ConsiderStudent)))
+	mux.Handle("/rejectstudent", middleware.RequireAuth(http.HandlerFunc(Routes.RejectStudent)))
 	/*
 		|--------------------------------------------------------------------------
 		| Public static assets (CSS, JS, images)
@@ -65,24 +69,13 @@ func main() {
 	mux.HandleFunc("/", Routes.Sign_Up_page)
 	mux.HandleFunc("/request", Routes.Request_Page)
 	//mux.HandleFunc("/financial", Routes.Approval_Page)
-	/*
-		|--------------------------------------------------------------------------
-		| Logout route (authenticated)
-		|--------------------------------------------------------------------------
-	*/
-	mux.Handle(
-		"/logout",
-		middleware.RequireAuth(
-			http.HandlerFunc(middleware.Logout),
-		),
-	)
 
 	/*
 		|--------------------------------------------------------------------------
 		| Protected student dashboard route
 		|--------------------------------------------------------------------------
 	*/
-    mux.Handle(
+	mux.Handle(
 		"/dashboard",
 		middleware.RequireAuth(
 			middleware.RequireRole("student")(
@@ -122,11 +115,36 @@ func main() {
 		| Protected financial office dashboard route
 		|--------------------------------------------------------------------------
 	*/
-    mux.Handle(
+	mux.Handle(
+		"/financialdashboard",
+		middleware.RequireAuth(
+			middleware.RequireRole("finance_office")(
+				http.HandlerFunc(Routes.FinancialDashboard_Page),
+			),
+		),
+	)
+	mux.Handle(
 		"/financial",
 		middleware.RequireAuth(
 			middleware.RequireRole("finance_office")(
 				http.HandlerFunc(Routes.Approval_Page),
+			),
+		),
+	)
+
+	mux.Handle(
+		"/financial_request",
+		middleware.RequireAuth(
+			middleware.RequireRole("finance_office")(
+				http.HandlerFunc(Routes.Request_Page),
+			),
+		),
+	)
+	mux.Handle(
+		"/financial_reports",
+		middleware.RequireAuth(
+			middleware.RequireRole("finance_office")(
+				http.HandlerFunc(Routes.Financial_reports_Page),
 			),
 		),
 	)
@@ -135,7 +153,7 @@ func main() {
 		| Protected admin dashboard route
 		|--------------------------------------------------------------------------
 	*/
-mux.Handle(
+	mux.Handle(
 		"/admindashboard",
 		middleware.RequireAuth(
 			middleware.RequireRole("admin")(
@@ -175,12 +193,28 @@ mux.Handle(
 		| Protected dean of students dashboard route
 		|--------------------------------------------------------------------------
 	*/
+	mux.Handle(
+		"/deandashboard",
+		middleware.RequireAuth(
+			middleware.RequireRole("dean_of_student")(
+				http.HandlerFunc(Routes.DeanDashboard_Page),
+			),
+		),
+	)
 
 	/*
 		|--------------------------------------------------------------------------
 		| Protected registrar dashboard route
 		|--------------------------------------------------------------------------
 	*/
+	mux.Handle(
+		"/registrardashboard",
+		middleware.RequireAuth(
+			middleware.RequireRole("registrar")(
+				http.HandlerFunc(Routes.RegistrarDashboard_Page),
+			),
+		),
+	)
 	mux.Handle(
 		"/decision",
 		middleware.RequireAuth(
@@ -198,6 +232,44 @@ mux.Handle(
 			),
 		),
 	)
+	mux.Handle(
+		"/receive_letters",
+		middleware.RequireAuth(
+			middleware.RequireRole("registrar")(
+				http.HandlerFunc(Routes.Letters_page),
+			),
+		),
+	)
+	mux.Handle(
+		"/financial_approval",
+		middleware.RequireAuth(
+			middleware.RequireRole("registrar")(
+				http.HandlerFunc(Routes.Financial_approval_page),
+			),
+		),
+	)
+	mux.Handle(
+		"/general_reports",
+		middleware.RequireAuth(
+			middleware.RequireRole("registrar")(
+				http.HandlerFunc(Routes.General_reports_Page),
+			),
+		),
+	)
+	// mux.Handle(
+	// 	"/scheme",
+	// 	middleware.RequireAuth(
+	// 		middleware.RequireRole("registrar")(
+	// 			http.HandlerFunc(Routes.Scheme_page),
+	// 		),
+	// 	),
+	// )
+	/*
+		|--------------------------------------------------------------------------
+		| Logout route (authenticated)
+		|--------------------------------------------------------------------------
+	*/
+	mux.HandleFunc("/logout", middleware.Logout)
 
 	/*
 		|--------------------------------------------------------------------------

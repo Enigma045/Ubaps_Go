@@ -1,77 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/Css/Navbar/Navbar.css">
-    <link rel="stylesheet" href="/Css/Admin_Users.css">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/Css/Navbar/Navbar.css">
+  <link rel="stylesheet" href="/Css/Layout.css">
+  <link rel="stylesheet" href="/Css/Dashboard.css">
+  <link rel="stylesheet" href="/Css/Notification.css">
+  <link rel="stylesheet" href="/Css/Admin_Users.css">
+  <link rel="stylesheet" href="/Css/Admin_Users_Form.css" />
+  <title>Document</title>
 </head>
+
 <body>
- <div class="page">
-     <!-- Sidebar -->
-  <nav class="sidebar">
-    <div class="logo">
-      <span class="icon"><img src="/Image/logo-icon.png" alt="Logo"></span>
-      <span class="label">UNILIA</span>
-    </div>
-
-    <div class="nav-item">
-      <span class="icon">🏠</span>
-      <span class="label"><a href="/admindashboard" style="text-decoration: none; color: black;">Home</a></span>
-    </div>
-
-    <div class="nav-item">
-      <span class="icon">👥</span>
-      <span class="label"><a href="/adminusers" style="text-decoration: none; color: black;">Create Users</a></span>
-    </div>
-
-    <div class="nav-item">
-      <span class="icon">✏️</span>
-      <span class="label"><a href="/adminmodification" style="text-decoration: none; color: black;">Users</a></span>
-    </div>
-
-    <div class="nav-item">
-      <span class="icon">🔔</span>
-      <span class="label">Notifications</span>
-    </div>
-    
-    <div class="nav-item">
-      <span class="icon">⚙️</span>
-      <span class="label"><a href="/admintrails" style="text-decoration: none; color: black;">Audit Trail</a></span>
-    </div>
-
-    <!-- Logout -->
-    <div class="nav-item logout">
-      <span class="icon">🚪</span>
-      <span class="label" href="/logout">Logout</span>
-    </div>
-  </nav>
-
-  <!-- Main Area -->
-  <div class="main">
-
-    <!-- Header -->
-    <header class="header">
-      <div class="breadcrumb">
-        <strong>UBAPS</strong> &gt; Create Users
+  <div class="page">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="logo">
+        <span class="icon"><img src="/Image/logo-icon.png" alt="Logo"></span>
+        <span class="label">UNILIA</span>
       </div>
-      <div style="display: inline-flex; ">
-      <div class="notification-nav">
-      <img src="/Image/notifications_24dp_000_FILL0_wght400_GRAD0_opsz24.png" style="text-decoration-color: black;">
-      <span id="badge-nav" class="badge-nav">3</span>
-      </div>
-      <div class="user">
-        RS
-      </div>
-      </div>
-    </header>
-    
-    <div class="form-wizard">
 
-  <h1>Create New User</h1>
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (3).svg" alt=""></span>
+        <span class="label"><a href="/admindashboard" class="text-link">Home</a></span>
+      </div>
 
-  <!-- Progress
+      <div class="nav-item active">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (11).svg" alt=""></span>
+        <span class="label"><a href="/adminusers" class="text-link">Create Users</a></span>
+      </div>
+
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (8).svg" alt=""></span>
+        <span class="label"><a href="/adminmodification" class="text-link">Users</a></span>
+      </div>
+
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (10).svg" alt=""></span>
+        <span class="label"><a href="/admintrails" class="text-link">Audit Trail</a></span>
+      </div>
+
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (12).svg" alt=""></span>
+        <span class="label"><a href="/admintrails" class="text-link">Reports</a></span>
+      </div>
+
+      <!-- Logout -->
+      <div class="nav-item logout">
+        <span class="icon"><img class="LogOut" src="/Image/svgviewer-output (7).svg" alt=""></span>
+        <span class="label"><a href="/logout" class="text-link" style="color: inherit;">Logout</a></span>
+      </div>
+    </nav>
+
+    <!-- Main Area -->
+    <div class="main">
+
+      <!-- Header -->
+      <header class="header">
+        <div class="breadcrumb">
+          <strong>UBAPS</strong> &gt; Create Users
+        </div>
+        <div class="header-actions">
+          <div class="notification-nav">
+            <img class="svg" src="/Image/svgviewer-output (5).svg" alt="">
+            <span id="badge-nav" class="badge-nav">0</span>
+          </div>
+          <div class="user-avatar">
+            RS
+          </div>
+        </div>
+      </header>
+
+      <div class="form-wizard">
+
+        <h1>Create New User</h1>
+
+        <!-- Progress
   <div class="progress-container">
     <div class="progress"></div>
     <ol>
@@ -82,35 +88,37 @@
     </ol>
   </div> -->
 
-  <!-- FORM -->
-  <form id="UserForm">
-    <!-- STEP 1 -->
-    <section class="step active bursaryForm">
-      <div class="form-group">
-        <label for="firstName">FirstName</label>
-        <input type="text" id="firstName" name="firstName" required placeholder="Richard" value="fancy">
-      </div>
-      <div class="form-group">
-        <label for="lastName">Surname</label>
-        <input type="text" id="lastName" name="lastName" required placeholder="Sambo" value="sambo">
-      </div>
-      <div class="form-group">
-        <label for="Email">Email</label>
-        <input type="email" id="email" name="Email" required placeholder="CEN-01-14-22@unilia.ac" value="CEN-01-01-22@unilia.ac">
-      </div>
-      <div class="form-group">
-        <label for="Phone">Phone Number</label>
-        <input type="tel" id="phone" name="phone" required placeholder="0998111960" value="0992341765">
-      </div>
-      <div class="form-group">
-        <label for="Password">Password</label>
-        <input type="password" id="password" name="password" required placeholder="Enter password">
-      </div>
-      <div class="form-group">
-        <label for="confirmPassword">Confirm Password</label>
-        <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Re-enter password">
-      </div>
-     <!-- Small option boxes -->
+        <!-- FORM -->
+        <form id="UserForm">
+          <!-- STEP 1 -->
+          <section class="step active bursaryForm">
+            <div class="form-group">
+              <label for="firstName">FirstName</label>
+              <input type="text" id="firstName" name="firstName" required placeholder="Richard" value="fancy">
+            </div>
+            <div class="form-group">
+              <label for="lastName">Surname</label>
+              <input type="text" id="lastName" name="lastName" required placeholder="Sambo" value="sambo">
+            </div>
+            <div class="form-group">
+              <label for="Email">Email</label>
+              <input type="email" id="email" name="Email" required placeholder="CEN-01-14-22@unilia.ac"
+                value="CEN-01-01-22@unilia.ac">
+            </div>
+            <div class="form-group">
+              <label for="Phone">Phone Number</label>
+              <input type="tel" id="phone" name="phone" required placeholder="0998111960" value="0992341765">
+            </div>
+            <div class="form-group">
+              <label for="Password">Password</label>
+              <input type="password" id="password" name="password" required placeholder="Enter password">
+            </div>
+            <div class="form-group">
+              <label for="confirmPassword">Confirm Password</label>
+              <input type="password" id="confirmPassword" name="confirmPassword" required
+                placeholder="Re-enter password">
+            </div>
+            <!-- Small option boxes -->
             <!-- <div class="form-group">
               <label>Options</label>
               <div class="option-group">
@@ -127,44 +135,46 @@
             </div>
 
              Programme -->
-        <!-- <div class="form-group">
+            <!-- <div class="form-group">
               <label>Programme</label>
               <input type="text" class="auth-input" placeholder="CEN-01-14-22" disabled>
             </div>
      -->
-    </section>
+          </section>
 
-    <!-- CONTROLS -->
-    <div class="controls">
-      <div class="form-group">
-        <label>Users</label>
-      <div class="radio-group" >
-         <label>
-           <input class="radio" type="radio" name="Users" value="registrar" required>
-           Registrar
-         </label>
+          <!-- CONTROLS -->
+          <div class="controls">
+            <div class="form-group">
+              <label>Users</label>
+              <div class="radio-group">
+                <label>
+                  <input class="radio" type="radio" name="Users" value="registrar" required>
+                  Registrar
+                </label>
 
-         <label>
-           <input class="radio" type="radio" name="Users" value="finance_office">
-           Finance Office
-         </label>
-         <label>
-           <input class="radio" type="radio" name="Users" value="dean_of_student" required>
-           Dean of Students
-         </label>
+                <label>
+                  <input class="radio" type="radio" name="Users" value="finance_office">
+                  Finance Office
+                </label>
+                <label>
+                  <input class="radio" type="radio" name="Users" value="dean_of_student" required>
+                  Dean of Students
+                </label>
 
-         <label>
-           <input class="radio" type="radio" name="Users" value="student" checked>
-           Student
-         </label>
+                <label>
+                  <input class="radio" type="radio" name="Users" value="student" checked>
+                  Student
+                </label>
+              </div>
+            </div>
+            <button type="submit" id="submit">Submit</button>
+          </div>
+        </form>
+
       </div>
-      </div>
-      <button type="submit" id="submit">Submit</button>
     </div>
-  </form>
-
- </div>
-</div>
-<script src="/Js/Admin_Users.js"></script>
+    <script src="/Js/Admin_Users.js"></script>
+    <script src="/Js/Notification_Feature.js"></script>
 </body>
+
 </html>

@@ -174,7 +174,7 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 	if err == nil {
 		_, _ = Db.DB.Exec(
 			r.Context(),
-			`DELETE FROM sessions WHERE id = $1`,
+			`DELETE FROM sessions WHERE session_id = $1`,
 			cookie.Value,
 		)
 	}
@@ -189,8 +189,7 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 		SameSite: http.SameSiteStrictMode,
 	})
 
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Logged out"))
+	http.Redirect(w, r, "/Login", http.StatusSeeOther)
 }
 
 /*

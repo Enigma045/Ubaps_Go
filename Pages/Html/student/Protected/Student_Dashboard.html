@@ -1,192 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/Css/Navbar/Navbar.css">
-    <link rel="stylesheet" href="/Css/Student_Dashboard.css">
-    <title>Student Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/Css/Navbar/Navbar.css">
+  <link rel="stylesheet" href="/Css/Layout.css">
+  <link rel="stylesheet" href="/Css/Dashboard.css">
+  <title>Student Dashboard</title>
 </head>
+
 <body>
-    
-<div class="page">
 
-  <!-- Sidebar -->
-  <nav class="sidebar">
-    <div class="logo">
-      <span class="icon"><img src="/Image/logo-icon.png" alt=""></span>
-      <span class="label">UNILIA</span>
-    </div>
+  <div class="page">
 
-    <div class="nav-item">
-      <span class="icon">🏠</span>
-      <span class="label"><a href="/dashboard" style="text-decoration: none; color: black;">Home</span></a>
-    </div>
-
-    <div class="nav-item" >
-      <span class="icon">📝</span>
-      <span class="label"><a href="/apply" style="text-decoration: none; color: black;">Application Form</a></span>
-    </div>
-
-    <!-- <div class="nav-item">
-      <span class="icon">📊</span>
-      <span class="label">Status Tracker</span>
-    </div> -->
-
-    <div class="nav-item">
-      <span class="icon">🎓</span>
-      <span class="label" ><a href="/letters" style="text-decoration: none; color: black;">Student letter</a></span>
-    </div>
-
-    <div class="nav-item">
-      <span class="icon">🔔</span>
-      <span class="label" ><a href="/notifications" style="text-decoration: none; color: black;">Notifications</a></span>
-    </div>
-
-    <!-- Logout -->
-    <div class="nav-item logout">
-      <span class="icon">🚪</span>
-      <span class="label" href="/logout">Logout</span>
-    </div>
-  </nav>
-
-  <!-- Main Area -->
-  <div class="main">
-
-    <!-- Header -->
-    <header class="header">
-      <div class="breadcrumb">
-        <strong>UBAPS</strong> &gt; Home
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="logo">
+        <span class="icon"><img src="/Image/logo-icon.png" alt="UNILIA Logo"></span>
+        <span class="label">UNILIA</span>
       </div>
-      <div style="display: inline-flex; ">
-      <div class="notification-nav">
-      🔔
-      <span id="badge-nav" class="badge-nav">3</span>
+
+      <div class="nav-item active">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (3).svg" alt=""></span>
+        <span class="label"><a href="/dashboard" class="text-link">Home</a></span>
       </div>
-      <div class="user">
-        RS
+
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (4).svg" alt=""></span>
+        <span class="label"><a href="/apply" class="text-link">Application Form</a></span>
       </div>
+
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (6).svg" alt=""></span>
+        <span class="label"><a href="/letters" class="text-link">Student letter</a></span>
       </div>
-    </header>
 
-    <!-- Content -->
-    <main class="content">
-      <h2>Welcome, Richard Sambo</h2>
-
-      <div class="apply-row">
-        <p>To be considered for a bursary, apply here 👉</p>
-        <button class="apply-btn"><a href="/apply" style="text-decoration: none; color: white;">Application Form</a></button>
+      <!-- Logout -->
+      <div class="nav-item logout">
+        <span class="icon"><img class="LogOut" src="/Image/svgviewer-output (7).svg" alt=""></span>
+        <span class="label"><a href="/logout" class="text-link" style="color: inherit;">Logout</a></span>
       </div>
-      <!-- here -->
-       <div class="time">
-      <section class="timeline-section">
-    <div class="timeline-wrapper">
+    </nav>
 
-      <button class="nav">◀</button>
+    <!-- Main Area -->
+    <div class="main">
 
-      <div class="timeline">
-        <div class="timeline-line"></div>
-        <div class="timeline-progress"></div>
-
-        <div class="timeline-points">
-          <div class="point active" data-index="0">
-            <span class="date">16 Jan</span>
+      <!-- Header -->
+      <header class="header">
+        <div class="breadcrumb">
+          <strong>UBAPS</strong> &gt; Home
+        </div>
+        <div class="header-actions">
+          <div class="notification-nav">
+            <img class="svg" src="/Image/svgviewer-output (5).svg" alt="">
+            <span id="badge-nav" class="badge-nav">0</span>
           </div>
-
-          <div class="point" data-index="1">
-            <span class="date">28 Feb</span>
-          </div>
-
-          <div class="point" data-index="2">
-            <span class="date">20 Mar</span>
-          </div>
-
-          <div class="point" data-index="3">
-            <span class="date">20 May</span>
+          <div class="user-avatar">
+            RS
           </div>
         </div>
-      </div>
+      </header>
 
-      <button class="nav">▶</button>
+      <!-- Content -->
+      <main class="content">
+        <h2>Welcome, Richard Sambo</h2>
 
-    </div>
-  </section>
-
-  <!-- EVENT CONTENT -->
-  <section class="event-content">
-    <h1 class="event-title" id="title">Event title here</h1>
-    <p class="event-date" id="date">– March 20th, 2014</p>
-    <p class="event-description" id="description">
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-    </p>
-  </section>
-  </div>
-      <!-- Dashboard Cards -->
-      <div class="stats-cards">
-
-    <div class="stat-card">
-        <div class="stat-icon">📄</div>
-        <div class="stat-info">
-            <p class="stat-label">Application Status</p>
-            <h2 class="stat-value">Pending</h2>
+        <div class="apply-row">
+          <p>To be considered for a bursary, apply here </p>
+          <a href="/apply" class="apply-btn text-link">Application Form</a>
         </div>
-    </div>
 
-    <div class="stat-card">
-        <div class="stat-icon">🎯</div>
-        <div class="stat-info">
-            <p class="stat-label">Bursary Scheme</p>
-            <h2 class="stat-value">Merit-Based</h2>
+        <!-- Timeline -->
+        <div class="time">
+          <section class="timeline-section">
+            <div class="timeline-wrapper">
+
+
+
+              <div class="timeline">
+                <div class="timeline-line"></div>
+                <div class="timeline-progress"></div>
+
+                <div class="timeline-points">
+                  <div class="point active" data-index="0">
+                    <span class="date">Not Submitted</span>
+                  </div>
+
+                  <div class="point" data-index="1">
+                    <span class="date">Submitted</span>
+                  </div>
+
+                  <div class="point" data-index="2">
+                    <span class="date">Considered</span>
+                  </div>
+
+                  <div class="point" data-index="3">
+                    <span class="date">Selected</span>
+                  </div>
+                </div>
+              </div>
+
+
+
+            </div>
+          </section>
+
+          <!-- EVENT CONTENT -->
+          <section class="event-content">
+            <h3 class="event-title" id="title">Event title here</h3>
+            <p class="event-date" id="date">– March 20th, 2014</p>
+            <p class="event-description" id="description">
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+            </p>
+          </section>
         </div>
-    </div>
 
-    <div class="stat-card">
-        <div class="stat-icon">💳</div>
-        <div class="stat-info">
-            <p class="stat-label">Fees Paid</p>
-            <h2 class="stat-value">MWK 250,000</h2>
+        <!-- Dashboard Cards -->
+        <div class="stats-cards">
+
+          <div class="stat-card">
+
+            <div class="stat-info">
+              <p class="stat-label">Application Status</p>
+              <h2 class="stat-value">Pending</h2>
+            </div>
+          </div>
+
+          <div class="stat-card">
+
+            <div class="stat-info">
+              <p class="stat-label">Bursary Scheme</p>
+              <h2 class="stat-value">Merit-Based</h2>
+            </div>
+          </div>
+
+          <div class="stat-card">
+
+            <div class="stat-info">
+              <p class="stat-label">Fees Paid</p>
+              <h2 class="stat-value">MWK 250,000</h2>
+            </div>
+          </div>
+
+          <div class="stat-card">
+
+            <div class="stat-info">
+              <p class="stat-label">Students in Scheme</p>
+              <h2 class="stat-value">1,284</h2>
+            </div>
+          </div>
+
         </div>
-    </div>
 
-    <div class="stat-card">
-        <div class="stat-icon">👥</div>
-        <div class="stat-info">
-            <p class="stat-label">Students in Scheme</p>
-            <h2 class="stat-value">1,284</h2>
+
+        <!-- Quick Links -->
+        <div class="quick-links">
+          <div class="card-grid">
+
+
+
+            <div class="action-card">
+              <div class="card-icon"><img class="svg" src="/Image/svgviewer-output (4).svg" alt=""></div>
+              <h3>Student Portal</h3>
+              <p>Access student services</p>
+            </div>
+
+            <div class="action-card">
+              <div class="card-icon"><img class="svg" src="/Image/svgviewer-output (6).svg" alt=""></div>
+              <h3>Notifications</h3>
+              <p>View recent updates</p>
+            </div>
+
+          </div>
+
         </div>
-    </div>
 
-    </div>
-
-
-      <!-- Quick Links -->
-      <div class="quick-links">
-        <div class="card-grid">
-
-    <div class="action-card">
-        <div class="card-icon">📊</div>
-        <h3>Status Tracker</h3>
-        <p>Track application progress</p>
-    </div>
-
-    <div class="action-card">
-        <div class="card-icon">🎓</div>
-        <h3>Student Portal</h3>
-        <p>Access student services</p>
-    </div>
-
-    <div class="action-card">
-        <div class="card-icon">🔔</div>
-        <h3>Notifications</h3>
-        <p>View recent updates</p>
-    </div>
-
-</div>
-
-</div>
-
-<script src="/Js/Student_Dashboard.js"></script>
-<script src="/Js/Notification_counter.js"></script>
-<script src="/Js/LogOut.js"></script>
+        <script src="/Js/Student_Dashboard.js"></script>
+        <!-- <script src="/Js/Notification_Feature.js"></script> -->
+        <script src="/Js/LogOut.js"></script>
 </body>
+
 </html>

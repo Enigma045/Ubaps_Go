@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/Css/Login.css">
-    <title>Login</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/Css/Login.css">
+  <title>Login</title>
 </head>
+
 <body>
-   
+
   <main class="page">
 
     <!-- LEFT SIDE -->
@@ -16,7 +18,7 @@
       <!-- Logo / Branding -->
       <div class="brand">
         <div class="brand-logo">
-            <img src="/Image/logo-icon.png" alt="LoanPro logo">
+          <img src="/Image/logo-icon.png" alt="LoanPro logo">
         </div>
         <div class="brand-text">
           <div class="brand-name">UBAPS</div>
@@ -33,19 +35,29 @@
           <div class="form-grid">
 
             <div class="form-group">
-              
-              <input name="email" type="email" class="auth-input" placeholder="Email" value="CEN-01-14-22@unilia.ac.mw">
+              <label for="email">Email</label>
+              <input name="email" id="email" type="email" class="auth-input" placeholder="Email"
+                value="CEN-01-14-22@unilia.ac.mw">
             </div>
 
             <div class="form-group">
-              
-              <input name="password" type="password" class="auth-input" placeholder="Password" value="Characte@2002">
+              <label for="password">Password</label>
+              <input name="password" id="password" type="password" class="auth-input" placeholder="Password"
+                value="Characte@2002">
             </div>
 
           </div>
 
           <div class="form-actions">
-            <button type="submit" class="register-btn">Register</button>
+            <button type="submit" class="register-btn">Login</button>
+          </div>
+
+          <div class="form-links">
+            <a href="#" class="forgot-password">Forgot Password?</a>
+          </div>
+
+          <div class="form-footer">
+            <p>Don't have an account? <a href="/" class="auth-link">Register here</a></p>
           </div>
 
         </form>
@@ -58,6 +70,7 @@
     </section>
 
   </main>
-<script src="/Js/Login.js"></script>
+  <script src="/Js/Login.js"></script>
 </body>
+
 </html>

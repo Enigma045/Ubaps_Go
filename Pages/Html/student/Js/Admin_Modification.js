@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const phone = document.createElement("td");
         phone.textContent = user.phone;
+        
 
         const actions = document.createElement("td");
 

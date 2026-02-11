@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/Css/Navbar/Navbar.css">
+    <link rel="stylesheet" href="/Css/Layout.css">
+    <link rel="stylesheet" href="/Css/Dashboard.css">
+    <link rel="stylesheet" href="/Css/Notification.css">
+    <link rel="stylesheet" href="/Css/Combined_reports.css">
+    <title>Combined Reports</title>
+</head>
+
+<body>
+    <div class="page">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="logo">
+                <span class="icon"><img src="/Image/logo-icon.png" alt="Logo"></span>
+                <span class="label">UNILIA</span>
+            </div>
+
+            <div class="nav-item">
+                <span class="icon"><img class="svg" src="/Image/svgviewer-output (3).svg" alt=""></span>
+                <span class="label"><a href="/registrardashboard" class="text-link">Home</a></span>
+            </div>
+
+            <div class="nav-item">
+                <span class="icon"><img class="svg" src="/Image/svgviewer-output (4).svg" alt=""></span>
+                <span class="label"><a href="/scheme" class="text-link">Bursary Scheme</a></span>
+            </div>
+
+            <div class="nav-item">
+                <span class="icon"><img class="svg" src="/Image/svgviewer-output (13).svg" alt=""></span>
+                <span class="label"><a href="/decision" class="text-link">Judge</a></span>
+            </div>
+
+            <div class="nav-item">
+                <span class="icon"><img class="svg" src="/Image/svgviewer-output (14).svg" alt=""></span>
+                <span class="label"><a href="/financial_approval" class="text-link">Financial Approval</a></span>
+            </div>
+
+            <div class="nav-item">
+                <span class="icon"><img class="svg" src="/Image/svgviewer-output (15).svg" alt=""></span>
+                <span class="label"><a href="/receive_letters" class="text-link">Letters</a></span>
+            </div>
+
+            <div class="nav-item active">
+                <span class="icon"><img class="svg" src="/Image/svgviewer-output (12).svg" alt=""></span>
+                <span class="label"><a href="/general_reports" class="text-link">Reports</a></span>
+            </div>
+
+            <!-- Logout -->
+            <div class="nav-item logout">
+                <span class="icon"><img class="LogOut" src="/Image/svgviewer-output (7).svg" alt=""></span>
+                <span class="label"><a href="/logout" class="text-link" style="color: inherit;">Logout</a></span>
+            </div>
+        </nav>
+        <!-- Main Area -->
+        <div class="main">
+
+            <!-- Header -->
+            <header class="header">
+                <div class="breadcrumb">
+                    <strong>UBAPS</strong> &gt; Combined Reports
+                </div>
+                <div class="header-actions">
+                    <div class="notification-nav">
+                        <img class="svg" src="/Image/svgviewer-output (5).svg" alt="">
+                        <span id="badge-nav" class="badge-nav">0</span>
+                    </div>
+                    <div class="user-avatar">
+                        RS
+                    </div>
+                </div>
+            </header>
+
+            <div class="app">
+
+                <!-- Header -->
+                <header class="head">
+                    <div>
+                        <h1>Combined Financial & Student Reports</h1>
+                        <p class="subtitle">Bursary Award Processing System · Production</p>
+                    </div>
+                    <div class="time">
+                        Jan 6, 2026 · 01:34 AM
+                    </div>
+                </header>
+
+                <!-- Filters -->
+                <div class="filter-section">
+                    <div class="filter-group">
+                        <label for="startDate">Start Date:</label>
+                        <input type="date" id="startDate" />
+                    </div>
+                    <div class="filter-group">
+                        <label for="endDate">End Date:</label>
+                        <input type="date" id="endDate" />
+                    </div>
+                    <div class="filter-group">
+                        <label for="schemeFilter">Scheme:</label>
+                        <select id="schemeFilter">
+                            <option value="">All Schemes</option>
+                            <option value="loans_board">Loans Board</option>
+                            <option value="government">Government Bursary</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="statusFilter">Status:</label>
+                        <select id="statusFilter">
+                            <option value="">All Statuses</option>
+                            <option value="approved">Approved</option>
+                            <option value="pending">Pending</option>
+                            <option value="disbursed">Disbursed</option>
+                        </select>
+                    </div>
+                    <button class="filter-btn" onclick="applyFilters()">Apply Filters</button>
+                    <button class="export-btn" onclick="exportReport()">Export Report</button>
+                </div>
+
+                <!-- Search -->
+                <div class="search-bar">
+                    <input type="text"
+                        placeholder="Search by student name, registration number, scheme, or amount..." />
+                </div>
+
+                <!-- Logs Table -->
+                <div class="table-container">
+                    <table class="log-table active" id="combined-reports">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Reg Number</th>
+                                <th>Scheme Name</th>
+                                <th>Amount</th>
+                                <th>Application Status</th>
+                                <th>Financial Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr class="success">
+                                <td>Richard Sambo</td>
+                                <td>CEN-01-14-22</td>
+                                <td>Loans Board</td>
+                                <td>MWK 500,000</td>
+                                <td><span class="status-badge approved">Approved</span></td>
+                                <td><span class="status-badge disbursed">Disbursed</span></td>
+                                <td>2026-01-05</td>
+                                <td>
+                                    <button class="view-btn">View Details</button>
+                                </td>
+                            </tr>
+
+                            <tr class="warning">
+                                <td>Jane Doe</td>
+                                <td>BPH-02-10-23</td>
+                                <td>Government Bursary</td>
+                                <td>MWK 300,000</td>
+                                <td><span class="status-badge approved">Approved</span></td>
+                                <td><span class="status-badge pending">Pending</span></td>
+                                <td>2026-01-04</td>
+                                <td>
+                                    <button class="view-btn">View Details</button>
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+    <script src="/Js/Combined_reports.js"></script>
+    <script src="/Js/Notification_Feature.js"></script>
+</body>
+
+</html>

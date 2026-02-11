@@ -1,0 +1,125 @@
+/* Notification Card with Flip Animation */
+.notification-container {
+    position: fixed;
+    top: 70px;
+    right: 20px;
+    width: 350px;
+    perspective: 1000px;
+    z-index: 1000;
+    display: none;
+    /* Hidden by default */
+}
+
+.notification-container.active {
+    display: block;
+}
+
+.notification-card {
+    background: var(--surface-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    transform-origin: top center;
+    animation: flipIn 0.4s ease-out forwards;
+}
+
+@keyframes flipIn {
+    0% {
+        opacity: 0;
+        transform: rotateX(-90deg);
+    }
+
+    100% {
+        opacity: 1;
+        transform: rotateX(0deg);
+    }
+}
+
+.notification-header {
+    padding: var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--background-color);
+}
+
+.notification-header h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.notification-count {
+    background: var(--primary-color);
+    color: white;
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 999px;
+}
+
+.notification-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.notification-item {
+    padding: var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    gap: var(--spacing-sm);
+    transition: background-color 0.2s;
+    cursor: pointer;
+}
+
+.notification-item:hover {
+    background-color: var(--background-color);
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notif-icon {
+    width: 32px;
+    height: 32px;
+    background: #e0f2fe;
+    color: var(--primary-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 1rem;
+}
+
+.notif-content {
+    flex: 1;
+}
+
+.notif-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 2px;
+    color: var(--text-primary);
+}
+
+.notif-message {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    margin-bottom: 4px;
+}
+
+.notif-time {
+    font-size: 0.7rem;
+    color: #94a3b8;
+}
+
+.n-empty {
+    padding: var(--spacing-lg);
+    text-align: center;
+    color: var(--text-secondary);
+    font-style: italic;
+}

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/Css/Navbar/Navbar.css">
+    <link rel="stylesheet" href="/Css/Layout.css">
+    <link rel="stylesheet" href="/Css/Dashboard.css">
+    <link rel="stylesheet" href="/Css/Notification.css">
+    <link rel="stylesheet" href="/Css/Student_reports.css">
+    <title>Student Reports</title>
+</head>
+
+<body>
+    <div class="page">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="logo">
+                <span class="icon"><img src="/Image/logo-icon.png" alt="Logo"></span>
+                <span class="label">UNILIA</span>
+            </div>
+
+            <div class="nav-item">
+                <span class="icon"><img class="svg" src="/Image/svgviewer-output (3).svg" alt=""></span>
+                <span class="label"><a href="/admindashboard" class="text-link">Home</a></span>
+            </div>
+
+            <div class="nav-item">
+                <span class="icon"><img class="svg" src="/Image/svgviewer-output (12).svg" alt=""></span>
+                <span class="label"><a href="/financialreports" class="text-link">Financial Reports</a></span>
+            </div>
+
+            <div class="nav-item active">
+                <span class="icon"><img class="svg" src="/Image/svgviewer-output (2).svg" alt=""></span>
+                <span class="label"><a href="/studentreports" class="text-link">Student Reports</a></span>
+            </div>
+
+            <div class="nav-item">
+                <span class="icon"><img class="svg" src="/Image/svgviewer-output (1).svg" alt=""></span>
+                <span class="label"><a href="/combinedreports" class="text-link">Combined Reports</a></span>
+            </div>
+
+            <!-- Logout -->
+            <div class="nav-item logout">
+                <span class="icon"><img class="svg" src="/Image/svgviewer-output (7).svg" alt=""></span>
+                <span class="label"><a href="/logout" class="text-link" style="color: inherit;">Logout</a></span>
+            </div>
+        </nav>
+        <!-- Main Area -->
+        <div class="main">
+
+            <!-- Header -->
+            <header class="header">
+                <div class="breadcrumb">
+                    <strong>UBAPS</strong> &gt; Student Reports
+                </div>
+                <div class="header-actions">
+                    <div class="notification-nav">
+                        🔔
+                        <span id="badge-nav" class="badge-nav">0</span>
+                    </div>
+                    <div class="user-avatar">
+                        RS
+                    </div>
+                </div>
+            </header>
+
+            <div class="app">
+
+                <!-- Header -->
+                <header class="head">
+                    <div>
+                        <h1>Student Reports</h1>
+                        <p class="subtitle">Bursary Award Processing System · Production</p>
+                    </div>
+                    <div class="time">
+                        Jan 6, 2026 · 01:34 AM
+                    </div>
+                </header>
+
+                <!-- Filters -->
+                <div class="filter-section">
+                    <div class="filter-group">
+                        <label for="programFilter">Program:</label>
+                        <select id="programFilter">
+                            <option value="">All Programs</option>
+                            <option value="CEN">Computer Engineering</option>
+                            <option value="BPH">Pharmacy</option>
+                            <option value="EDH">Education</option>
+                            <option value="FSN">Food Science</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="statusFilter">Status:</label>
+                        <select id="statusFilter">
+                            <option value="">All Statuses</option>
+                            <option value="approved">Approved</option>
+                            <option value="pending">Pending</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </div>
+                    <button class="filter-btn" onclick="applyFilters()">Apply Filter</button>
+                    <button class="export-btn" onclick="exportReport()">Export Report</button>
+                </div>
+
+                <!-- Search -->
+                <div class="search-bar">
+                    <input type="text" placeholder="Search by student name, registration number, or program..." />
+                </div>
+
+                <!-- Logs Table -->
+                <div class="table-container">
+                    <table class="log-table active" id="student-reports">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Registration Number</th>
+                                <th>Program</th>
+                                <th>Bursary Status</th>
+                                <th>Amount Received</th>
+                                <th>Academic Year</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr class="success">
+                                <td>Richard Sambo</td>
+                                <td>CEN-01-14-22</td>
+                                <td>Computer Engineering</td>
+                                <td><span class="status-badge approved">Approved</span></td>
+                                <td>MWK 500,000</td>
+                                <td>2025/2026</td>
+                                <td>
+                                    <button class="view-btn">View Details</button>
+                                </td>
+                            </tr>
+
+                            <tr class="warning">
+                                <td>Jane Doe</td>
+                                <td>BPH-02-10-23</td>
+                                <td>Pharmacy</td>
+                                <td><span class="status-badge pending">Pending</span></td>
+                                <td>MWK 0</td>
+                                <td>2025/2026</td>
+                                <td>
+                                    <button class="view-btn">View Details</button>
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+    <script src="/Js/Student_reports.js"></script>
+    <script src="/Js/Notification_Feature.js"></script>
+</body>
+
+</html>
