@@ -1,108 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Upload Files</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/Css/Navbar/Navbar.css">
-  <link rel="stylesheet" href="/Css/Student_Portal.css">
+  <link rel="stylesheet" href="/Css/Layout.css">
+  <link rel="stylesheet" href="/Css/Portal.css">
+  <link rel="stylesheet" href="/Css/Notification.css">
 </head>
+
 <body>
 
-<div class="page">
-
-  <!-- Sidebar -->
-  <!-- Sidebar -->
-  <nav class="sidebar">
-    <div class="logo">
-      <span class="icon"><img src="/Image/logo-icon.png" alt=""></span>
-      <span class="label">UNILIA</span>
-    </div>
-
-    <div class="nav-item">
-      <span class="icon">🏠</span>
-      <span class="label"><a href="/dashboard" style="text-decoration: none; color: black;">Home</a></span>
-    </div>
-
-    <div class="nav-item" >
-      <span class="icon">📝</span>
-      <span class="label"><a href="/apply" style="text-decoration: none; color: black;">Application Form</a></span>
-    </div>
-
-    <!-- <div class="nav-item">
-      <span class="icon">📊</span>
-      <span class="label">Status Tracker</span>
-    </div> -->
-
-    <div class="nav-item">
-      <span class="icon">🎓</span>
-      <span class="label" ><a href="/letters" style="text-decoration: none; color: black;">Student letter</a></span>
-    </div>
-
-    <div class="nav-item">
-      <span class="icon">🔔</span>
-      <span class="label" ><a href="/notifications" style="text-decoration: none; color: black;">Notifications</a></span>
-    </div>
-
-    <!-- Logout -->
-    <div class="nav-item logout">
-      <span class="icon">🚪</span>
-      <span class="label" href="/logout">Logout</span>
-    </div>
-  </nav>
-
-  <!-- Main Area -->
-  <div class="main">
-
-    <!-- Header -->
-    <header class="header">
-      <div class="breadcrumb">
-        <strong>UBAPS</strong> &gt; Portal
+  <div class="page">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="logo">
+        <span class="icon"><img src="/Image/logo-icon.png" alt="UNILIA Logo"></span>
+        <span class="label">UNILIA</span>
       </div>
-      <div style="display: inline-flex; ">
-      <div class="notification-nav">
-      🔔
-      <span id="badge-nav" class="badge-nav">3</span>
+
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (3).svg" alt=""></span>
+        <span class="label"><a href="/dashboard" class="text-link">Home</a></span>
       </div>
-      <div class="user">
-        RS
+
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (4).svg" alt=""></span>
+        <span class="label"><a href="/apply" class="text-link">Application Form</a></span>
       </div>
+
+      <div class="nav-item active">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (6).svg" alt=""></span>
+        <span class="label"><a href="/letters" class="text-link">Student letter</a></span>
       </div>
-    </header>
 
-  <div class="upload-card">
-
-    <!-- Title -->
-    <h2>UPLOAD THANK YOU LETTER FOR BENEFACTOR</h2>
-    <p class="subtitle">
-      Upload documents you want to share with your benefactor.
-    </p>
-
-    <!-- Drop Zone -->
-    <div class="drop-zone" id="dropZone">
-      <div class="cloud">☁️</div>
-      <p>Drag & Drop your files here</p>
-      <span>OR</span>
-
-      <button id="browseBtn">Browse Files</button>
-      <input type="file" id="fileInput" hidden multiple>
-    </div>
-
-    <!-- Uploaded Files -->
-    <div class="uploaded-section">
-      <h4>Uploaded files</h4>
-
-      <div id="fileList">
-        <!-- JS injects file items here -->
+      <!-- Logout -->
+      <div class="nav-item logout">
+        <span class="icon"><img class="LogOut" src="/Image/svgviewer-output (7).svg" alt=""></span>
+        <span class="label"><a href="/logout" class="text-link" style="color: inherit;">Logout</a></span>
       </div>
+    </nav>
+
+    <!-- Main Area -->
+    <div class="main">
+
+      <!-- Header -->
+      <header class="header">
+        <div class="breadcrumb">
+          <strong>UBAPS</strong> &gt; Portal
+        </div>
+        <div class="header-actions">
+          <div class="notification-nav">
+            <img class="svg" src="/Image/svgviewer-output (5).svg" alt="">
+            <span id="badge-nav" class="badge-nav">0</span>
+          </div>
+          <div class="user-avatar">
+            RS
+          </div>
+        </div>
+      </header>
+
+      <div class="content">
+        <div class="upload-card">
+
+          <!-- Title -->
+          <h2>UPLOAD THANK YOU LETTER FOR BENEFACTOR</h2>
+          <p class="subtitle">
+            Upload documents you want to share with your benefactor.
+          </p>
+
+          <!-- Drop Zone -->
+          <div class="drop-zone" id="dropZone">
+            <div class="cloud">☁️</div>
+            <p>Drag & Drop your files here</p>
+            <span>OR</span>
+
+            <button id="browseBtn">Browse Files</button>
+            <input type="file" id="fileInput" hidden multiple>
+          </div>
+
+          <!-- Uploaded Files -->
+          <div class="uploaded-section">
+            <h4>Uploaded files</h4>
+
+            <div id="fileList">
+              <!-- JS injects file items here -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+
     </div>
 
   </div>
 
-</div>
-
-<script src="/Js/Student_Portal.js"></script>
-<script src="/Js/Notification_counter.js"></script>
-<script src="/Js/LogOut.js"></script>
+  <script src="/Js/Student_Portal.js"></script>
+  <script src="/Js/Notification_Feature.js"></script>
+  <script src="/Js/LogOut.js"></script>
 </body>
+
 </html>

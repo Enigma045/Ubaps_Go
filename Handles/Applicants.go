@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"ubaps/utils"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -103,4 +104,23 @@ func Applicants(
 	}
 
 	return results, nil
+}
+
+
+func ConsiderStudent(tx pgx.Tx, ctx context.Context, userId int64) (string, error) {
+	query := `UPDATE applications SET status = 'considered' WHERE user_id = $1`
+	_, err := tx.Exec(ctx, query, userId)
+	if err != nil {
+		return "", err
+	}
+	return "Application Considered successfully", nil
+}
+
+func RejectStudent(tx pgx.Tx, ctx context.Context, userId int64) (string, error) {
+	query := `UPDATE applications SET status = 'not selected' WHERE user_id = $1`
+	_, err := tx.Exec(ctx, query, userId)
+	if err != nil {
+		return "", err
+	}
+	return "Application Rejected successfully", nil
 }

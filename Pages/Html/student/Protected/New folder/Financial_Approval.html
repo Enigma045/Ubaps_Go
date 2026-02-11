@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/Css/Navbar/Navbar.css">
+  <link rel="stylesheet" href="/Css/Layout.css">
+  <link rel="stylesheet" href="/Css/Dashboard.css">
+  <link rel="stylesheet" href="/Css/Notification.css">
+  <link rel="stylesheet" href="/Css/Financial_approval.css">
+  <title>Financial Approval</title>
+</head>
+
+<body>
+  <div class="page">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="logo">
+        <span class="icon"><img src="/Image/logo-icon.png" alt="Logo"></span>
+        <span class="label">UNILIA</span>
+      </div>
+
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (3).svg" alt=""></span>
+        <span class="label"><a href="/admindashboard" class="text-link">Home</a></span>
+      </div>
+
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (4).svg" alt=""></span>
+        <span class="label"><a href="/scheme" class="text-link">Bursary Scheme</a></span>
+      </div>
+
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (13).svg" alt=""></span>
+        <span class="label"><a href="/decision" class="text-link">Judge</a></span>
+      </div>
+
+      <div class="nav-item active">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (14).svg" alt=""></span>
+        <span class="label"><a href="/financial_approval" class="text-link">Financial Approval</a></span>
+      </div>
+
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (15).svg" alt=""></span>
+        <span class="label"><a href="/receive_letters" class="text-link">Letters</a></span>
+      </div>
+
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (12).svg" alt=""></span>
+        <span class="label"><a href="/general_reports" class="text-link">Reports</a></span>
+      </div>
+
+      <!-- Logout -->
+      <div class="nav-item logout">
+        <span class="icon"><img class="LogOut" src="/Image/svgviewer-output (7).svg" alt=""></span>
+        <span class="label"><a href="/logout" class="text-link" style="color: inherit;">Logout</a></span>
+      </div>
+    </nav>
+    <!-- Main Area -->
+    <div class="main">
+
+      <!-- Header -->
+      <header class="header">
+        <div class="breadcrumb">
+          <strong>UBAPS</strong> &gt; Financial Approval
+        </div>
+        <div class="header-actions">
+          <div class="notification-nav">
+            <img class="svg" src="/Image/svgviewer-output (5).svg" alt="">
+            <span id="badge-nav" class="badge-nav">0</span>
+          </div>
+          <div class="user-avatar">
+            RS
+          </div>
+        </div>
+      </header>
+
+      <div class="app">
+
+        <!-- Header -->
+        <header class="head">
+          <div>
+            <h1>Financial Approval</h1>
+            <p class="subtitle">Bursary Award Processing System · Production</p>
+          </div>
+          <div class="time">
+            Jan 6, 2026 · 01:34 AM
+          </div>
+        </header>
+
+        <!-- Search -->
+        <div class="search-bar">
+          <input type="text" placeholder="Search requests by student name, registration number, or amount..." />
+        </div>
+
+        <!-- Logs Table -->
+        <div class="table-container">
+          <table class="log-table active" id="financial-requests">
+            <thead>
+              <tr>
+                <th>Status</th>
+                <th>Student Name</th>
+                <th>Registration Number</th>
+                <th>Amount Requested</th>
+                <th>Request Type</th>
+                <th>Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <tr class="warning">
+                <td>🟡</td>
+                <td>Richard Sambo</td>
+                <td>CEN-01-14-22</td>
+                <td>MWK 500,000</td>
+                <td>Tuition Fee</td>
+                <td>2026-01-05</td>
+                <td>
+                  <button class="approve-btn">Approve</button>
+                  <button class="reject-btn">Reject</button>
+                </td>
+              </tr>
+
+              <tr class="warning">
+                <td>🟡</td>
+                <td>Jane Doe</td>
+                <td>BPH-02-10-23</td>
+                <td>MWK 300,000</td>
+                <td>Accommodation</td>
+                <td>2026-01-04</td>
+                <td>
+                  <button class="approve-btn">Approve</button>
+                  <button class="reject-btn">Reject</button>
+                </td>
+              </tr>
+
+              <tr class="success">
+                <td>🟢</td>
+                <td>John Smith</td>
+                <td>EDH-03-15-22</td>
+                <td>MWK 450,000</td>
+                <td>Tuition Fee</td>
+                <td>2026-01-03</td>
+                <td>
+                  <span class="status-badge approved">Approved</span>
+                </td>
+              </tr>
+
+            </tbody>
+
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+
+  </div>
+  <script src="/Js/Financial_approval.js"></script>
+  <script src="/Js/Notification_Feature.js"></script>
+</body>
+
+</html>

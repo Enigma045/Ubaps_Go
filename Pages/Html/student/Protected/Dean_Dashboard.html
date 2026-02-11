@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/Css/Dean_Dashboard.css">
+    <title>Dean Dashboard - UBAPS</title>
+</head>
+
+<body>
+    <div class="page">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="logo">
+                <span class="icon"><img src="/Image/logo-icon.png" alt="Logo"></span>
+                <span class="label">UNILIA</span>
+            </div>
+
+            <div class="nav-item active">
+                <span class="icon"><img class="svg" src="/Image/svgviewer-output (3).svg" alt=""></span>
+                <span class="label"><a href="/deandashboard" class="text-link">Home</a></span>
+            </div>
+
+            <div class="nav-item">
+                <span class="icon"><img class="svg" src="/Image/svgviewer-output (11).svg" alt=""></span>
+                <span class="label"><a href="/apply" class="text-link">Applications</a></span>
+            </div>
+
+            <div class="nav-item">
+                <span class="icon"><img class="svg" src="/Image/svgviewer-output (5).svg" alt=""></span>
+                <span class="label"><a href="/notifications" class="text-link">Student Support</a></span>
+            </div>
+
+            <div class="nav-item logout">
+                <span class="icon"><img class="svg" src="/Image/svgviewer-output (7).svg" alt=""></span>
+                <span class="label"><a href="/logout" class="text-link" style="color: inherit;">Logout</a></span>
+            </div>
+        </nav>
+
+        <!-- Main Area -->
+        <div class="main">
+            <header class="header">
+                <div class="breadcrumb">
+                    <strong>UBAPS</strong> &gt; Dean Home
+                </div>
+                <div class="header-actions">
+                    <div class="user-avatar">DN</div>
+                </div>
+            </header>
+
+            <main class="content">
+                <h2>Dean of Students Dashboard</h2>
+
+                <!-- Stats Cards -->
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <p class="stat-label">Active Students</p>
+                        <h2 class="stat-value">5,240</h2>
+                    </div>
+                    <div class="stat-card">
+                        <p class="stat-label">Welfare Cases</p>
+                        <h2 class="stat-value">12</h2>
+                    </div>
+                    <div class="stat-card">
+                        <p class="stat-label">Bursary Recommendations</p>
+                        <h2 class="stat-value">85</h2>
+                    </div>
+                    <div class="stat-card">
+                        <p class="stat-label">Pending Reviews</p>
+                        <h2 class="stat-value">8</h2>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="quick-links">
+                    <h3>Oversight Actions</h3>
+                    <div class="card-grid">
+                        <div class="action-card" onclick="location.href='/apply'">
+                            <div class="card-icon">📁</div>
+                            <h3>Application Oversight</h3>
+                            <p>Monitor student bursary applications and progress</p>
+                        </div>
+                        <div class="action-card" onclick="location.href='/notifications'">
+                            <div class="card-icon">🤝</div>
+                            <h3>Welfare Support</h3>
+                            <p>Manage student feedback and support requests</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="/Js/Dean_Dashboard.js"></script>
+</body>
+
+</html>

@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/Css/Register.css">
-    <title>Register</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/Css/Register.css">
+  <title>Register</title>
 </head>
+
 <body>
-   
+
   <main class="page">
 
     <!-- LEFT SIDE -->
@@ -16,7 +18,7 @@
       <!-- Logo / Branding -->
       <div class="brand">
         <div class="brand-logo">
-            <img src="/Image/logo-icon.png" alt="LoanPro logo">
+          <img src="/Image/logo-icon.png" alt="LoanPro logo">
         </div>
         <div class="brand-text">
           <div class="brand-name">UBAPS</div>
@@ -32,12 +34,13 @@
 
           <div class="form-grid">
             <div class="form-group">
-              
-              <input type="text" class="auth-input" placeholder="Name" value="Richard">
+              <label for="firstName">First Name</label>
+              <input type="text" id="firstName" class="auth-input" placeholder="Richard" value="Richard">
             </div>
 
             <div class="form-group">
-              <input type="text" class="auth-input" placeholder="SurName" value="Sambo">
+              <label for="surName">Surname</label>
+              <input type="text" id="surName" class="auth-input" placeholder="Sambo" value="Sambo">
             </div>
 
             <!-- <div class="form-group">
@@ -46,18 +49,18 @@
             </div> -->
 
             <div class="form-group">
-              
-              <input type="tel" inputmode="numeric" class="auth-input" placeholder="Phone">
+              <label for="phone">Phone Number</label>
+              <input type="tel" id="phone" inputmode="numeric" class="auth-input" placeholder="Phone">
             </div>
 
             <div class="form-group">
-              
-              <input type="password" class="auth-input" placeholder="Password">
+              <label for="password">Password</label>
+              <input type="password" id="password" class="auth-input" placeholder="Password">
             </div>
 
             <div class="form-group">
-              
-              <input type="password" class="auth-input" placeholder="Confirm Password">
+              <label for="confirmPassword">Confirm Password</label>
+              <input type="password" id="confirmPassword" class="auth-input" placeholder="Confirm Password">
             </div>
 
             <!-- Small option boxes -->
@@ -65,10 +68,10 @@
               <label>Reg Number</label>
               <div class="option-group">
                 <select name="Programs" id="pro">
-                    <option value="CEN">CEN</option>
-                    <option value="BPH">BPH</option>
-                    <option value="EDH">EDH</option>
-                    <option value="FSN">FSN</option>
+                  <option value="CEN">CEN</option>
+                  <option value="BPH">BPH</option>
+                  <option value="EDH">EDH</option>
+                  <option value="FSN">FSN</option>
                 </select>
                 <input type="number" min="0" placeholder="01" value="01">
                 <input type="number" min="0" placeholder="14" value="14">
@@ -87,6 +90,10 @@
             <button type="submit" class="register-btn">Register</button>
           </div>
 
+          <div class="form-footer">
+            <p>Already have an account? <a href="/Login" class="auth-link">Login here</a></p>
+          </div>
+
         </form>
       </div>
     </section>
@@ -96,9 +103,10 @@
       <img id="ping" src="/Image/stock.jpg" alt="">
     </section>
 
-    
-    
+
+
   </main>
-<script src="/Js/Register.js"></script>
+  <script src="/Js/Register.js"></script>
 </body>
+
 </html>

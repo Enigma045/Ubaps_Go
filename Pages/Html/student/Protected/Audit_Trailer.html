@@ -1,117 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../Css/Navbar/Navbar.css">
-    <link rel="stylesheet" href="../Css/Template.css">
-    <link rel="stylesheet" href="../Css/Audit_Trailer.css">
-    <title>Bursary Scheme</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/Css/Navbar/Navbar.css">
+  <link rel="stylesheet" href="/Css/Layout.css">
+  <link rel="stylesheet" href="/Css/Dashboard.css">
+  <link rel="stylesheet" href="/Css/Notification.css">
+  <link rel="stylesheet" href="/Css/Audit_Trailer.css">
+  <link rel="stylesheet" href="/Css/Bursary_Scheme.css" />
+  <title>Bursary Scheme</title>
 </head>
+
 <body>
-    <div class="page">
-     <!-- Sidebar -->
-  <nav class="sidebar">
-    <div class="logo">
-      <span class="icon"><img src="/Image/logo-icon.png" alt="Logo"></span>
-      <span class="label">UNILIA</span>
-    </div>
-
-    <div class="nav-item">
-      <span class="icon">🏠</span>
-      <span class="label"><a href="/admindashboard" style="text-decoration: none; color: black;">Home</a></span>
-    </div>
-
-    <div class="nav-item">
-      <span class="icon">👥</span>
-      <span class="label"><a href="/adminusers" style="text-decoration: none; color: black;">Create Users</a></span>
-    </div>
-
-    <div class="nav-item">
-      <span class="icon">✏️</span>
-      <span class="label"><a href="/adminmodification" style="text-decoration: none; color: black;">Users</a></span>
-    </div>
-
-    <div class="nav-item">
-      <span class="icon">🔔</span>
-      <span class="label">Notifications</span>
-    </div>
-    
-    <div class="nav-item">
-      <span class="icon">⚙️</span>
-      <span class="label"><a href="/admintrails" style="text-decoration: none; color: black;">Audit Trail</a></span>
-    </div>
-
-    <!-- Logout -->
-    <div class="nav-item logout">
-      <span class="icon">🚪</span>
-      <span class="label" href="/logout">Logout</span>
-    </div>
-  </nav>
-  <!-- Main Area -->
-  <div class="main">
-
-    <!-- Header -->
-    <header class="header">
-      <div class="breadcrumb">
-        <strong>UBAPS</strong> &gt; Audit Trailer
+  <div class="page">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="logo">
+        <span class="icon"><img src="/Image/logo-icon.png" alt="Logo"></span>
+        <span class="label">UNILIA</span>
       </div>
-      <div style="display: inline-flex; ">
-      <div class="notification-nav">
-      <img src="/Image/notifications_24dp_000_FILL0_wght400_GRAD0_opsz24.png" style="text-decoration-color: black;">
-      <span id="badge-nav" class="badge-nav">3</span>
+
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (3).svg" alt=""></span>
+        <span class="label"><a href="/admindashboard" class="text-link">Home</a></span>
       </div>
-      <div class="user">
-        RS
+
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (11).svg" alt=""></span>
+        <span class="label"><a href="/adminusers" class="text-link">Create Users</a></span>
       </div>
+
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (8).svg" alt=""></span>
+        <span class="label"><a href="/adminmodification" class="text-link">Users</a></span>
       </div>
-    </header>
 
-  <div class="app">
+      <div class="nav-item active">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (10).svg" alt=""></span>
+        <span class="label"><a href="/admintrails" class="text-link">Audit Trail</a></span>
+      </div>
 
-  <!-- Header -->
-  <header class="head">
-    <div>
-      <h1>Bursary Audit Logs</h1>
-      <p class="subtitle">Bursary Award Processing System · Production</p>
-    </div>
-    <div class="time">
-      Jan 6, 2026 · 01:34 AM
-    </div>
-  </header>
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (12).svg" alt=""></span>
+        <span class="label"><a href="/admintrails" class="text-link">Reports</a></span>
+      </div>
 
-  <!-- Tabs -->
-  <div class="tabs">
-    <button class="active" data-tab="applications">Application Logs</button>
-    <button data-tab="payments">Payment Logs</button>
-    <button data-tab="users">User Logs</button>
-  </div>
+      <!-- Logout -->
+      <div class="nav-item logout">
+        <span class="icon"><img class="LogOut" src="/Image/svgviewer-output (7).svg" alt=""></span>
+        <span class="label"><a href="/logout" class="text-link" style="color: inherit;">Logout</a></span>
+      </div>
+    </nav>
+    <!-- Main Area -->
+    <div class="main">
 
-  <!-- Search -->
-  <div class="search-bar">
-    <input
-      type="text"
-      placeholder="Search audit logs e.g. role:finance action:approve application:1245"
-    />
-  </div>
+      <!-- Header -->
+      <header class="header">
+        <div class="breadcrumb">
+          <strong>UBAPS</strong> &gt; Audit Trailer
+        </div>
+        <div class="header-actions">
+          <div class="notification-nav">
+            <img class="svg" src="/Image/svgviewer-output (5).svg" alt="">
+            <span id="badge-nav" class="badge-nav">0</span>
+          </div>
+          <div class="user-avatar">
+            RS
+          </div>
+        </div>
+      </header>
 
-  <!-- Logs Table -->
-  <div class="table-container">
-    <!-- first -->
-    <table class="log-table active" id="applications">
-      <thead>
-        <tr>
-          <th>Time</th>
-          <th>Role</th>
-          <th>User</th>
-          <th>Action</th>
-          <th>Target</th>
-          <th>Status</th>
-          <th>Duration</th>
-        </tr>
-      </thead>
-      <tbody id="application-body">
-<!-- 
+      <div class="app">
+
+        <!-- Header -->
+        <header class="head">
+          <div>
+            <h1>Bursary Audit Logs</h1>
+            <p class="subtitle">Bursary Award Processing System · Production</p>
+          </div>
+          <div class="time">
+            Jan 6, 2026 · 01:34 AM
+          </div>
+        </header>
+
+        <!-- Tabs -->
+        <div class="tabs">
+          <button class="active" data-tab="applications">Application Logs</button>
+          <button data-tab="payments">Payment Logs</button>
+          <button data-tab="users">User Logs</button>
+        </div>
+
+        <!-- Search -->
+        <div class="search-bar">
+          <input type="text" placeholder="Search audit logs e.g. role:finance action:approve application:1245" />
+        </div>
+
+        <!-- Logs Table -->
+        <div class="table-container">
+          <!-- first -->
+          <table class="log-table active" id="applications">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Role</th>
+                <th>User</th>
+                <th>Action</th>
+                <th>Target</th>
+                <th>Status</th>
+                <th>Duration</th>
+              </tr>
+            </thead>
+            <tbody id="application-body">
+              <!-- 
         <tr class="success">
           <td>Jan 5 19:31</td>
           <td>Registrar</td>
@@ -152,27 +154,27 @@
           <td>390ms</td>
         </tr> -->
 
-      </tbody>
-      
-    </table>
-    <!-- first -->
-    <!-- SECOND -->
-     <table class="log-table" id="payments">
-      <thead>
-  <tr>
-    <th>Time</th>
-    <th>Role</th>
-    <th>User</th>
-    <th>Action</th>
-    <th>Target</th>
-    <th>Amount</th>
-    <th>Status</th>
-    <th>Duration</th>
-  </tr>
-</thead>
+            </tbody>
 
-      <tbody id="payment-body">
-<!-- 
+          </table>
+          <!-- first -->
+          <!-- SECOND -->
+          <table class="log-table" id="payments">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Role</th>
+                <th>User</th>
+                <th>Action</th>
+                <th>Target</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Duration</th>
+              </tr>
+            </thead>
+
+            <tbody id="payment-body">
+              <!-- 
   <tr class="success">
     <td>Jan 6 10:14</td>
     <td>Finance</td>
@@ -217,27 +219,27 @@
     <td>512ms</td>
   </tr> -->
 
-</tbody>
+            </tbody>
 
-    </table>
-    <!-- SECOND -->
-     <!-- THIRD -->
-      <table class="log-table" id="users">
-      <thead>
-  <tr>
-    <th>Time</th>
-    <th>Role</th>
-    <th>User</th>
-    <th>Action</th>
-    <th>Target</th>
-    <th>Status</th>
-    <th>Duration</th>
-  </tr>
-</thead>
+          </table>
+          <!-- SECOND -->
+          <!-- THIRD -->
+          <table class="log-table" id="users">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Role</th>
+                <th>User</th>
+                <th>Action</th>
+                <th>Target</th>
+                <th>Status</th>
+                <th>Duration</th>
+              </tr>
+            </thead>
 
-      <tbody id="user-body">
+            <tbody id="user-body">
 
-  <!-- <tr class="success">
+              <!-- <tr class="success">
     <td>Jan 6 08:15</td>
     <td>Admin</td>
     <td>Admin01</td>
@@ -287,15 +289,17 @@
     <td>260ms</td>
   </tr> -->
 
-</tbody>
+            </tbody>
 
-    </table>
-     <!-- THIRD  -->
-</div>
+          </table>
+          <!-- THIRD  -->
+        </div>
 
-</div>
+      </div>
 
-  <script src="../Js/Audit_Trailer.js"></script>
-</div>
+      <script src="../Js/Audit_Trailer.js"></script>
+      <script src="/Js/Notification_Feature.js"></script>
+    </div>
 </body>
+
 </html>

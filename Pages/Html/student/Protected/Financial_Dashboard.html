@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/Css/Navbar/Navbar.css">
+  <link rel="stylesheet" href="/Css/Layout.css">
+  <link rel="stylesheet" href="/Css/Dashboard.css">
+  <link rel="stylesheet" href="/Css/Notification.css">
+  <title>Admin Dashboard</title>
+</head>
+
+<body>
+
+  <div class="page">
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="logo">
+        <span class="icon"><img src="/Image/logo-icon.png" alt="Logo"></span>
+        <span class="label">UNILIA</span>
+      </div>
+
+            <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (3).svg" alt=""></span>
+        <span class="label"><a href="/financialdashboard" class="text-link">Home</a></span>
+      </div>
+
+      <div class="nav-item ">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (16).svg" alt=""></span>
+        <span class="label"><a href="/financial_request" class="text-link">Financial Statement</a></span>
+      </div>
+
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (17).svg" alt=""></span>
+        <span class="label"><a href="/financial" class="text-link">Financial Request</a></span>
+      </div>
+
+      <div class="nav-item active">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (12).svg" alt=""></span>
+        <span class="label"><a href="/financial_reports" class="text-link">Reports</a></span>
+      </div>
+      <div class="nav-item logout">
+        <span class="icon"><img class="LogOut" src="/Image/svgviewer-output (7).svg" alt=""></span>
+        <span class="label"><a href="/logout" class="text-link" style="color: inherit;">Logout</a></span>
+      </div>
+    </nav>
+    <!-- Main Area -->
+    <div class="main">
+
+      <!-- Header -->
+      <header class="header">
+        <div class="breadcrumb">
+          <strong>UBAPS</strong> &gt; Home
+        </div>
+        <div class="header-actions">
+          <div class="notification-nav">
+            <img class="svg" src="/Image/svgviewer-output (5).svg" alt="">
+            <span id="badge-nav" class="badge-nav">0</span>
+          </div>
+          <div class="user-avatar">
+            RS
+          </div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <main class="content">
+        <h2>Welcome, Richard Sambo</h2>
+
+        <div class="apply-row">
+          <p>To Make a  Financial Requesr click here </p>
+          <button class="apply-btn">Financial Request Page</button>
+        </div>
+
+        <!-- Dashboard Cards -->
+        <div class="stats-cards">
+
+          <div class="stat-card">
+
+            <div class="stat-info">
+              <p class="stat-label">Number of Disbursed</p>
+              <h2 class="stat-value">None</h2>
+            </div>
+          </div>
+
+          <div class="stat-card">
+
+            <div class="stat-info">
+              <p class="stat-label">Number of statements submitted</p>
+              <h2 class="stat-value">None</h2>
+            </div>
+          </div>
+
+          <div class="stat-card">
+
+            <div class="stat-info">
+              <p class="stat-label">Approved Amount</p>
+              <h2 class="stat-value">MWK 0</h2>
+            </div>
+          </div>
+
+          <div class="stat-card">
+
+            <div class="stat-info">
+              <p class="stat-label">Number of Users</p>
+              <h2 class="stat-value">0</h2>
+            </div>
+          </div>
+
+        </div>
+
+
+        <!-- Quick Links -->
+        <div class="quick-links">
+          <div class="card-grid">
+
+            <div class="action-card">
+              <div class="card-icon"><img class="svg" src="/Image/svgviewer-output (16).svg" alt=""></div>
+              <h3>Financial Statement</h3>
+              <p>Record Student Financial History</p>
+            </div>
+
+            <div class="action-card">
+              <div class="card-icon"><img class="svg" src="/Image/svgviewer-output (12).svg" alt=""></div>
+              <h3>Reports</h3>
+              <p>Access your reports</p>
+            </div>
+
+          </div>
+
+        </div>
+
+        <script src="/Js/Financial_Dashboard.js"></script>
+        <script src="/Js/Notification_Feature.js"></script>
+</body>
+
+</html>

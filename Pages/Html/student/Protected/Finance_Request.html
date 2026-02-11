@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Financial page</title>
+  <link rel="stylesheet" href="/Css/Navbar/Navbar.css">
+  <link rel="stylesheet" href="/Css/Layout.css">
+  <link rel="stylesheet" href="/Css/Dashboard.css">
+  <link rel="stylesheet" href="/Css/Notification.css">
+  <link rel="stylesheet" href="/Css/Finance_Request.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+  <div class="page">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="logo">
+        <span class="icon"><img src="/Image/logo-icon.png" alt="Logo"></span>
+        <span class="label">UNILIA</span>
+      </div>
+
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (3).svg" alt=""></span>
+        <span class="label"><a href="/financialdashboard" class="text-link">Home</a></span>
+      </div>
+
+      <div class="nav-item active">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (16).svg" alt=""></span>
+        <span class="label"><a href="/financial_request" class="text-link">Financial Statement</a></span>
+      </div>
+
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (17).svg" alt=""></span>
+        <span class="label"><a href="/financial" class="text-link">Financial Request</a></span>
+      </div>
+
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (12).svg" alt=""></span>
+        <span class="label"><a href="/financial_reports" class="text-link">Reports</a></span>
+      </div>
+      <div class="nav-item logout">
+        <span class="icon"><img class="LogOut" src="/Image/svgviewer-output (7).svg" alt=""></span>
+        <span class="label"><a href="/logout" class="text-link" style="color: inherit;">Logout</a></span>
+      </div>
+    </nav>
+
+    <!-- Main Area -->
+    <div class="main">
+      <!-- Header -->
+      <header class="header">
+        <div class="breadcrumb">
+          <strong>UBAPS</strong> &gt; Financial History
+        </div>
+        <div class="header-actions">
+          <div class="notification-nav">
+            <img class="svg" src="/Image/svgviewer-output (5).svg" alt="">
+            <span id="badge-nav" class="badge-nav">0</span>
+          </div>
+          <div class="user-avatar">
+            RS
+          </div>
+        </div>
+      </header>
+
+      <div class="app">
+        <!-- Header -->
+        <header class="head">
+          <div>
+            <h1>Financial History</h1>
+            <p class="subtitle">Bursary Award Processing System · Production</p>
+          </div>
+          <div class="time">
+            Jan 6, 2026 · 01:34 AM
+          </div>
+        </header>
+
+        <!-- Tabs -->
+        <div class="tabs">
+          <button class="active" data-tab="applications">Student Financial History</button>
+        </div>
+
+        <!-- Search -->
+        <div class="search-bar">
+          <input type="text" placeholder="Search records e.g. student_id:CEN-01-14-22" />
+        </div>
+
+        <!-- Logs Table -->
+        <div class="table-container">
+          <table class="log-table active" id="applications">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Reg #</th>
+                <th>Parent Status</th>
+                <th>Employment Status</th>
+                <th>Monthly Income</th>
+                <th>Priority</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="success">
+                <td>Richard Sambo</td>
+                <td class="student_id">CEN-01-14-22</td>
+                <td>Both-Alive</td>
+                <td>Self Employed</td>
+                <td>MWK 52,000</td>
+                <td><span class="status warning">Low</span></td>
+                <td><button class="openModal">Response</button></td>
+              </tr>
+              <tr class="success">
+                <td>Richard Sambo</td>
+                <td class="student_id">CEN-01-15-22</td>
+                <td>Both-Alive</td>
+                <td>Self Employed</td>
+                <td>MWK 52,000</td>
+                <td><span class="status warning">Low</span></td>
+                <td><button class="openModal">Response</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Modal Overlay -->
+      <div class="modal" id="modal">
+        <div class="modal-card">
+          <form id="request_info">
+            <div class="filter-row">
+              <h1>Fees Statement</h1>
+              <div class="close" id="closeModal">X</div>
+            </div>
+            <div class="filter-row">
+              <div class="form-group">
+                <label>Semester</label>
+                <select name="semester">
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
+                  <option>6</option>
+                  <option>7</option>
+                  <option>8</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="Date">Date</label>
+                <input type="date" id="Date" name="date" required>
+              </div>
+            </div>
+            <div class="filter-row">
+              <div class="form-group">
+                <label for="Detail">Detail</label>
+                <input type="text" id="Detail" name="detail" value="First Installment" required>
+              </div>
+              <div class="form-group">
+                <label for="amount">Amount</label>
+                <input type="number" id="amount" name="amount" value="400000" required>
+              </div>
+            </div>
+            <div class="filter-row">
+              <button class="form-group" id="closeModal2" style="width: 100%; padding: 12px; font-weight: 600;">Submit
+                Statement</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  </div>
+
+  <script src="/Js/Test_bursary.js"></script>
+  <script src="/Js/Finance_Request.js"></script>
+
+</body>
+
+</html>

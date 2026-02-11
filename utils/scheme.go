@@ -6,7 +6,18 @@ import (
 	"log"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
+
+type Benefactor struct {
+    Scheme_name string `json:"scheme_name"`
+	Benefactor_name string `json:"benefactor_name"`
+	Benefactor_email string `json:"benefactor_email"`
+	Total_fund_amount float64 `json:"total_fund_amount"`
+	Available_balance float64 `json:"available_balance"`
+	Gender_restriction string `json:"gender_restriction"`
+	Conditions string `json:"conditions"`
+}
 
 func Scheme_Operations(
 	tx pgx.Tx,
@@ -31,10 +42,10 @@ func Scheme_Operations(
 	if err != nil {
 		return err
 	}
-
+    
 	// optional / default fields
 
-	genderRestriction := ""
+	genderRestriction := "both"
 	if v, err := GetFormValue(formData, "gender_restriction"); err == nil {
 		genderRestriction = v
 	}
@@ -43,6 +54,26 @@ func Scheme_Operations(
 	if v, err := GetFormValue(formData, "conditions"); err == nil {
 		conditions = v
 	}
+
+	//check
+    check := `
+    SELECT EXISTS(
+        SELECT 1 FROM bursary_schemes WHERE scheme_name = $1
+    )
+`
+
+    var exists bool
+
+    err = tx.QueryRow(ctx, check, schemeName).Scan(&exists)
+    if err != nil {
+        return fmt.Errorf("db check failed: %w", err)
+    }
+
+    if exists {
+        return fmt.Errorf("scheme already exists")
+    }
+
+	//
 
 	query := `
 		INSERT INTO bursary_schemes (
@@ -75,5 +106,74 @@ func Scheme_Operations(
 	}
 
 	log.Println("Inserted rows:", row.RowsAffected())
+	return nil
+}
+
+
+
+func GetBenefactor(
+	pool *pgxpool.Pool,
+	 ctx context.Context,
+) ([]Benefactor, error) {
+
+	query := `
+		SELECT 
+		scheme_name,
+		benefactor_name,
+		benefactor_email,
+		total_fund_amount,
+		available_balance,
+		gender_restriction,
+		conditions
+		FROM bursary_schemes
+	`
+
+	rows, err := pool.Query(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var ben []Benefactor
+
+	for rows.Next() {
+		var benify Benefactor
+
+		err := rows.Scan(
+			&benify.Scheme_name,
+			&benify.Benefactor_name,
+			&benify.Benefactor_email,
+			&benify.Total_fund_amount,
+			&benify.Available_balance,
+			&benify.Gender_restriction,
+			&benify.Conditions,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		ben = append(ben, benify)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return ben, nil
+}
+
+func DeleteBenefactor(tx pgx.Tx,
+	            ctx context.Context,
+				 emailreq string) (error) {
+
+	query := `DELETE FROM
+	bursary_schemes WHERE
+	scheme_name = $1`
+
+	_,err := tx.Exec(ctx,query,emailreq)
+	if err != nil {
+    return err
+	}
+
 	return nil
 }
