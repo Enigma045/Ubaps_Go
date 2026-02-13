@@ -43,6 +43,8 @@ func main() {
 	mux.Handle("/deletebenefactor", middleware.RequireAuth(http.HandlerFunc(Routes.DeleteBenefactor)))
 	mux.Handle("/considerstudent", middleware.RequireAuth(http.HandlerFunc(Routes.ConsiderStudent)))
 	mux.Handle("/rejectstudent", middleware.RequireAuth(http.HandlerFunc(Routes.RejectStudent)))
+	mux.Handle("/getschemes", middleware.RequireAuth(http.HandlerFunc(Routes.GetScheme)))
+	mux.Handle("/schemeinfo", middleware.RequireAuth(http.HandlerFunc(Routes.SendScheme_Info)))
 	/*
 		|--------------------------------------------------------------------------
 		| Public static assets (CSS, JS, images)

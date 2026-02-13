@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="/Css/card.css">
+</head>
+
+<body>
+  <button id="card" id="card-button">open</button>
+
+  <div class="applicant-card">
+
+    <!-- MAIN CARD -->
+    <div class="main-card">
+      <div class="card-header">
+
+        <div class="applicant-info">
+          <h1>Richard Sambo</h1>
+          <h2>Computer Engineering</h2>
+          <h2>CEN-01-14-22</h2>
+        </div>
+
+        <div class="scheme-info">
+          <h3 class="scheme-title">
+            Bursary Scheme
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="scheme-icon">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6
+              a2.25 2.25 0 0 0-2.25 2.25v13.5
+              A2.25 2.25 0 0 0 7.5 21h6
+              a2.25 2.25 0 0 0 2.25-2.25V15m3 0
+              3-3m0 0-3-3m3 3H9" />
+            </svg>
+          </h3>
+
+          <div class="scheme-meta">
+            <span class="status pending">Pending</span>
+            <span class="scheme-name">None</span>
+            <span class="scheme-amount">MWK 4,000</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- STATEMENTS -->
+      <div class="statements">
+        <h3>Statements</h3>
+        <div class="statement-actions">
+          <button class="card-btn">Request</button>
+          <button class="card-btn outline">View</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECOND CARD -->
+    <div class="second-card">
+      <div class="info-card">
+        <h4>Parents</h4>
+        <p>Both Alive</p>
+      </div>
+      <div class="info-card">
+        <h4>Date of Birth</h4>
+        <p>10 June 2002</p>
+      </div>
+      <div class="info-card">
+        <h4>Residence</h4>
+        <p>Rumphi</p>
+      </div>
+      <div class="info-card">
+        <h4>Guardian</h4>
+        <p>Father</p>
+      </div>
+      <div class="info-card">
+        <h4>Guardian</h4>
+        <p>Father</p>
+      </div>
+    </div>
+
+  </div>
+
+
+  <div class="modal-overlay" id="reviewModalOverlay">
+    <div class="applicant-card">
+      <span class="close-review-modal" id="closeReviewCard">&times;</span>
+
+      <div class="card-main-content">
+        <!-- MAIN CARD INFO -->
+        <div class="main-card">
+          <div class="card-header">
+            <div class="applicant-info">
+              <h1 id="review-name">Student Name</h1>
+              <h2>
+                <span id="review-course">Course Name</span> • <span id="review-id">ID Number</span>
+              </h2>
+            </div>
+
+            <div class="scheme-info">
+              <div class="scheme-status-wrapper">
+                <h3 class="scheme-title">Bursary Scheme</h3>
+                <span class="status-badge pending" id="review-status">Pending</span>
+              </div>
+              <span class="scheme-amount" id="review-amount">MWK 0.00</span>
+            </div>
+          </div>
+
+          <!-- STATEMENTS -->
+          <div class="statements">
+            <h3>Verification Documents</h3>
+            <div class="statement-actions">
+              <button class="card-btn primary">Request Statements</button>
+              <button class="card-btn outline">View Full Dossier</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- INFO GRID -->
+        <div class="info-grid">
+          <div class="info-item">
+            <h4>Parents Status</h4>
+            <p id="review-parents">Both Alive</p>
+          </div>
+          <div class="info-item">
+            <h4>Employment</h4>
+            <p id="review-employment">Self-Employed</p>
+          </div>
+          <div class="info-item">
+            <h4>Monthly Income</h4>
+            <p id="review-income">MWK 500,000</p>
+          </div>
+          <div class="info-item">
+            <h4>Priority Level</h4>
+            <p id="review-priority">Low</p>
+          </div>
+          <div class="info-item">
+            <h4>Residence</h4>
+            <p id="review-residence">Lilongwe</p>
+          </div>
+          <div class="info-item">
+            <h4>Guardian</h4>
+            <p id="review-guardian">Father</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- BURSARY ACTION SIDEBAR -->
+      <div class="sidebar-action">
+        <h4>Assign Bursary</h4>
+
+        <div class="form-group">
+          <label for="review-scheme-select">Select Scheme</label>
+          <select id="review-scheme-select">
+            <option value="none">None</option>
+            <option value="Loans Board">Loans Board</option>
+            <option value="Chiswankhata">Chiswankhata</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="review-amount-input">Bursary Amount (MWK)</label>
+          <input type="number" id="review-amount-input" placeholder="0.00">
+        </div>
+
+        <button class="assign-btn" id="review-assign-btn">Finalize Assignment</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/Js/card.js"></script>
+</body>
+
+</html>

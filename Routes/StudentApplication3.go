@@ -53,13 +53,15 @@ func SubmitForm(w http.ResponseWriter, r *http.Request) {
 
 	submission := time.Now()
 
+	log.Println(Handles.StrPtr(r.FormValue("HomeDistrict")))
+
 	err = utils.UpdateApplication(
 		Ctx,
 		tx,
 		"submitted",
 		dob,
 		Handles.StrPtr(r.FormValue("gender")),
-		Handles.StrPtr(r.FormValue("Home District")),
+		Handles.StrPtr(r.FormValue("HomeDistrict")),
 		Handles.StrPtr("Computer Engineering"),
 		Handles.StrPtr(RegNumber),
 		Handles.StrPtr(r.FormValue("Type of intake")),

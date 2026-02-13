@@ -3,7 +3,9 @@ package utils
 import (
 	"database/sql/driver"
 	"fmt"
+	"log"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -95,6 +97,22 @@ func (t AutoTime) MarshalJSON() ([]byte, error) {
 		`"%s"`,
 		t.Format("Jan 2 2006 15:04"),
 	)), nil
+}
+
+
+func Strtofloat(amount string)(float64,error){
+	value,err := strconv.ParseFloat(amount,64)
+	if err != nil {
+		log.Println("Failed to convert to float")
+		return 0,err
+	}
+
+	return value,nil
+}
+
+func Floattostr(amount float64)(string){
+	value := strconv.FormatFloat(amount,'f',2,64)
+	return value
 }
 
 // func BuildInsertFromMap(
