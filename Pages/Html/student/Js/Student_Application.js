@@ -29,12 +29,12 @@ function showStep(index) {
 
 function validateStep() {
   const inputs = steps[currentStep].querySelectorAll("input, select");
-  
+
   // If no inputs (like review step), return true
   if (inputs.length === 0) return true;
-  
+
   let isValid = true;
-  
+
   inputs.forEach(input => {
     if (!input.checkValidity()) {
       isValid = false;
@@ -47,7 +47,7 @@ function validateStep() {
       input.style.boxShadow = "none";
     }
   });
-  
+
   return isValid;
 }
 
@@ -63,10 +63,10 @@ document.addEventListener('input', (e) => {
 
 document.getElementById("next").onclick = () => {
   if (!validateStep()) {
-    alert("Please complete all required fields.");
+    showToast("Please complete all required fields.", "error");
     return;
   }
-  
+
   // Prevent going beyond last step
   if (currentStep < steps.length - 1) {
     currentStep++;
@@ -87,31 +87,29 @@ document.getElementById("bursaryForm").onsubmit = async e => {
   const formData = new FormData(e.target)
   // Final validation check
   if (!validateStep()) {
-    alert("Please complete all required fields.");
+    showToast("Please complete all required fields.", "error");
     return;
   }
   //between the lines
   console.log(Array.from(formData.entries()));
-  let res = await fetch("/SubmitForm",{
-    method:"POST",
-    body:formData,
+  let res = await fetch("/SubmitForm", {
+    method: "POST",
+    body: formData,
     credentials: "include" // send cookies
   })
- 
+
   const text = await res.text();
-  if(!res.ok){
-    console.log("Server response:",text)
-    return
-  } 
-  console.log("Server response:",text)
-  alert("Application submitted successfully!");
-  
-  // Optional: Reset form and go back to first step
-  // document.getElementById("bursaryForm").reset();
-  // currentStep = 0;
-  // showStep(currentStep);
+  if (!res.ok) {
+    console.log("Server response:", text);
+    showToast(text || "Failed to submit application. Please check your data.", "error");
+    return;
+  }
+  console.log("Server response:", text);
+  showToast("Application submitted successfully!", "success");
+
+  // Optional: Redirect or reset
+  // setTimeout(() => window.location.href = "/dashboard", 2000);
 };
 
 // Initialize the form
 showStep(currentStep);
-

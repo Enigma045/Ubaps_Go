@@ -11,36 +11,35 @@ document.addEventListener("DOMContentLoaded", () => {
       method: "POST",
       body: formData,
       credentials: "include" // send cookies
-    }).then(res => {
-      return res.json()
-      
-    }).then(data => {
-      if (data.role == "registrar") {
-        location.href = "/registrardashboard";
-        console.log("here")
-      } else if (data.role == "student") {
-        location.href = "/dashboard";
-        console.log("here")
-      } else if (data.role == "admin") {
-        location.href = "/admindashboard";
-        console.log("here")
-      } else if (data.role == "dean_of_student") {
-        location.href = "/deandashboard";
-        console.log("here") 
-      } else if (data.role == "dean_of_facult") {
-        location.href = "/deandashboard";
-        console.log("here") 
-      } else if (data.role == "dean_of_science") {
-        location.href = "/deandashboard";
-        console.log("here") 
-      }else if (data.role == "finance_office") {
-        location.href = "/financial_request";
-        console.log("here")
+    }).then(async res => {
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || "Invalid credentials");
       }
-      console.log(data)
+      return data;
+    }).then(data => {
+      showToast("Login successful! Redirecting...", "success");
+
+      // Delay redirection slightly so they see the toast
+      setTimeout(() => {
+        if (data.role == "registrar") {
+          location.href = "/registrardashboard";
+        } else if (data.role == "student") {
+          location.href = "/dashboard";
+        } else if (data.role == "admin") {
+          location.href = "/admindashboard";
+        } else if (data.role == "dean_of_student" || data.role == "dean_of_facult" || data.role == "dean_of_science") {
+          location.href = "/deandashboard";
+        } else if (data.role == "finance_office") {
+          location.href = "/financialdashboard";
+        }
+      }, 1000);
+
+      console.log(data);
     }).catch(error => {
-      console.error(error)
-    })
+      console.error(error);
+      showToast(error.message || "Login failed. Please try again.", "error");
+    });
 
     // if (res.ok){
 

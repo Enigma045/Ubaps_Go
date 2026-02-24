@@ -23,6 +23,7 @@ async function fetchLetters() {
     return data;
   } catch (error) {
     console.error('Error fetching letters:', error);
+    showToast("Failed to load letters.", "error");
     return [];
   }
 }
@@ -50,6 +51,7 @@ async function viewLetter(letterId) {
     return letterData;
   } catch (error) {
     console.error('Error viewing letter:', error);
+    showToast("Failed to load letter details.", "error");
   }
 }
 
@@ -76,8 +78,10 @@ async function downloadLetter(letterId) {
     a.click();
     window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
+    showToast("Download started!", "success");
   } catch (error) {
     console.error('Error downloading letter:', error);
+    showToast("Failed to download letter.", "error");
   }
 }
 
@@ -119,7 +123,7 @@ function populateLettersTable(letters) {
   letters.forEach(letter => {
     const row = document.createElement('tr');
     row.className = letter.status === 'pending' ? 'warning' : 'success';
-    
+
     row.innerHTML = `
       <td>${letter.status === 'pending' ? '🟡' : '🟢'}</td>
       <td>${letter.studentName}</td>
@@ -131,7 +135,7 @@ function populateLettersTable(letters) {
         <button class="download-btn" onclick="downloadLetter('${letter.id}')">Download</button>
       </td>
     `;
-    
+
     tbody.appendChild(row);
   });
 }

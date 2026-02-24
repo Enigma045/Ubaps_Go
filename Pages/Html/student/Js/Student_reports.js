@@ -27,6 +27,7 @@ async function fetchStudentReports(filters = {}) {
         return data;
     } catch (error) {
         console.error('Error fetching student reports:', error);
+        showToast("Failed to load student reports.", "error");
         return [];
     }
 }
@@ -70,6 +71,7 @@ async function viewStudentDetails(studentId) {
         return studentData;
     } catch (error) {
         console.error('Error viewing student details:', error);
+        showToast("Failed to load student details.", "error");
     }
 }
 
@@ -107,7 +109,7 @@ async function exportReport() {
         document.body.removeChild(a);
     } catch (error) {
         console.error('Error exporting report:', error);
-        alert('Failed to export report. Please try again.');
+        showToast('Failed to export report. Please try again.', 'error');
     }
 }
 
@@ -132,6 +134,7 @@ async function searchReports(searchTerm) {
         return data;
     } catch (error) {
         console.error('Error searching reports:', error);
+        showToast("Failed to search reports.", "error");
         return [];
     }
 }

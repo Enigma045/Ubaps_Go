@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="/Css/Navbar/Navbar.css">
   <link rel="stylesheet" href="/Css/Layout.css">
   <link rel="stylesheet" href="/Css/Dashboard.css">
+  <link rel="stylesheet" href="/Css/Notification.css">
+  <script src="/Js/Toast.js"></script>
   <title>Student Dashboard</title>
   <style>
     .content {
@@ -106,7 +108,7 @@
           <!-- EVENT CONTENT -->
           <section class="event-content">
             <h3 class="event-title" id="title">Event title here</h3>
-            <p class="event-date" id="date">– March 20th, 2014</p>
+
             <p class="event-description" id="description">
               Lorem ipsum dolor sit amet, consectetur adipisicing elit.
             </p>
@@ -148,26 +150,31 @@
         <!-- Quick Links (Action Cards) -->
         <div class="quick-links">
           <div class="card-grid">
-            <div class="action-card">
+            <div class="action-card" onclick='location.href = "/apply"'>
               <div class="card-icon"><img class="svg" src="/Image/svgviewer-output (4).svg" alt=""></div>
-              <h3>Student Portal</h3>
-              <p>Access student services</p>
+              <h3>Application Page</h3>
+              <p>Access Application Page</p>
             </div>
 
-            <div class="action-card">
+            <div class="action-card" onclick='location.href = "/letters"'>
               <div class="card-icon"><img class="svg" src="/Image/svgviewer-output (6).svg" alt=""></div>
-              <h3>Notifications</h3>
-              <p>View recent updates</p>
+              <h3>Letters Page</h3>
+              <p>Naviagete To Letters Page</p>
             </div>
           </div>
         </div>
 
 
-        <script src="/Js/Dashboard.js"></script>
-        <script src="/Js/Profile_Loader.js"></script>
-        <script src="/Js/Student_Dashboard.js"></script>
-        <!-- <script src="/Js/Notification_Feature.js"></script> -->
-        <script src="/Js/LogOut.js"></script>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="/Js/Dashboard.js"></script>
+  <script src="/Js/Profile_Loader.js"></script>
+  <script src="/Js/Student_Dashboard.js"></script>
+  <script src="/Js/Notification_Feature.js"></script>
+  <script src="/Js/LogOut.js"></script>
 </body>
 
 </html>

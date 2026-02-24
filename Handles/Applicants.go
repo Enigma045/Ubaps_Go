@@ -20,11 +20,10 @@ type Applicant struct {
 	Home_district string `json:"home_district"`
 	Programme string `json:"programme"`
 	Registration_number string `json:"registration_number"`
-	Type_of_intake string `json:"type_of_intake"`
 	Accommodation string `json:"accommodation"`
 	Parent_guardian_status string `json:"parent_guardian_status"`
 	Guardian_employment_status string `json:"guardian_employment_status"`
-	Household_monthly_income string `json:"household_monthly_income"`
+	Relative_support string `json:"relative_support"`
 	Bursary_amount string `json:"bursary_amount"`
 	Reason sql.NullString `json:"reason"`
 
@@ -52,11 +51,10 @@ func Applicants(
 	a.home_district,
 	a.programme,
 	a.registration_number,
-	a.type_of_intake,
 	a.accommodation,
 	a.parent_guardian_status,
 	a.guardian_employment_status,
-	a.household_monthly_income,
+	a.other_financial_support,
 	a.bursary_amount,
 	a.reason_for_bursary
     FROM applications a
@@ -86,11 +84,10 @@ func Applicants(
 			&a.Home_district,
 			&a.Programme,
 			&a.Registration_number,
-			&a.Type_of_intake,
 			&a.Accommodation,
 			&a.Parent_guardian_status,
 			&a.Guardian_employment_status,
-			&a.Household_monthly_income,
+			&a.Relative_support,
 			&a.Bursary_amount,
 			&a.Reason,
 		); err != nil {
@@ -109,9 +106,33 @@ func Applicants(
 
 
 func ConsiderStudent(tx pgx.Tx, ctx context.Context, userId int64,Role string) (string, error) {
+//check if application is selected
+	Check := `
+    SELECT EXISTS (
+        SELECT 1
+        FROM applications
+        WHERE user_id = $1
+        AND status = 'selected'
+    );
+`
+
+var exists bool
+
+err := tx.QueryRow(ctx, Check, userId).Scan(&exists)
+if err != nil {
+    return "", err
+}
+
+if exists {
+    return "Application already selected", nil
+}
+	
+//check
+
+
 	role := fmt.Sprintf("%s_approval_status",Role)
-	query := fmt.Sprintf(`UPDATE applications SET %s = 'approved' WHERE user_id = $1`,role)
-	_, err := tx.Exec(ctx, query, userId)
+	query := fmt.Sprintf(`UPDATE applications SET %s = 'approved' , status = 'considering' WHERE user_id = $1`,role)
+	_, err = tx.Exec(ctx, query, userId)
 	if err != nil {
 		return "", err
 	}
@@ -119,9 +140,55 @@ func ConsiderStudent(tx pgx.Tx, ctx context.Context, userId int64,Role string) (
 }
 
 func RejectStudent(tx pgx.Tx, ctx context.Context, userId int64,Role string) (string, error) {
+	//check if application is selected
+	Check := `
+    SELECT EXISTS (
+        SELECT 1
+        FROM applications
+        WHERE user_id = $1
+        AND status = 'selected'
+    );
+    `
+
+   var exists bool
+
+   err := tx.QueryRow(ctx, Check, userId).Scan(&exists)
+   if err != nil {
+    return "", err
+   }
+
+   if exists {
+    return "Application already selected", nil
+   }
+	
+   //check
+
+   //check if application is rejected
+	Check2 := `
+    SELECT EXISTS (
+        SELECT 1
+        FROM applications
+        WHERE user_id = $1
+        AND status = 'not selected'
+    );
+    `
+
+   var exists2 bool
+
+   err = tx.QueryRow(ctx, Check2, userId).Scan(&exists2)
+   if err != nil {
+    return "", err
+   }
+
+   if exists2 {
+    return "Application already rejected", nil
+   }
+	
+   //check
+
 	role := fmt.Sprintf("%s_approval_status",Role)
-	query := fmt.Sprintf(`UPDATE applications SET %s = 'rejected' WHERE user_id = $1`,role)
-	_, err := tx.Exec(ctx, query, userId)
+	query := fmt.Sprintf(`UPDATE applications SET %s = 'rejected' , status = 'considering' WHERE user_id = $1`,role)
+	_, err = tx.Exec(ctx, query, userId)
 	if err != nil {
 		return "", err
 	}

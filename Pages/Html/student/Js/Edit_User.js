@@ -74,16 +74,18 @@ document.addEventListener("DOMContentLoaded", () => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(updatedData)
         })
-            .then(response => {
+            .then(async response => {
                 if (response.ok) {
-                    location.reload();
+                    showToast("User updated successfully!", "success");
+                    setTimeout(() => location.reload(), 1500);
                 } else {
-                    alert("Failed to update user.");
+                    const text = await response.text();
+                    showToast(text || "Failed to update user.", "error");
                 }
             })
             .catch(err => {
                 console.error("Error updating user:", err);
-                alert("An error occurred.");
+                showToast("An error occurred while updating the user.", "error");
             });
     });
 });

@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const rejectedEl = document.getElementById('num-rejected');
             const lettersEl = document.getElementById('num-letters');
 
-            if (pendingEl) pendingEl.textContent = stats.pending_applications;
+            if (pendingEl) pendingEl.textContent = stats.pending_applications + stats.considering_applications;
             if (selectedEl) selectedEl.textContent = stats.selected_students;
             if (rejectedEl) rejectedEl.textContent = stats.rejected_students;
             if (lettersEl) lettersEl.textContent = stats.pending_letters;

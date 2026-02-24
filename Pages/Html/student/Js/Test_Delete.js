@@ -48,14 +48,17 @@ document.addEventListener("DOMContentLoaded", () => {
       body: JSON.stringify({
         email: email
       })
-    }).then(response => {
+    }).then(async response => {
       if (response.ok) {
-        location.reload(); // Reload the page to reflect changes
+        showToast("User account deleted successfully!", "success");
+        setTimeout(() => location.reload(), 1500);
       } else {
-        console.error("Failed to delete account");
+        const text = await response.text();
+        showToast(text || "Failed to delete account.", "error");
       }
     }).catch(error => {
       console.error("Error:", error);
+      showToast("An error occurred during deletion.", "error");
     });
   })
 })

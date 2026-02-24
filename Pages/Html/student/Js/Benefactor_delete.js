@@ -50,14 +50,17 @@ document.addEventListener("DOMContentLoaded", () => {
         name: identity,
         email: email
       })
-    }).then(response => {
+    }).then(async response => {
       if (response.ok) {
-        location.reload(); // Reload the page to reflect changes
+        showToast("Benefactor deleted successfully!", "success");
+        setTimeout(() => location.reload(), 1500);
       } else {
-        console.error("Failed to delete account");
+        const text = await response.text();
+        showToast(text || "Failed to delete benefactor.", "error");
       }
     }).catch(error => {
       console.error("Error:", error);
+      showToast("An error occurred during deletion.", "error");
     });
   })
 })

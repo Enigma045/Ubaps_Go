@@ -7,6 +7,15 @@ import (
 	"os"
 )
 
+func Financial_Review_Page(w http.ResponseWriter, r *http.Request) {
+	data, err := os.ReadFile("Pages/Html/student/Protected/Financial_review.html")
+	if err != nil {
+		http.Error(w, "Page not found", http.StatusNotFound)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html")
+	w.Write(data)
+}
 func Financial_request_approval_page(w http.ResponseWriter, r *http.Request) {
 	data, err := os.ReadFile("Pages/Html/student/Protected/Financial_Reaquest_approval.html")
 	if err != nil {

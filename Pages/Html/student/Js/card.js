@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const studentId = fields.id.textContent;
 
             if (scheme === 'none' || !amount) {
-                alert('Please select a scheme and enter an amount.');
+                showToast("Please select a scheme and enter an amount.", "error");
                 return;
             }
 
@@ -119,11 +119,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 return res.json();
             }).then(data => {
                 console.log(data);
-                alert(`Bursary assigned successfully to ${fields.name.textContent}`);
+                showToast(`Bursary assigned successfully to ${fields.name.textContent}`, "success");
                 reviewModal.classList.remove('active');
             }).catch(err => {
                 console.error(err);
-                alert("Failed to send scheme info");
+                showToast(err.message || "Failed to finalize assignment.", "error");
             });
         });
     }

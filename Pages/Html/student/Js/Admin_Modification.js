@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const phone = document.createElement("td");
         phone.textContent = user.phone;
-        
+
 
         const actions = document.createElement("td");
 
@@ -49,7 +49,10 @@ document.addEventListener("DOMContentLoaded", function () {
         tbody.appendChild(tr);
       });
     })
-    .catch(error => console.error(error));
+    .catch(error => {
+      console.error(error);
+      showToast("Failed to load user details.", "error");
+    });
 
 });
 

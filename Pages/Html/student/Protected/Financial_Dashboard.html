@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="/Css/Layout.css">
   <link rel="stylesheet" href="/Css/Dashboard.css">
   <link rel="stylesheet" href="/Css/Notification.css">
+  <script src="/Js/Toast.js"></script>
   <link rel="stylesheet" href="/Css/Role_Selector.css">
   <title>Financial Dashboard</title>
 </head>
@@ -35,7 +36,7 @@
 
       <div class="nav-item">
         <span class="icon"><img class="svg" src="/Image/svgviewer-output (13).svg" alt=""></span>
-        <span class="label"><a href="/deandecision" class="text-link">Judge</a></span>
+        <span class="label"><a href="/financial_review" class="text-link">Judge</a></span>
       </div>
 
       <div class="nav-item">
@@ -76,8 +77,8 @@
         <h2 id="welcome-message">Welcome, Financial Officer</h2>
 
         <div class="apply-row">
-          <p>To Make a Financial Requesr click here </p>
-          <button class="apply-btn">Financial Request Page</button>
+          <p>To Make a Financial Request click here </p>
+          <button class="apply-btn" onclick="location.href = '/financial'">Financial Request Page</button>
         </div>
 
         <!-- Dashboard Cards -->
@@ -104,13 +105,6 @@
             </div>
           </div>
 
-          <div class="stat-card">
-            <div class="stat-info">
-              <p class="stat-label">Financial Stability</p>
-              <h2 class="stat-value">Robust</h2>
-            </div>
-          </div>
-
         </div>
 
 
@@ -118,13 +112,13 @@
         <div class="quick-links">
           <div class="card-grid">
 
-            <div class="action-card">
+            <div class="action-card" onclick="location.href = '/financial_request'">
               <div class="card-icon"><img class="svg" src="/Image/svgviewer-output (16).svg" alt=""></div>
               <h3>Financial Statement</h3>
               <p>Record Student Financial History</p>
             </div>
 
-            <div class="action-card">
+            <div class="action-card" onclick="location.href = '/financial_reports'">
               <div class="card-icon"><img class="svg" src="/Image/svgviewer-output (12).svg" alt=""></div>
               <h3>Reports</h3>
               <p>Access your reports</p>

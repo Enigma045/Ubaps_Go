@@ -18,6 +18,10 @@ const events = [
   {
     title: "Selected",
     description: "You have been selected for the schollaship program please write a thank you write and submit it in the students letter page."
+  },
+  {
+    title: "Not Selected",
+    description: "Unfortunately, you have not been selected for a bursary award at this time."
   }
 ];
 
@@ -29,24 +33,38 @@ const date = document.getElementById("date");
 const description = document.getElementById("description");
 
 function updateProgress(index) {
-  if (!progress || points.length === 0) return;
-  const percentage = (index / (points.length - 1)) * 100;
-  progress.style.width = `${percentage}%`;
-  events[index]
+  if (points.length === 0) return;
+
+  if (index === 4){
+  // Update bar percentage
+  if (progress) {
+    const percentage = (3 / (points.length - 1)) * 100;
+    progress.style.width = `${percentage}%`;
+  }
+  }else{
+    if (progress) {
+    const percentage = (index / (points.length - 1)) * 100;
+    progress.style.width = `${percentage}%`;
+    }
+  }
+  // Update dots
+  points.forEach((p, i) => {
+    if (i <= index) p.classList.add("active");
+    else p.classList.remove("active");
+  });
+
+  // Update content (Automatic update)
+  const event = events[index];
+  console.log(event);
+  if (event) {
+    if (title) title.textContent = event.title;
+    if (description) description.textContent = event.description;
+    // Removing date update as it might be static or not needed in this context
+  }
 }
 
 points.forEach((point, index) => {
   point.addEventListener("click", () => {
-    // Active dot
-    points.forEach(p => p.classList.remove("active"));
-    point.classList.add("active");
-
-    // Content
-    if (title) title.textContent = events[index].title;
-    if (date) date.textContent = events[index].date;
-    if (description) description.textContent = events[index].description;
-
-    // Animate progress
     updateProgress(index);
   });
 });
@@ -70,18 +88,28 @@ document.addEventListener('DOMContentLoaded', async () => {
       let index = 0;
       const lowerStatus = stats.application_status.toLowerCase();
 
-      if (lowerStatus.includes('selected')) index = 3;
-      else if (lowerStatus.includes('considering') || lowerStatus.includes('considering')) index = 2;
-      else if (lowerStatus.includes('submitted') || lowerStatus.includes('submitted')) index = 1;
-      else if (lowerStatus.includes('not submitted') || lowerStatus.includes('submitted')) index = 0;
+      if (lowerStatus.includes('not selected')) {
+        index = 4;
+
+        const lastPointLabel = points[3]?.querySelector('.date');
+        if (lastPointLabel) lastPointLabel.textContent = "Rejected";
+
+      } else if (lowerStatus.includes('selected')) {
+        index = 3;
+        // Update the label on the dot itself
+        
+      } else if (lowerStatus.includes('considering')) {
+        index = 2;
+      }else if (lowerStatus.includes('not submitted')) {
+        index = 0;
+      }else if (lowerStatus.includes('submitted')) {
+        index = 1;
+      } else {
+        index = 0;
+      }
 
       // Update timeline UI
-      const targetPoint = points[index];
-      if (targetPoint) {
-        points.forEach(p => p.classList.remove("active"));
-        targetPoint.classList.add("active");
-        updateProgress(index);
-      }
+      updateProgress(index);
     }
   }
 });

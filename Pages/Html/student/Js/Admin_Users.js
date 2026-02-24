@@ -17,32 +17,32 @@ document.getElementById("UserForm").addEventListener("submit", async (e) => {
 
   // VALIDATION
   if (!nameRegex.test(firstName) || !nameRegex.test(lastName)) {
-    alert("Names must contain letters only (min 2 characters)");
+    showToast("Names must contain letters only (min 2 characters)", "error");
     return;
   }
 
   if (!emailRegex.test(email)) {
-    alert("Email must be a valid @unilia.ac address");
+    showToast("Email must be a valid @unilia.ac address", "error");
     return;
   }
 
   if (!phoneRegex.test(phone)) {
-    alert("Phone must be in format 09XXXXXXXX");
+    showToast("Phone must be in format 09XXXXXXXX", "error");
     return;
   }
 
   if (!passwordRegex.test(password)) {
-    alert("Password must be 8+ chars with upper, lower, number & symbol");
+    showToast("Password must be 8+ chars with upper, lower, number & symbol", "error");
     return;
   }
 
   if (password !== confirmPassword) {
-    alert("Passwords do not match");
+    showToast("Passwords do not match", "error");
     return;
   }
 
   if (!role) {
-    alert("Select a user role");
+    showToast("Select a user role", "error");
     return;
   }
 
@@ -65,5 +65,10 @@ document.getElementById("UserForm").addEventListener("submit", async (e) => {
   });
 
   const result = await res.json();
-  alert(result.message);
+  if (res.ok) {
+    showToast(result.message || "User created successfully!", "success");
+    e.target.reset();
+  } else {
+    showToast(result.message || "Failed to create user.", "error");
+  }
 });

@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="/Css/Layout.css">
   <link rel="stylesheet" href="/Css/Dashboard.css">
   <link rel="stylesheet" href="/Css/Notification.css">
+  <script src="/Js/Toast.js"></script>
   <link rel="stylesheet" href="/Css/Role_Selector.css">
   <title>Registrar Dashboard</title>
 </head>
@@ -113,8 +114,8 @@
 
           <div class="stat-card">
             <div class="stat-info">
-              <p class="stat-label">System Performance</p>
-              <h2 class="stat-value">Stable</h2>
+              <p class="stat-label">Total Amount From Schemes</p>
+              <h2 class="stat-value">MWK0</h2>
             </div>
           </div>
 
@@ -125,19 +126,19 @@
         <div class="quick-links">
           <div class="card-grid">
 
-            <div class="action-card">
-              <div class="card-icon"><img class="svg" src="/Image/svgviewer-output (8).svg" alt=""></div>
-              <h3>Users</h3>
-              <p>See the list of users</p>
+            <div class="action-card" onclick="location.href = '/scheme'">
+              <div class="card-icon"><img class="svg" src="/Image/svgviewer-output (4).svg" alt=""></div>
+              <h3>Bursary Scheme</h3>
+              <p>Create schemes here</p>
             </div>
 
-            <div class="action-card">
-              <div class="card-icon"><img class="svg" src="/Image/svgviewer-output (5).svg" alt=""></div>
-              <h3>Notifications</h3>
-              <p>View recent updates</p>
+            <div class="action-card" onclick="location.href = '/request_approval'">
+              <div class="card-icon"><img class="svg" src="/Image/svgviewer-output (14).svg" alt=""></div>
+              <h3>Financial Approval</h3>
+              <p>View Financial request</p>
             </div>
 
-            <div class="action-card">
+            <div class="action-card" onclick="location.href = '/general_reports'">
               <div class="card-icon"><img class="svg" src="/Image/svgviewer-output (12).svg" alt=""></div>
               <h3>Reports</h3>
               <p>Access your reports</p>
@@ -148,6 +149,7 @@
         </div>
 
         <script src="/Js/Dashboard.js"></script>
+        <script src="/Js/Role_Selector.js"></script>
         <script src="/Js/Profile_Loader.js"></script>
         <script src="/Js/Registrar_Dashboard.js"></script>
         <script src="/Js/Notification_Feature.js"></script>

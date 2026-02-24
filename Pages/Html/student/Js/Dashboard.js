@@ -31,6 +31,7 @@ async function fetchDashboardData(url) {
         return await response.json();
     } catch (error) {
         console.error(`Error fetching data from ${url}:`, error);
+        showToast("Connection error. Please check your network.", "error");
         return null;
     }
 }

@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!email || !password) {
             console.warn("Role Selector: No email/password configured for", selected);
-            alert("No credentials configured for this role. Please fill in ROLE_EMAILS and ROLE_PASSWORDS in Role_Selector.js.");
+            showToast("No credentials configured for this role.", "error");
             return;
         }
 
@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 } else if (data.role == "dean_of_science") {
                     location.href = "/deandashboard";
                 } else if (data.role == "finance_office") {
-                    location.href = "/financial_request";
+                    location.href = "/financialdashboard";
                 } else {
                     // Fallback: use the URL from ROLE_MAP
                     const entry = ROLE_MAP[roleIndex];
@@ -127,7 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .catch(error => {
                 console.error("Role Selector login error:", error);
-                alert("Login failed. Check console for details.");
+                showToast("Login failed. Please try again.", "error");
                 goBtn.textContent = "Go →";
                 goBtn.disabled = false;
             });

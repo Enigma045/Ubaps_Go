@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const regNumber = `${program}-${nums.join("-")}`;
 
     if (!regNumberRegex.test(regNumber)) {
-      alert("Invalid Registration Number format");
+      showToast("Invalid Registration Number format", "error");
       valid = false;
     }
 
@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Final payload
     const payload = {
-      name:nameInput.value.trim(),
+      name: nameInput.value.trim(),
       surname: surnameInput.value.trim(),
       phone: phoneInput.value.trim(),
       password: passwordInput.value,
@@ -114,34 +114,30 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("✅ Registration payload:", payload);
 
     // TODO: send to backend
-    fetch("/register",{
+    fetch("/register", {
       method: "POST",
-      headers:{
-        "Content-Type":"application"
+      headers: {
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(payload)
 
-    }).then(res => {
-      if(!res.ok){
-         return res.json().then(err => {
-          throw new Error(err.message || "Registration failed");
-         })
+    }).then(async res => {
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || "Registration failed");
       }
       return res.json();
     })
-    .then(data => {
-      alert("Registration sent Successfully");
-      console.log("Server response:", data);
+      .then(data => {
+        showToast("Registration sent Successfully", "success");
+        console.log("Server response:", data);
 
-      window.location.href = "";
-    }).catch(err =>{
-      console.error("Register error:",err.message);
-      alert(err.message);
-    }
-    );
-    // fetch("/register", { ... })
-
-    alert("Registration successful!\nReg Number: " + regNumber);
-    form.reset();
+        form.reset();
+        // Optional: redirect or stay
+        // window.location.href = "";
+      }).catch(err => {
+        console.error("Register error:", err.message);
+        showToast(err.message, "error");
+      });
   });
 });

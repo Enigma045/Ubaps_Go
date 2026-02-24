@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/Css/Layout.css">
     <link rel="stylesheet" href="/Css/Dashboard.css">
     <link rel="stylesheet" href="/Css/Notification.css">
+    <script src="/Js/Toast.js"></script>
     <link rel="stylesheet" href="/Css/Student_reports.css">
     <title>Student Reports</title>
 </head>
@@ -23,27 +24,22 @@
 
             <div class="nav-item">
                 <span class="icon"><img class="svg" src="/Image/svgviewer-output (3).svg" alt=""></span>
-                <span class="label"><a href="/admindashboard" class="text-link">Home</a></span>
+                <span class="label"><a href="/deandashboard" class="text-link">Home</a></span>
             </div>
 
-            <div class="nav-item">
-                <span class="icon"><img class="svg" src="/Image/svgviewer-output (12).svg" alt=""></span>
-                <span class="label"><a href="/financialreports" class="text-link">Financial Reports</a></span>
+            <div class="nav-item ">
+                <span class="icon"><img class="svg" src="/Image/svgviewer-output (13).svg" alt=""></span>
+                <span class="label"><a href="/deandecision" class="text-link">Judge</a></span>
             </div>
 
             <div class="nav-item active">
-                <span class="icon"><img class="svg" src="/Image/svgviewer-output (2).svg" alt=""></span>
-                <span class="label"><a href="/studentreports" class="text-link">Student Reports</a></span>
-            </div>
-
-            <div class="nav-item">
-                <span class="icon"><img class="svg" src="/Image/svgviewer-output (1).svg" alt=""></span>
-                <span class="label"><a href="/combinedreports" class="text-link">Combined Reports</a></span>
+                <span class="icon"><img class="svg" src="/Image/svgviewer-output (12).svg" alt=""></span>
+                <span class="label"><a href="/Student_reports" class="text-link">Reports</a></span>
             </div>
 
             <!-- Logout -->
             <div class="nav-item logout">
-                <span class="icon"><img class="svg" src="/Image/svgviewer-output (7).svg" alt=""></span>
+                <span class="icon"><img class="LogOut" src="/Image/svgviewer-output (7).svg" alt=""></span>
                 <span class="label"><a href="/logout" class="text-link" style="color: inherit;">Logout</a></span>
             </div>
         </nav>
@@ -57,7 +53,7 @@
                 </div>
                 <div class="header-actions">
                     <div class="notification-nav">
-                        🔔
+                        <img class="svg" src="/Image/svgviewer-output (5).svg" alt="">
                         <span id="badge-nav" class="badge-nav">0</span>
                     </div>
                     <div id="user-avatar" class="user-avatar">

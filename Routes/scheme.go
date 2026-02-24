@@ -197,6 +197,19 @@ func SendScheme_Info(w http.ResponseWriter,r *http.Request){
 	    return
 	}
 
+	exist,err :=utils.CheckForScheme(tx,ctx,userid)
+	if err != nil {
+		log.Println(err)
+		http.Error(w,"Failed to check for scheme",http.StatusInternalServerError)
+	    return
+	}
+
+	if exist {
+		log.Println("User already has a scheme")
+		http.Error(w,"User already has a scheme",http.StatusBadRequest)
+	    return
+	}
+
     schemeid,err := utils.GetSchemeId(schemeinfo.Scheme,tx,ctx)
 	if err != nil {
 		log.Println(err)

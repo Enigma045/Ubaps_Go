@@ -311,3 +311,25 @@ func GetAvailableAmount(tx pgx.Tx,ctx context.Context,scheme_id int64)(float64,e
 
 	return value,nil
 }
+
+func CheckForScheme(tx pgx.Tx,ctx context.Context,user_id int64)(bool,error){
+
+	query := `SELECT Exists
+	         (SELECT 1 FROM 
+			  applications WHERE user_id=$1 AND status = 'selected'
+			 )
+			`
+	var exist bool;
+
+	err := tx.QueryRow(ctx,query,user_id).Scan(&exist)
+	if err != nil {
+		return true,err
+	}
+
+    if exist {
+		return true,fmt.Errorf("user already has a scheme")
+	}
+
+	return false,nil
+}
+

@@ -1,6 +1,6 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const bellIcon = document.querySelector('.notification-nav');
-    
+
     // Create notification container if not exists
     if (!document.querySelector('.notification-container')) {
         const container = document.createElement('div');
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const badge = document.getElementById('badge-nav'); // Existing badge on bell
 
     // Toggle function
-    bellIcon.addEventListener('click', function(e) {
+    bellIcon.addEventListener('click', function (e) {
         e.stopPropagation();
         container.classList.toggle('active');
         if (container.classList.contains('active')) {
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Close when clicking outside
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', function (e) {
         if (!container.contains(e.target) && !bellIcon.contains(e.target)) {
             container.classList.remove('active');
         }
@@ -50,29 +50,29 @@ document.addEventListener('DOMContentLoaded', function() {
                 "Content-Type": "application/json"
             }
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log("Notifications data:", data);
-            list.innerHTML = ''; // Clear loading/old
+            .then(response => response.json())
+            .then(data => {
+                console.log("Notifications data:", data);
+                list.innerHTML = ''; // Clear loading/old
 
-            if (!data || data.length === 0) {
-                list.innerHTML = '<div class="n-empty">No new notifications</div>';
-                countDisplay.textContent = '0 New';
-                return;
-            }
+                if (!data || data.length === 0) {
+                    list.innerHTML = '<div class="n-empty">No new notifications</div>';
+                    countDisplay.textContent = '0 New';
+                    return;
+                }
 
-            countDisplay.textContent = `${data.length} New`;
-            
-            // Update nav badge too
-            if (badge) {
-                badge.textContent = data.length;
-                badge.style.display = data.length > 0 ? 'flex' : 'none'; // Ensure generic badge display
-            }
+                countDisplay.textContent = `${data.length} New`;
 
-            data.forEach(n => {
-                const item = document.createElement('div');
-                item.className = 'notification-item';
-                item.innerHTML = `
+                // Update nav badge too
+                if (badge) {
+                    badge.textContent = data.length;
+                    badge.style.display = data.length > 0 ? 'flex' : 'none'; // Ensure generic badge display
+                }
+
+                data.forEach(n => {
+                    const item = document.createElement('div');
+                    item.className = 'notification-item';
+                    item.innerHTML = `
                     <div class="notif-icon">🔔</div>
                     <div class="notif-content">
                         <div class="notif-title">${n.title || 'Notification'}</div>
@@ -80,39 +80,48 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="notif-time">${n.timestamp || 'Just now'}</div>
                     </div>
                 `;
-                list.appendChild(item);
+                    list.appendChild(item);
+                });
+            })
+            .catch(err => {
+                console.error(err);
+                list.innerHTML = '<div class="n-empty">Failed to load</div>';
+                showToast("Failed to fetch notifications.", "error");
             });
-        })
-        .catch(err => {
-            console.error(err);
-            list.innerHTML = '<div class="n-empty">Failed to load</div>';
-        });
     }
 
     // Initial Badge Fetch (Separate from click to show badge on load)
     function updateBadge() {
         fetch('/countnotifications', {
-             headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': 'application/json' }
         })
-        .then(res => res.json())
-        .then(count => {
-             if (badge) {
-                 badge.textContent = count;
-                 // Assuming badge styling in CSS handles visibility (e.g. empty or 0 might be hidden)
-                 // Or typically JS handles display: block/none
-                 if (count > 0) {
-                     badge.style.display = 'inline-block'; // or flex, depends on CSS. Unified_Dashboard said absolute/flex
-                     badge.style.display = 'flex'; // Force flex for centering
-                     badge.style.alignItems = 'center';
-                     badge.style.justifyContent = 'center';
-                 } else {
-                     badge.style.display = 'none';
-                 }
-             }
-        })
-        .catch(e => console.error("Badge error", e));
+            .then(res => res.json())
+            .then(count => {
+                if (badge) {
+                    badge.textContent = count;
+                    // Assuming badge styling in CSS handles visibility (e.g. empty or 0 might be hidden)
+                    // Or typically JS handles display: block/none
+                    if (count > 0) {
+                        badge.style.display = 'inline-block'; // or flex, depends on CSS. Unified_Dashboard said absolute/flex
+                        badge.style.display = 'flex'; // Force flex for centering
+                        badge.style.alignItems = 'center';
+                        badge.style.justifyContent = 'center';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                }
+            })
+            .catch(e => console.error("Badge error", e));
     }
-    
+
     // Run badge update on load
     updateBadge();
+
+    // Mapping Dashboard Notification Card to Bell Click
+    const dashNotifCard = Array.from(document.querySelectorAll('.action-card')).find(c => c.querySelector('h3')?.textContent === 'Notifications');
+    if (dashNotifCard) {
+        dashNotifCard.addEventListener('click', () => {
+            bellIcon.click();
+        });
+    }
 });

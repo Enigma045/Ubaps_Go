@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="/Css/Layout.css">
   <link rel="stylesheet" href="/Css/Dashboard.css">
   <link rel="stylesheet" href="/Css/Notification.css">
+  <script src="/Js/Toast.js"></script>
   <title>Admin Dashboard</title>
 </head>
 
@@ -123,19 +124,19 @@
         <div class="quick-links">
           <div class="card-grid">
 
-            <div class="action-card">
+            <div class="action-card" onclick="location.href = '/adminusers'">
+              <div class="card-icon"><img class="svg" src="/Image/svgviewer-output (11).svg" alt=""></div>
+              <h3>Create Users</h3>
+              <p>Navigate to Create users Page</p>
+            </div>
+
+            <div class="action-card" onclick="location.href = '/adminmodification'">
               <div class="card-icon"><img class="svg" src="/Image/svgviewer-output (8).svg" alt=""></div>
               <h3>Users</h3>
               <p>See the list of users</p>
             </div>
 
-            <div class="action-card">
-              <div class="card-icon"><img class="svg" src="/Image/svgviewer-output (5).svg" alt=""></div>
-              <h3>Notifications</h3>
-              <p>View recent updates</p>
-            </div>
-
-            <div class="action-card">
+            <div class="action-card" onclick="location.href = '/adminusers'">
               <div class="card-icon"><img class="svg" src="/Image/svgviewer-output (12).svg" alt=""></div>
               <h3>Reports</h3>
               <p>Access your reports</p>
@@ -148,6 +149,7 @@
         <script src="/Js/Dashboard.js"></script>
         <script src="/Js/Profile_Loader.js"></script>
         <script src="/Js/Admin_Dashboard.js"></script>
+        <script src="/Js/Role_Selector.js"></script>
         <script src="/Js/Notification_Feature.js"></script>
 </body>
 

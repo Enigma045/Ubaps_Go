@@ -149,6 +149,14 @@ func main() {
 			),
 		),
 	)
+	mux.Handle(
+		"/financial_review",
+		middleware.RequireAuth(
+			middleware.RequireRole("finance_office")(
+				http.HandlerFunc(Routes.Financial_Review_Page),
+			),
+		),
+	)
 
 	mux.Handle(
 		"/financial_request",
@@ -238,7 +246,19 @@ func main() {
 			),
 		),
 	)
-
+	mux.Handle(
+		"/Student_reports",
+		middleware.RequireAuth(
+			middleware.RequireRole(
+				"dean_of_student",
+				"dean_of_facult",
+				"dean_of_science",
+			)(
+				http.HandlerFunc(Routes.Student_reports_Page),
+			),
+		),
+	)
+	
 	/*
 		|--------------------------------------------------------------------------
 		| Protected registrar dashboard route

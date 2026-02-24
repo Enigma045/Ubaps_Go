@@ -13,39 +13,42 @@ document.addEventListener("DOMContentLoaded", () => {
       credentials: "include" // send cookies
     });
 
-    if (res.ok){
-        //  location.href = "/dashboard";
-         console.log("here")
-         window.location.reload();
-        }else{
-            const text = await res.text();
-            console.log(text);
-            window.location.reload();
-        } // change to your page
+    if (res.ok) {
+      showToast("Bursary scheme created successfully!", "success");
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    } else {
+      const text = await res.text();
+      console.log(text);
+      showToast(text || "Failed to create scheme. Please check your data.", "error");
+      // Optionally don't reload on error to let user fix form
+    }
   };
 
   const res = fetch("/getbenefactor", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      }, // send cookies
-    }).then((res) => {
-        
-        return res.json()
-    }).then(data => {
-      console.log(data)
-      displayBenefactor(data)
-    }).catch(err => {
-      console.log(err)
-    })
-    });
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    }, // send cookies
+  }).then((res) => {
 
-  function displayBenefactor(data){
-        const tbody = document.getElementById("bursarytbody");
-        tbody.innerHTML = "";
-        data.forEach(item => {
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
+    return res.json()
+  }).then(data => {
+    console.log(data)
+    displayBenefactor(data)
+  }).catch(err => {
+    console.log(err);
+    showToast("Failed to load bursary schemes.", "error");
+  })
+});
+
+function displayBenefactor(data) {
+  const tbody = document.getElementById("bursarytbody");
+  tbody.innerHTML = "";
+  data.forEach(item => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
                 <td>🟡</td>
                 <td class="name">${item.scheme_name}</td>
                 <td>${item.benefactor_name}</td>
@@ -56,17 +59,17 @@ document.addEventListener("DOMContentLoaded", () => {
                    <button title="delete" class="openModal2"><img class="action" src="/Image/svgviewer-output (21).svg" alt=""></button>
                 </td>
             `;
-            tbody.appendChild(tr);
-        });
-      }
-    //<tbody id="bursarytbody"></tbody>
-    // <tr class="success">
-    //             <td>🟡</td>
-    //             <td>Loans Board</td>
-    //             <td>Richard</td>
-    //             <td>Lemillion045@gmail.com</td>
-    //             <td>2000000</td>
-    //             <td>200000</td>
-    //             <td><button title="Review"><img class="action" src="/Image/svgviewer-output (18).svg" alt=""></button>
-    //               <button title="delete"><img class="action" src="/Image/svgviewer-output (21).svg" alt=""></button>
-    //           </tr>
+    tbody.appendChild(tr);
+  });
+}
+//<tbody id="bursarytbody"></tbody>
+// <tr class="success">
+//             <td>🟡</td>
+//             <td>Loans Board</td>
+//             <td>Richard</td>
+//             <td>Lemillion045@gmail.com</td>
+//             <td>2000000</td>
+//             <td>200000</td>
+//             <td><button title="Review"><img class="action" src="/Image/svgviewer-output (18).svg" alt=""></button>
+//               <button title="delete"><img class="action" src="/Image/svgviewer-output (21).svg" alt=""></button>
+//           </tr>

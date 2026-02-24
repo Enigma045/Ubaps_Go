@@ -2,83 +2,76 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/Css/Navbar/Navbar.css">
-  <link rel="stylesheet" href="/Css/Layout.css">
-  <link rel="stylesheet" href="/Css/Dashboard.css">
-  <link rel="stylesheet" href="/Css/Notification.css">
-  <script src="/Js/Toast.js"></script>
-  <link rel="stylesheet" href="/Css/Bursary_Scheme.css">
-  <link rel="stylesheet" href="/Css/Delete_Modal.css">
-  <link rel="stylesheet" href="/Css/card.css">
-  <title>Bursary Decisions</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/Css/Navbar/Navbar.css">
+    <link rel="stylesheet" href="/Css/Layout.css">
+    <link rel="stylesheet" href="/Css/Dashboard.css">
+    <link rel="stylesheet" href="/Css/Notification.css">
+    <script src="/Js/Toast.js"></script>
+    <link rel="stylesheet" href="/Css/Bursary_Scheme.css">
+    <link rel="stylesheet" href="/Css/Delete_Modal.css">
+    <link rel="stylesheet" href="/Css/card.css">
+    <title>Bursary Decisions</title>
 </head>
 
 <body>
-  <div class="page">
-    <!-- Sidebar -->
-    <nav class="sidebar">
-      <div class="logo">
-        <span class="icon"><img src="/Image/logo-icon.png" alt="Logo"></span>
-        <span class="label">UNILIA</span>
-      </div>
+    <div class="page">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="logo">
+                <span class="icon"><img src="/Image/logo-icon.png" alt="Logo"></span>
+                <span class="label">UNILIA</span>
+            </div>
 
-      <div class="nav-item">
-        <span class="icon"><img class="svg" src="/Image/svgviewer-output (3).svg" alt=""></span>
-        <span class="label"><a href="/registrardashboard" class="text-link">Home</a></span>
-      </div>
+            <div class="nav-item ">
+                <span class="icon"><img class="svg" src="/Image/svgviewer-output (3).svg" alt=""></span>
+                <span class="label"><a href="/financialdashboard" class="text-link">Home</a></span>
+            </div>
 
-      <div class="nav-item">
-        <span class="icon"><img class="svg" src="/Image/svgviewer-output (4).svg" alt=""></span>
-        <span class="label"><a href="/scheme" class="text-link">Bursary Scheme</a></span>
-      </div>
+            <div class="nav-item ">
+                <span class="icon"><img class="svg" src="/Image/svgviewer-output (16).svg" alt=""></span>
+                <span class="label"><a href="/financial_request" class="text-link">Financial Statement</a></span>
+            </div>
 
-      <div class="nav-item active">
-        <span class="icon"><img class="svg" src="/Image/svgviewer-output (13).svg" alt=""></span>
-        <span class="label"><a href="/decision" class="text-link">Judge</a></span>
-      </div>
+            <div class="nav-item active">
+                <span class="icon"><img class="svg" src="/Image/svgviewer-output (13).svg" alt=""></span>
+                <span class="label"><a href="/financial_review" class="text-link">Judge</a></span>
+            </div>
 
-      <div class="nav-item">
-        <span class="icon"><img class="svg" src="/Image/svgviewer-output (14).svg" alt=""></span>
-        <span class="label"><a href="/request_approval" class="text-link">Financial Approval</a></span>
-      </div>
+            <div class="nav-item">
+                <span class="icon"><img class="svg" src="/Image/svgviewer-output (17).svg" alt=""></span>
+                <span class="label"><a href="/financial" class="text-link">Financial Request</a></span>
+            </div>
 
-      <div class="nav-item">
-        <span class="icon"><img class="svg" src="/Image/svgviewer-output (15).svg" alt=""></span>
-        <span class="label"><a href="/receive_letters" class="text-link">Letters</a></span>
-      </div>
+            <div class="nav-item">
+                <span class="icon"><img class="svg" src="/Image/svgviewer-output (12).svg" alt=""></span>
+                <span class="label"><a href="/financial_reports" class="text-link">Reports</a></span>
+            </div>
+            <div class="nav-item logout">
+                <span class="icon"><img class="LogOut" src="/Image/svgviewer-output (7).svg" alt=""></span>
+                <span class="label"><a href="/logout" class="text-link" style="color: inherit;">Logout</a></span>
+            </div>
+        </nav>
+        <!-- Main Area -->
+        <div class="main">
 
-      <div class="nav-item">
-        <span class="icon"><img class="svg" src="/Image/svgviewer-output (12).svg" alt=""></span>
-        <span class="label"><a href="/general_reports" class="text-link">Reports</a></span>
-      </div>
-
-      <!-- Logout -->
-      <div class="nav-item logout">
-        <span class="icon"><img class="LogOut" src="/Image/svgviewer-output (7).svg" alt=""></span>
-        <span class="label"><a href="/logout" class="text-link" style="color: inherit;">Logout</a></span>
-      </div>
-    </nav>
-    <!-- Main Area -->
-    <div class="main">
-
-      <!-- Header -->
-      <header class="header">
-        <div class="breadcrumb">
-          <strong>UBAPS</strong> &gt; Bursary Decisions
-        </div>
-        <div class="header-actions">
-          <div class="notification-nav">
-            <img class="svg" src="/Image/svgviewer-output (5).svg" alt="">
-            <span id="badge-nav" class="badge-nav">0</span>
-          </div>
-          <div id="user-avatar" class="user-avatar">
-            RS
-          </div>
-        </div>
-      </header>
-      <div class="app">
+            <!-- Header -->
+            <header class="header">
+                <div class="breadcrumb">
+                    <strong>UBAPS</strong> &gt; Bursary Decisions
+                </div>
+                <div class="header-actions">
+                    <div class="notification-nav">
+                        <img class="svg" src="/Image/svgviewer-output (5).svg" alt="">
+                        <span id="badge-nav" class="badge-nav">0</span>
+                    </div>
+                    <div id="user-avatar" class="user-avatar">
+                        RS
+                    </div>
+                </div>
+            </header>
+            <div class="app">
 
         <!-- Header -->
         <header class="head">
@@ -189,7 +182,7 @@
 
   <!-- Review Card Modal -->
   <div class="modal-overlay" id="reviewModalOverlay">
-    <div class="applicant-card">
+    <div class="applicant-card no-sidebar">
       <span class="close-review-modal" id="closeReviewCard">&times;</span>
 
       <div class="card-main-content">
@@ -201,14 +194,6 @@
               <h2>
                 <span id="review-course">Course Name</span> • <span id="review-id">ID Number</span>
               </h2>
-            </div>
-
-            <div class="scheme-info">
-              <div class="scheme-status-wrapper">
-                <h3 class="scheme-title">Bursary Scheme</h3>
-                <span class="status-badge pending" id="review-status">Pending</span>
-              </div>
-              <span class="scheme-amount" id="review-amount">MWK 0.00</span>
             </div>
           </div>
 
@@ -233,7 +218,7 @@
             <p id="review-employment">Self-Employed</p>
           </div>
           <div class="info-item">
-            <h4>relative support</h4>
+            <h4>Relative Support</h4>
             <p id="review-income">MWK 500,000</p>
           </div>
           <div class="info-item">
@@ -241,7 +226,7 @@
             <p id="review-priority">Low</p>
           </div>
           <div class="info-item">
-            <h4>Home District</h4>
+            <h4>Residence</h4>
             <p id="review-residence">Lilongwe</p>
           </div>
           <div class="info-item">
@@ -277,59 +262,14 @@
           </div>
         </div>
       </div>
-      <!-- BURSARY ACTION SIDEBAR -->
-      <div class="sidebar-action">
-        <div class="sidebar-header">
-          <div class="sidebar-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10" />
-              <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" />
-              <path d="M12 18V6" />
-            </svg>
-          </div>
-          <div>
-            <h4>Assign Bursary</h4>
-            <p class="sidebar-subtitle">All approvals verified</p>
-          </div>
-        </div>
-
-        <div class="sidebar-status-bar">
-          <span class="status-dot approved"></span>
-          <span>Ready for assignment</span>
-        </div>
-
-        <div class="form-group">
-          <label for="review-scheme-select">Select Scheme</label>
-          <select id="review-scheme-select">
-            <option value="none">— Choose a scheme —</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="review-amount-input">Bursary Amount (MWK)</label>
-          <div class="input-wrapper">
-            <span class="input-prefix">MWK</span>
-            <input type="number" id="review-amount-input" placeholder="0.00">
-          </div>
-        </div>
-
-        <button class="assign-btn" id="review-assign-btn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
-          Finalize Assignment
-        </button>
-      </div>
     </div>
   </div>
 
-  <script src="/Js/Dashboard.js"></script>
-  <script src="/Js/Profile_Loader.js"></script>
-  <script src="/Js/Committe_Review.js"></script>
-  <script src="/Js/Notification_Feature.js"></script>
-  <script src="/Js/card.js"></script>
+    <script src="/Js/Dashboard.js"></script>
+    <script src="/Js/Profile_Loader.js"></script>
+    <script src="/Js/Committe_Review.js"></script>
+    <script src="/Js/Notification_Feature.js"></script>
+    <script src="/Js/card.js"></script>
 </body>
 
 </html>

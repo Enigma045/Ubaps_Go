@@ -27,6 +27,7 @@ async function fetchFinancialReports(filters = {}) {
         return data;
     } catch (error) {
         console.error('Error fetching financial reports:', error);
+        showToast("Failed to load financial reports.", "error");
         return [];
     }
 }
@@ -70,6 +71,7 @@ async function viewReportDetails(reportId) {
         return reportData;
     } catch (error) {
         console.error('Error viewing report details:', error);
+        showToast("Failed to load report details.", "error");
     }
 }
 
@@ -102,7 +104,7 @@ async function exportReport(reportId = null) {
         document.body.removeChild(a);
     } catch (error) {
         console.error('Error exporting report:', error);
-        alert('Failed to export report. Please try again.');
+        showToast('Failed to export report. Please try again.', 'error');
     }
 }
 
@@ -127,6 +129,7 @@ async function searchReports(searchTerm) {
         return data;
     } catch (error) {
         console.error('Error searching reports:', error);
+        showToast("Failed to search reports.", "error");
         return [];
     }
 }

@@ -30,6 +30,7 @@ type AdminStats struct {
 // DeanStats holds statistics for the dean dashboard
 type DeanStats struct {
 	PendingApplications int `json:"pending_applications"`
+	ConsideringApplications int `json:"considering_applications"`
 	SelectedStudents    int `json:"selected_students"`
 	RejectedStudents    int `json:"rejected_students"`
 	PendingLetters      int `json:"pending_letters"`
@@ -73,9 +74,9 @@ func GetRegistrarStats(pool *pgxpool.Pool, ctx context.Context) (RegistrarStats,
 
 	// Approved Amount
 	// Hardened to strip non-numeric characters before casting
-	queryAmount := `SELECT COALESCE(SUM(bursary_amount), 0)
-                   FROM applications
-                   WHERE status = 'selected';`
+	queryAmount := `SELECT COALESCE(SUM(payment_amount), 0)
+                    FROM financial_request
+                    WHERE request_status = 'approved';`
 	err := pool.QueryRow(ctx, queryAmount).Scan(&stats.ApprovedAmount)
 	if err != nil {
 		return stats, err
@@ -122,11 +123,12 @@ func GetDeanStats(pool *pgxpool.Pool, ctx context.Context) (DeanStats, error) {
 	query := `
 		SELECT 
 			COUNT(*) FILTER (WHERE status = 'submitted'),
+			COUNT(*) FILTER (WHERE status = 'considering'),
 			COUNT(*) FILTER (WHERE status = 'selected'),
 			COUNT(*) FILTER (WHERE status = 'not selected')
 		FROM applications
 	`
-	err := pool.QueryRow(ctx, query).Scan(&stats.PendingApplications, &stats.SelectedStudents, &stats.RejectedStudents)
+	err := pool.QueryRow(ctx, query).Scan(&stats.PendingApplications, &stats.ConsideringApplications, &stats.SelectedStudents, &stats.RejectedStudents)
 	if err != nil {
 		return stats, err
 	}
@@ -144,9 +146,9 @@ func GetFinanceStats(pool *pgxpool.Pool, ctx context.Context) (FinanceStats, err
 
 	// Approved Amount
 	// Hardened to strip non-numeric characters before casting
-	queryAmount := `SELECT COALESCE(SUM(bursary_amount), 0)
-                    FROM applications
-                    WHERE status = 'selected';`
+	queryAmount := `SELECT COALESCE(SUM(payment_amount), 0)
+                    FROM financial_request
+                    WHERE request_status = 'approved';`
 	err := pool.QueryRow(ctx, queryAmount).Scan(&stats.ApprovedAmount)
 	if err != nil {
 		return stats, err

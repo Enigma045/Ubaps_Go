@@ -2,29 +2,29 @@ document.addEventListener("DOMContentLoaded", () => {
   console.log("hello world");
   const modal = document.getElementById("modal");
   let but = document.getElementsByClassName('openModal')
- let selectedStudentId = null;
+  let selectedStudentId = null;
 
- // Capture student_id from clicked row
-   Array.from(but).forEach(h=>{
+  // Capture student_id from clicked row
+  Array.from(but).forEach(h => {
     h.addEventListener("click", e => {
-    if (!e.target.classList.contains('openModal')) return;
+      if (!e.target.classList.contains('openModal')) return;
 
-    const row = e.target.closest("tr");
-    if (!row) return;
+      const row = e.target.closest("tr");
+      if (!row) return;
 
-    selectedStudentId = row.querySelector(".student_id").textContent.trim();
-    console.log("Selected Student ID:", selectedStudentId);
-    modal.classList.add("active");
-  });
- })
-  
+      selectedStudentId = row.querySelector(".student_id").textContent.trim();
+      console.log("Selected Student ID:", selectedStudentId);
+      modal.classList.add("active");
+    });
+  })
+
 
   // Submit form
   document.getElementById("request_info").onsubmit = async e => {
     e.preventDefault();
 
     if (!selectedStudentId) {
-      alert("Please select a row first");
+      showToast("Please select a row first", "error");
       return;
     }
 
@@ -40,9 +40,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     if (res.ok) {
-      console.log("Success");
+      showToast("Financial request submitted successfully!", "success");
+      setTimeout(() => window.location.reload(), 2000);
     } else {
-      console.log(await res.text());
+      const text = await res.text();
+      console.log(text);
+      showToast(text || "Failed to submit request.", "error");
     }
   };
 });
