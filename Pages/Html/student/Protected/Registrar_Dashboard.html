@@ -8,7 +8,8 @@
   <link rel="stylesheet" href="/Css/Layout.css">
   <link rel="stylesheet" href="/Css/Dashboard.css">
   <link rel="stylesheet" href="/Css/Notification.css">
-  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="/Css/Role_Selector.css">
+  <title>Registrar Dashboard</title>
 </head>
 
 <body>
@@ -39,7 +40,7 @@
 
       <div class="nav-item">
         <span class="icon"><img class="svg" src="/Image/svgviewer-output (14).svg" alt=""></span>
-        <span class="label"><a href="/financial_approval" class="text-link">Financial Approval</a></span>
+        <span class="label"><a href="/request_approval" class="text-link">Financial Approval</a></span>
       </div>
 
       <div class="nav-item">
@@ -71,7 +72,7 @@
             <img class="svg" src="/Image/svgviewer-output (5).svg" alt="">
             <span id="badge-nav" class="badge-nav">0</span>
           </div>
-          <div class="user-avatar">
+          <div id="user-avatar" class="user-avatar">
             RS
           </div>
         </div>
@@ -79,45 +80,41 @@
 
       <!-- Content -->
       <main class="content">
-        <h2>Welcome, Richard Sambo</h2>
+        <h2 id="welcome-message">Welcome, Registrar</h2>
 
         <div class="apply-row">
           <p>To go to decision Page click here </p>
-          <button class="apply-btn">Create User Page</button>
+          <button class="apply-btn" onclick="location.href='/decision'">Judge Page</button>
         </div>
 
         <!-- Dashboard Cards -->
         <div class="stats-cards">
 
           <div class="stat-card">
-
             <div class="stat-info">
-              <p class="stat-label">Application Status</p>
-              <h2 class="stat-value">Not Submitted</h2>
+              <p class="stat-label">Total Applicants</p>
+              <h2 id="num-applicants" class="stat-value">0</h2>
             </div>
           </div>
 
           <div class="stat-card">
-
             <div class="stat-info">
-              <p class="stat-label">Number of statements submitted</p>
-              <h2 class="stat-value">None</h2>
+              <p class="stat-label">Bursary Schemes</p>
+              <h2 id="num-schemes" class="stat-value">0</h2>
             </div>
           </div>
 
           <div class="stat-card">
-
             <div class="stat-info">
               <p class="stat-label">Approved Amount</p>
-              <h2 class="stat-value">MWK 0</h2>
+              <h2 id="approved-amount" class="stat-value">MWK 0</h2>
             </div>
           </div>
 
           <div class="stat-card">
-
             <div class="stat-info">
-              <p class="stat-label">Number of Users</p>
-              <h2 class="stat-value">0</h2>
+              <p class="stat-label">System Performance</p>
+              <h2 class="stat-value">Stable</h2>
             </div>
           </div>
 
@@ -150,7 +147,9 @@
 
         </div>
 
-        <script src="/Js/Admin_Dashboard.js"></script>
+        <script src="/Js/Dashboard.js"></script>
+        <script src="/Js/Profile_Loader.js"></script>
+        <script src="/Js/Registrar_Dashboard.js"></script>
         <script src="/Js/Notification_Feature.js"></script>
 </body>
 

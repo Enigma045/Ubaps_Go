@@ -45,6 +45,22 @@ func main() {
 	mux.Handle("/rejectstudent", middleware.RequireAuth(http.HandlerFunc(Routes.RejectStudent)))
 	mux.Handle("/getschemes", middleware.RequireAuth(http.HandlerFunc(Routes.GetScheme)))
 	mux.Handle("/schemeinfo", middleware.RequireAuth(http.HandlerFunc(Routes.SendScheme_Info)))
+	//Financial Office
+	mux.Handle("/getrequest", middleware.RequireAuth(http.HandlerFunc(Routes.GetRequest_Info)))
+	mux.Handle("/acceptrequest", middleware.RequireAuth(http.HandlerFunc(Routes.AcceptRequest)))
+	mux.Handle("/rejectrequest", middleware.RequireAuth(http.HandlerFunc(Routes.RejectRequest)))
+	mux.Handle("/gettotalamount", middleware.RequireAuth(http.HandlerFunc(Routes.GetTotalAmount)))
+	//Review Card
+	mux.Handle("/getapplicationstatus", middleware.RequireAuth(http.HandlerFunc(Routes.GetApplicationStatus)))
+
+	// Statistics endpoints
+	mux.Handle("/stats/student", middleware.RequireAuth(http.HandlerFunc(Routes.StatsStudent)))
+	mux.Handle("/stats/registrar", middleware.RequireAuth(http.HandlerFunc(Routes.StatsRegistrar)))
+	mux.Handle("/stats/admin", middleware.RequireAuth(http.HandlerFunc(Routes.StatsAdmin)))
+	mux.Handle("/stats/dean", middleware.RequireAuth(http.HandlerFunc(Routes.StatsDean)))
+	mux.Handle("/stats/finance", middleware.RequireAuth(http.HandlerFunc(Routes.StatsFinance)))
+	mux.Handle("/user/profile", middleware.RequireAuth(http.HandlerFunc(Routes.UserProfile)))
+
 	/*
 		|--------------------------------------------------------------------------
 		| Public static assets (CSS, JS, images)
@@ -190,6 +206,7 @@ func main() {
 			),
 		),
 	)
+
 	/*
 		|--------------------------------------------------------------------------
 		| Protected dean of students dashboard route
@@ -198,8 +215,26 @@ func main() {
 	mux.Handle(
 		"/deandashboard",
 		middleware.RequireAuth(
-			middleware.RequireRole("dean_of_student")(
+			middleware.RequireRole(
+				"dean_of_student",
+				"dean_of_facult",
+				"dean_of_science",
+			)(
 				http.HandlerFunc(Routes.DeanDashboard_Page),
+			),
+		),
+	)
+
+	mux.Handle(
+		"/deandecision",
+		middleware.RequireAuth(
+			middleware.RequireRole(
+				"dean_of_student",
+				"dean_of_facult",
+				"dean_of_science",
+				"finance_office",
+			)(
+				http.HandlerFunc(Routes.Dean_Decision_page),
 			),
 		),
 	)
@@ -243,10 +278,10 @@ func main() {
 		),
 	)
 	mux.Handle(
-		"/financial_approval",
+		"/request_approval",
 		middleware.RequireAuth(
 			middleware.RequireRole("registrar")(
-				http.HandlerFunc(Routes.Financial_approval_page),
+				http.HandlerFunc(Routes.Financial_request_approval_page),
 			),
 		),
 	)

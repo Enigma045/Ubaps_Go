@@ -1,13 +1,20 @@
 /* Registrar Dashboard Logic */
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     console.log("Registrar Dashboard Initialized");
 
-    // Placeholder for real-time stats updates
-    const updateStats = () => {
-        // Future: Fetch data from /api/registrar/stats
-        console.log("Fetching registrar stats...");
-    };
 
-    updateStats();
+    // Load Stats
+    if (typeof fetchRegistrarStats === 'function') {
+        const stats = await fetchRegistrarStats();
+        if (stats) {
+            const approvedAmountEl = document.getElementById('approved-amount');
+            const numApplicantsEl = document.getElementById('num-applicants');
+            const numSchemesEl = document.getElementById('num-schemes');
+
+            if (approvedAmountEl) approvedAmountEl.textContent = `MWK ${stats.approved_amount.toLocaleString()}`;
+            if (numApplicantsEl) numApplicantsEl.textContent = stats.number_of_applicants;
+            if (numSchemesEl) numSchemesEl.textContent = stats.number_of_schemes;
+        }
+    }
 });

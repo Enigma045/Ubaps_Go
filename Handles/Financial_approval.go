@@ -26,11 +26,10 @@ func Db_operation(tx pgx.Tx,ctx context.Context,userid int64,pamount int64,formD
 		 previous_amount,
 		 payment_amount,
 		 details,
-		 request_answered,
 		 created_at,
 		 updated_at
 	)
-		 VALUES ($1,$2,$3,$4,false,NOW(),NOW())`,
+		 VALUES ($1,$2,$3,$4,NOW(),NOW())`,
 		 userid,pamount,ramount,details);
 
 	if err != nil {

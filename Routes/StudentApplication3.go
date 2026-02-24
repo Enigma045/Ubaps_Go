@@ -45,12 +45,6 @@ func SubmitForm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	income, err := Handles.FloatPtr(r.FormValue("monthlyIncome"))
-	if err != nil {
-		http.Error(w, "Invalid income", http.StatusBadRequest)
-		return
-	}
-
 	submission := time.Now()
 
 	log.Println(Handles.StrPtr(r.FormValue("HomeDistrict")))
@@ -64,11 +58,9 @@ func SubmitForm(w http.ResponseWriter, r *http.Request) {
 		Handles.StrPtr(r.FormValue("HomeDistrict")),
 		Handles.StrPtr("Computer Engineering"),
 		Handles.StrPtr(RegNumber),
-		Handles.StrPtr(r.FormValue("Type of intake")),
 		Handles.StrPtr(r.FormValue("Accomodation")),
 		Handles.StrPtr(r.FormValue("Gurdian Status")),
 		Handles.StrPtr(r.FormValue("Guardian Employment Status")),
-		income,
 		Handles.StrPtr(r.FormValue("otherSupport")),
 		Handles.StrPtr(r.FormValue("Reason")),
 		&submission,

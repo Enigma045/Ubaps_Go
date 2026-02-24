@@ -118,17 +118,25 @@ func RequireAuth(next http.Handler) http.Handler {
 | RequireRole Middleware
 |--------------------------------------------------------------------------
 */
-func RequireRole(requiredRole string) func(http.Handler) http.Handler {
+func RequireRole(requiredRoles ...string) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 			role, ok := r.Context().Value(roleKey).(string)
-			if !ok || role != requiredRole {
-				http.Error(w, "Forbidden not you Role", http.StatusForbidden)
+			if !ok {
+				http.Error(w, "Forbidden: role not found", http.StatusForbidden)
 				return
 			}
 
-			next.ServeHTTP(w, r)
+			// Check if user's role matches any allowed role
+			for _, allowedRole := range requiredRoles {
+				if role == allowedRole {
+					next.ServeHTTP(w, r)
+					return
+				}
+			}
+
+			http.Error(w, "Forbidden: not your role", http.StatusForbidden)
 		})
 	}
 }

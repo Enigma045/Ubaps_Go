@@ -211,13 +211,90 @@
   flex-direction: column;
   gap: 16px;
   border: 1px solid #e5e7eb;
+  border-top: 3px solid #10b981;
+  animation: sidebarReveal 0.4s ease-out;
+}
+
+@keyframes sidebarReveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sidebar-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #065f46;
+  flex-shrink: 0;
 }
 
 .sidebar-action h4 {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
-  margin-bottom: 8px;
+  margin-bottom: 0;
   color: var(--text-main);
+}
+
+.sidebar-subtitle {
+  font-size: 11px;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+.sidebar-status-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #ecfdf5;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.status-dot.approved {
+  background: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+  animation: dotPulse 2s infinite;
+}
+
+@keyframes dotPulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+  }
+
+  50% {
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.08);
+  }
 }
 
 .form-group {
@@ -230,6 +307,8 @@
   font-size: 12px;
   font-weight: 600;
   color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .form-group select,
@@ -240,30 +319,79 @@
   background: white;
   font-size: 14px;
   outline: none;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .form-group select:focus,
 .form-group input:focus {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(3, 105, 161, 0.1);
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: white;
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-wrapper:focus-within {
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
+}
+
+.input-prefix {
+  padding: 10px 12px;
+  background: #f3f4f6;
+  font-size: 12px;
+  font-weight: 700;
+  color: #6b7280;
+  border-right: 1px solid #d1d5db;
+  white-space: nowrap;
+}
+
+.input-wrapper input {
+  border: none;
+  background: transparent;
+  padding: 10px 14px;
+  font-size: 14px;
+  outline: none;
+  flex: 1;
+  width: 100%;
+}
+
+.input-wrapper input:focus {
+  box-shadow: none;
 }
 
 .assign-btn {
-  margin-top: 10px;
+  margin-top: 8px;
   padding: 14px;
-  border-radius: 8px;
-  background: var(--primary-color);
+  border-radius: 10px;
+  background: linear-gradient(135deg, #10b981, #059669);
   color: white;
   font-weight: 700;
+  font-size: 14px;
   border: none;
   cursor: pointer;
   transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
 }
 
 .assign-btn:hover {
-  filter: brightness(0.9);
   transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+}
+
+.assign-btn:active {
+  transform: translateY(0);
 }
 
 /* Close Button */
@@ -280,4 +408,94 @@
 
 .close-review-modal:hover {
   color: #4b5563;
+}
+
+/* ─── No-Sidebar variant (Dean Decisions) ─── */
+.applicant-card.no-sidebar {
+  grid-template-columns: 1fr;
+  max-width: 720px;
+}
+
+/* ─── Approval Status Tracker ─── */
+.approval-tracker {
+  background: var(--bg-soft);
+  border-radius: 12px;
+  padding: 20px 24px;
+  border: 1px solid #e5e7eb;
+  margin-top: 4px;
+}
+
+.approval-tracker h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  font-weight: 700;
+}
+
+.approval-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.approval-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: #ffffff;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  border-left: 3px solid #d1d5db;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.approval-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.approval-role {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.approval-badge {
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.approval-badge.pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.approval-item:has(.approval-badge.pending) {
+  border-left-color: #f59e0b;
+}
+
+.approval-badge.approved {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.approval-item:has(.approval-badge.approved) {
+  border-left-color: #10b981;
+}
+
+.approval-badge.rejected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.approval-item:has(.approval-badge.rejected) {
+  border-left-color: #ef4444;
 }

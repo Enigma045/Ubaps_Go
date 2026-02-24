@@ -27,7 +27,13 @@ document.addEventListener("DOMContentLoaded", () => {
       } else if (data.role == "dean_of_student") {
         location.href = "/deandashboard";
         console.log("here") 
-      } else if (data.role == "finance_office") {
+      } else if (data.role == "dean_of_facult") {
+        location.href = "/deandashboard";
+        console.log("here") 
+      } else if (data.role == "dean_of_science") {
+        location.href = "/deandashboard";
+        console.log("here") 
+      }else if (data.role == "finance_office") {
         location.href = "/financial_request";
         console.log("here")
       }

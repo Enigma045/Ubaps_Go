@@ -11,7 +11,32 @@
   <link rel="stylesheet" href="/Css/Bursary_Scheme.css">
   <link rel="stylesheet" href="/Css/Delete_Modal.css">
   <link rel="stylesheet" href="/Css/card.css">
+  <link rel="stylesheet" href="/Css/Role_Selector.css">
   <title>Bursary Decisions</title>
+  <style>
+    :root {
+      --primary-color: #059669;
+      /* Dean's Green */
+      --primary-hover: #047857;
+    }
+
+    .user-avatar {
+      background-color: var(--primary-color);
+    }
+
+    .log-table th {
+      color: var(--primary-color) !important;
+    }
+
+    .status-badge.pending {
+      background: #ecfdf5;
+      color: #059669;
+    }
+
+    .assign-btn {
+      background: var(--primary-color) !important;
+    }
+  </style>
 </head>
 
 <body>
@@ -25,27 +50,12 @@
 
       <div class="nav-item">
         <span class="icon"><img class="svg" src="/Image/svgviewer-output (3).svg" alt=""></span>
-        <span class="label"><a href="/registrardashboard" class="text-link">Home</a></span>
-      </div>
-
-      <div class="nav-item">
-        <span class="icon"><img class="svg" src="/Image/svgviewer-output (4).svg" alt=""></span>
-        <span class="label"><a href="/scheme" class="text-link">Bursary Scheme</a></span>
+        <span class="label"><a href="/deandashboard" class="text-link">Home</a></span>
       </div>
 
       <div class="nav-item active">
         <span class="icon"><img class="svg" src="/Image/svgviewer-output (13).svg" alt=""></span>
-        <span class="label"><a href="/decision" class="text-link">Judge</a></span>
-      </div>
-
-      <div class="nav-item">
-        <span class="icon"><img class="svg" src="/Image/svgviewer-output (14).svg" alt=""></span>
-        <span class="label"><a href="/request_approval" class="text-link">Financial Approval</a></span>
-      </div>
-
-      <div class="nav-item">
-        <span class="icon"><img class="svg" src="/Image/svgviewer-output (15).svg" alt=""></span>
-        <span class="label"><a href="/receive_letters" class="text-link">Letters</a></span>
+        <span class="label"><a href="/deandecision" class="text-link">Judge</a></span>
       </div>
 
       <div class="nav-item">
@@ -65,7 +75,7 @@
       <!-- Header -->
       <header class="header">
         <div class="breadcrumb">
-          <strong>UBAPS</strong> &gt; Bursary Decisions
+          <strong>UBAPS</strong> &gt; Dean Decision
         </div>
         <div class="header-actions">
           <div class="notification-nav">
@@ -73,7 +83,7 @@
             <span id="badge-nav" class="badge-nav">0</span>
           </div>
           <div id="user-avatar" class="user-avatar">
-            RS
+            DN
           </div>
         </div>
       </header>
@@ -188,7 +198,7 @@
 
   <!-- Review Card Modal -->
   <div class="modal-overlay" id="reviewModalOverlay">
-    <div class="applicant-card">
+    <div class="applicant-card no-sidebar">
       <span class="close-review-modal" id="closeReviewCard">&times;</span>
 
       <div class="card-main-content">
@@ -200,14 +210,6 @@
               <h2>
                 <span id="review-course">Course Name</span> • <span id="review-id">ID Number</span>
               </h2>
-            </div>
-
-            <div class="scheme-info">
-              <div class="scheme-status-wrapper">
-                <h3 class="scheme-title">Bursary Scheme</h3>
-                <span class="status-badge pending" id="review-status">Pending</span>
-              </div>
-              <span class="scheme-amount" id="review-amount">MWK 0.00</span>
             </div>
           </div>
 
@@ -276,58 +278,15 @@
           </div>
         </div>
       </div>
-      <!-- BURSARY ACTION SIDEBAR -->
-      <div class="sidebar-action">
-        <div class="sidebar-header">
-          <div class="sidebar-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10" />
-              <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" />
-              <path d="M12 18V6" />
-            </svg>
-          </div>
-          <div>
-            <h4>Assign Bursary</h4>
-            <p class="sidebar-subtitle">All approvals verified</p>
-          </div>
-        </div>
-
-        <div class="sidebar-status-bar">
-          <span class="status-dot approved"></span>
-          <span>Ready for assignment</span>
-        </div>
-
-        <div class="form-group">
-          <label for="review-scheme-select">Select Scheme</label>
-          <select id="review-scheme-select">
-            <option value="none">— Choose a scheme —</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="review-amount-input">Bursary Amount (MWK)</label>
-          <div class="input-wrapper">
-            <span class="input-prefix">MWK</span>
-            <input type="number" id="review-amount-input" placeholder="0.00">
-          </div>
-        </div>
-
-        <button class="assign-btn" id="review-assign-btn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
-          Finalize Assignment
-        </button>
-      </div>
     </div>
   </div>
 
   <script src="/Js/Dashboard.js"></script>
   <script src="/Js/Profile_Loader.js"></script>
+  <script src="/Js/Role_Selector.js"></script>
   <script src="/Js/Committe_Review.js"></script>
   <script src="/Js/Notification_Feature.js"></script>
+  <script src="/Js/Notification_counter.js"></script>
   <script src="/Js/card.js"></script>
 </body>
 

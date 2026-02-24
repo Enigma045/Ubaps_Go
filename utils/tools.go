@@ -99,6 +99,16 @@ func (t AutoTime) MarshalJSON() ([]byte, error) {
 	)), nil
 }
 
+func Strtoint64(amount string)(int64,error){
+	value,err := strconv.ParseInt(amount,10,64)
+	if err != nil {
+		log.Println("Failed to convert to float")
+		return 0,err
+	}
+
+	return value,nil
+}
+
 
 func Strtofloat(amount string)(float64,error){
 	value,err := strconv.ParseFloat(amount,64)

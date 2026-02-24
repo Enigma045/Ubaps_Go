@@ -54,11 +54,9 @@ func UpdateApplication(
 	homeDistrict *string,
 	programme *string,
 	registrationNumber *string,
-	typeOfIntake *string,
 	accommodation *string,
 	parentGuardianStatus *string,
 	guardianEmploymentStatus *string,
-	householdMonthlyIncome *float64,
 	otherFinancialSupport *string,
 	reasonForBursary *string,
 	submissionTimestamp *time.Time,
@@ -74,18 +72,16 @@ func UpdateApplication(
 		home_district              = $4,
 		programme                  = $5,
 		registration_number        = $6,
-		type_of_intake             = $7,
-		accommodation              = $8,
-		parent_guardian_status     = $9,
-		guardian_employment_status = $10,
-		household_monthly_income   = $11,
+		accommodation              = $7,
+		parent_guardian_status     = $8,
+		guardian_employment_status = $9,
 		bursary_amount             = 0,
-		other_financial_support    = $12,
-		reason_for_bursary         = $13,
-		submission_timestamp       = $14,
+		other_financial_support    = $10,
+		reason_for_bursary         = $11,
+		submission_timestamp       = $12,
 		last_updated               = NOW(),
-		application_date           = $16
-	WHERE user_id = $15
+		application_date           = $14
+	WHERE user_id = $13
 	  AND submission_timestamp IS NULL;
 	`
 	today := time.Now()
@@ -98,11 +94,9 @@ func UpdateApplication(
 		homeDistrict,
 		programme,
 		registrationNumber,
-		typeOfIntake,
 		accommodation,
 		parentGuardianStatus,
 		guardianEmploymentStatus,
-		householdMonthlyIncome,
 		otherFinancialSupport,
 		reasonForBursary,
 		submissionTimestamp,

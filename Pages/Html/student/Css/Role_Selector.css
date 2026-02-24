@@ -1,0 +1,147 @@
+/* ============================================================
+   Role Selector Widget – Floating Draggable Panel
+   ============================================================ */
+
+#role-selector-widget {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 99999;
+  width: 230px;
+  border-radius: 14px;
+  background: rgba(22, 27, 44, 0.88);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    0 1.5px 0 rgba(255, 255, 255, 0.06) inset;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: "Segoe UI", Inter, system-ui, sans-serif;
+  color: #e4e6f1;
+  transition: box-shadow 0.25s ease, transform 0.18s ease;
+  user-select: none;
+  overflow: hidden;
+}
+
+#role-selector-widget.rs-dragging {
+  box-shadow:
+    0 14px 48px rgba(0, 0, 0, 0.5),
+    0 1.5px 0 rgba(255, 255, 255, 0.08) inset;
+  transform: scale(1.03);
+  opacity: 0.92;
+}
+
+/* ─── Header / Drag Handle ─────────────────────────────── */
+
+.rs-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  cursor: grab;
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.rs-header:active {
+  cursor: grabbing;
+}
+
+.rs-title {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  pointer-events: none;
+}
+
+.rs-toggle {
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #c5c8d8;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.rs-toggle:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+/* ─── Body ─────────────────────────────────────────────── */
+
+.rs-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+}
+
+/* ─── Select Dropdown ──────────────────────────────────── */
+
+.rs-select {
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+  color: #e4e6f1;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.rs-select:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.rs-select:focus {
+  border-color: #6c8cff;
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.rs-select option {
+  background: #1e2235;
+  color: #e4e6f1;
+}
+
+/* ─── Go Button ────────────────────────────────────────── */
+
+.rs-go-btn {
+  width: 100%;
+  padding: 9px 0;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #6366f1, #818cf8);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.15s ease, box-shadow 0.25s ease;
+}
+
+.rs-go-btn:hover {
+  background: linear-gradient(135deg, #818cf8, #a5b4fc);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+}
+
+.rs-go-btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}

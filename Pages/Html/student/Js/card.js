@@ -18,6 +18,8 @@ document.addEventListener('DOMContentLoaded', () => {
         amount: document.getElementById('review-amount-input'),
     };
 
+    const assignBtn = document.getElementById('review-assign-btn');
+
     // Open logic
     tbody.addEventListener('click', async (e) => {
         const reviewBtn = e.target.closest('.review-btn');
@@ -49,21 +51,30 @@ document.addEventListener('DOMContentLoaded', () => {
         fields.course.textContent = "Student @ UNILIA";
         fields.residence.textContent = "N/A";
         fields.guardian.textContent = data.parents.includes('Father') ? 'Father' : 'N/A';
-       // document.createElement('option').value = "Loans";
-       //temp.textContent = "Loans"
-       //
-       let road = await getScheme();
-        console.log(road);
+        // document.createElement('option').value = "Loans";
+        //temp.textContent = "Loans"
+        //
+        if (fields.select) {
+            let road = await getScheme();
+            console.log(road);
 
-        road.forEach(item => {
-            const option = document.createElement('option');
-            option.value = item.scheme_name;
-            option.textContent = item.scheme_name;
-            fields.select.appendChild(option);
-        });
+            road.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.scheme_name;
+                option.textContent = item.scheme_name;
+                fields.select.appendChild(option);
+            });
+        }
+
+        // Hide sidebar until approvals are verified
+        const sidebar = document.querySelector('.sidebar-action');
+        if (sidebar) sidebar.style.display = 'none';
 
         reviewModal.classList.add('active');
-        
+
+        // Fetch and update approval status tracker
+        fetchApprovalStatus(data.id);
+
     });
 
     // Close logic
@@ -77,60 +88,138 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Finalize Assignment Logic (Placeholder)
-    document.getElementById('review-assign-btn').addEventListener('click', () => {
-        const scheme = document.getElementById('review-scheme-select').value;
-        const amount = document.getElementById('review-amount-input').value;
-        
-        const studentId = fields.id.textContent;
+    // Finalize Assignment Logic (only if sidebar exists)
+    if (assignBtn) {
+        assignBtn.addEventListener('click', () => {
+            const scheme = document.getElementById('review-scheme-select').value;
+            const amount = document.getElementById('review-amount-input').value;
 
-        if (scheme === 'none' || !amount) {
-            alert('Please select a scheme and enter an amount.');
-            return;
-        }
+            const studentId = fields.id.textContent;
 
-        console.log(`Finalizing assignment for ${studentId}: ${scheme} - MWK ${amount}`);
-        // Here you would typically perform a fetch to save the data
-        fetch("/schemeinfo",{
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body:JSON.stringify({
-                reg : studentId,
-                amount: amount,
-                scheme: scheme
-            })
-        }).then(res => {
-            if (!res.ok) {
-                throw new Error("Failed to send scheme info");
+            if (scheme === 'none' || !amount) {
+                alert('Please select a scheme and enter an amount.');
+                return;
             }
-            return res.json();
-        }).then(data => {
-            console.log(data);
-            alert(`Bursary assigned successfully to ${fields.name.textContent}`);
-            reviewModal.classList.remove('active');
-        }).catch(err => {
-            console.error(err);
-            alert("Failed to send scheme info");
+
+            console.log(`Finalizing assignment for ${studentId}: ${scheme} - MWK ${amount}`);
+            fetch("/schemeinfo", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    reg: studentId,
+                    amount: amount,
+                    scheme: scheme
+                })
+            }).then(res => {
+                if (!res.ok) {
+                    throw new Error("Failed to send scheme info");
+                }
+                return res.json();
+            }).then(data => {
+                console.log(data);
+                alert(`Bursary assigned successfully to ${fields.name.textContent}`);
+                reviewModal.classList.remove('active');
+            }).catch(err => {
+                console.error(err);
+                alert("Failed to send scheme info");
+            });
         });
-        
-    });
+    }
 });
 
 async function getScheme() {
-  try {
-    const res = await fetch("/getschemes");
+    try {
+        const res = await fetch("/getschemes");
 
-    if (!res.ok) {
-      throw new Error("Failed to fetch schemes");
+        if (!res.ok) {
+            throw new Error("Failed to fetch schemes");
+        }
+
+        const data = await res.json();
+        return data;
+
+    } catch (err) {
+        console.error(err);
+        throw err;
     }
+}
 
-    const data = await res.json();
-    return data;
+// ─── Approval Status Tracker ────────────────────────────────
+function fetchApprovalStatus(regNumber) {
+    fetch("/getapplicationstatus", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ reg: regNumber })
+    })
+        .then(res => {
+            if (!res.ok) throw new Error("Failed to fetch approval status");
+            return res.json();
+        })
+        .then(data => {
+            console.log("Approval status:", data);
 
-  } catch (err) {
-    console.error(err);
-    throw err;
-  }
+            // Map response keys to badge element IDs
+            const mapping = {
+                registrar_approval_status: "approval-registrar",
+                dean_of_student_approval_status: "approval-dean_of_student",
+                dean_of_facult_approval_status: "approval-dean_of_facult",
+                dean_of_science_approval_status: "approval-dean_of_science",
+                finance_office_approval_status: "approval-finance_office"
+            };
+
+            // Keys that must all be "approved" before the sidebar is shown
+            const requiredApprovals = [
+                "dean_of_student_approval_status",
+                "dean_of_facult_approval_status",
+                "dean_of_science_approval_status",
+                "finance_office_approval_status"
+            ];
+
+            let allRequiredApproved = true;
+
+            for (const [key, badgeId] of Object.entries(mapping)) {
+                const badge = document.getElementById(badgeId);
+                if (!badge) continue;
+
+                // Handle sql.NullString: {String: "approved", Valid: true}
+                let status = "pending";
+                if (data[key] && data[key].Valid) {
+                    status = data[key].String.toLowerCase();
+                } else if (typeof data[key] === "string" && data[key] !== "") {
+                    status = data[key].toLowerCase();
+                }
+
+                // Check if this required role is not yet approved
+                if (requiredApprovals.includes(key) && status !== "approved") {
+                    allRequiredApproved = false;
+                }
+
+                // Reset classes
+                badge.className = "approval-badge";
+
+                if (status === "approved") {
+                    badge.textContent = "Approved";
+                    badge.classList.add("approved");
+                } else if (status === "rejected" || status === "not selected") {
+                    badge.textContent = "Rejected";
+                    badge.classList.add("rejected");
+                } else {
+                    badge.textContent = "Pending";
+                    badge.classList.add("pending");
+                }
+            }
+
+            // Show the bursary sidebar only when all required roles approved
+            const sidebar = document.querySelector('.sidebar-action');
+            if (sidebar) {
+                sidebar.style.display = allRequiredApproved ? '' : 'none';
+            }
+        })
+        .catch(err => {
+            console.error("Approval status error:", err);
+        });
 }

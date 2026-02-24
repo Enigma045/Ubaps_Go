@@ -3,6 +3,7 @@ package Handles
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"ubaps/utils"
 
 	"github.com/jackc/pgx/v5"
@@ -107,8 +108,9 @@ func Applicants(
 }
 
 
-func ConsiderStudent(tx pgx.Tx, ctx context.Context, userId int64) (string, error) {
-	query := `UPDATE applications SET status = 'considered' WHERE user_id = $1`
+func ConsiderStudent(tx pgx.Tx, ctx context.Context, userId int64,Role string) (string, error) {
+	role := fmt.Sprintf("%s_approval_status",Role)
+	query := fmt.Sprintf(`UPDATE applications SET %s = 'approved' WHERE user_id = $1`,role)
 	_, err := tx.Exec(ctx, query, userId)
 	if err != nil {
 		return "", err
@@ -116,8 +118,9 @@ func ConsiderStudent(tx pgx.Tx, ctx context.Context, userId int64) (string, erro
 	return "Application Considered successfully", nil
 }
 
-func RejectStudent(tx pgx.Tx, ctx context.Context, userId int64) (string, error) {
-	query := `UPDATE applications SET status = 'not selected' WHERE user_id = $1`
+func RejectStudent(tx pgx.Tx, ctx context.Context, userId int64,Role string) (string, error) {
+	role := fmt.Sprintf("%s_approval_status",Role)
+	query := fmt.Sprintf(`UPDATE applications SET %s = 'rejected' WHERE user_id = $1`,role)
 	_, err := tx.Exec(ctx, query, userId)
 	if err != nil {
 		return "", err

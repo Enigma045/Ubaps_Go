@@ -66,7 +66,7 @@
             <img class="svg" src="/Image/svgviewer-output (5).svg" alt="">
             <span id="badge-nav" class="badge-nav">0</span>
           </div>
-          <div class="user-avatar">
+          <div id="user-avatar" class="user-avatar">
             RS
           </div>
         </div>
@@ -74,7 +74,7 @@
 
       <!-- Content -->
       <main class="content">
-        <h2>Welcome, Richard Sambo</h2>
+        <h2 id="welcome-message">Welcome, Admin</h2>
 
         <div class="apply-row">
           <p>To Create a User click here </p>
@@ -87,32 +87,32 @@
           <div class="stat-card">
 
             <div class="stat-info">
-              <p class="stat-label">Application Status</p>
-              <h2 class="stat-value">Not Submitted</h2>
+              <p class="stat-label">Total Users</p>
+              <h2 id="total-users" class="stat-value">0</h2>
             </div>
           </div>
 
           <div class="stat-card">
 
             <div class="stat-info">
-              <p class="stat-label">Number of statements submitted</p>
-              <h2 class="stat-value">None</h2>
+              <p class="stat-label">Active Users</p>
+              <h2 id="active-users" class="stat-value">0</h2>
             </div>
           </div>
 
           <div class="stat-card">
 
             <div class="stat-info">
-              <p class="stat-label">Approved Amount</p>
-              <h2 class="stat-value">MWK 0</h2>
+              <p class="stat-label">Deactive Users</p>
+              <h2 id="deactive-users" class="stat-value">0</h2>
             </div>
           </div>
 
           <div class="stat-card">
 
             <div class="stat-info">
-              <p class="stat-label">Number of Users</p>
-              <h2 class="stat-value">0</h2>
+              <p class="stat-label">System Health</p>
+              <h2 class="stat-value">Good</h2>
             </div>
           </div>
 
@@ -145,6 +145,8 @@
 
         </div>
 
+        <script src="/Js/Dashboard.js"></script>
+        <script src="/Js/Profile_Loader.js"></script>
         <script src="/Js/Admin_Dashboard.js"></script>
         <script src="/Js/Notification_Feature.js"></script>
 </body>

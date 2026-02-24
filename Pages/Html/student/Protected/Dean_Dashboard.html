@@ -4,8 +4,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/Css/Dean_Dashboard.css">
+    <link rel="stylesheet" href="/Css/Navbar/Navbar.css">
+    <link rel="stylesheet" href="/Css/Layout.css">
+    <link rel="stylesheet" href="/Css/Dashboard.css">
+    <link rel="stylesheet" href="/Css/Notification.css">
+    <link rel="stylesheet" href="/Css/Role_Selector.css">
     <title>Dean Dashboard - UBAPS</title>
+    <style>
+        :root {
+            --primary-color: #059669;
+            /* Dean's Green */
+            --primary-hover: #047857;
+        }
+
+        .user-avatar {
+            background-color: var(--primary-color);
+        }
+
+        .stat-value {
+            color: var(--primary-color) !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -23,17 +42,17 @@
             </div>
 
             <div class="nav-item">
-                <span class="icon"><img class="svg" src="/Image/svgviewer-output (11).svg" alt=""></span>
-                <span class="label"><a href="/apply" class="text-link">Applications</a></span>
+                <span class="icon"><img class="svg" src="/Image/svgviewer-output (13).svg" alt=""></span>
+                <span class="label"><a href="/deandecision" class="text-link">Judge</a></span>
             </div>
 
             <div class="nav-item">
-                <span class="icon"><img class="svg" src="/Image/svgviewer-output (5).svg" alt=""></span>
-                <span class="label"><a href="/notifications" class="text-link">Student Support</a></span>
+                <span class="icon"><img class="svg" src="/Image/svgviewer-output (12).svg" alt=""></span>
+                <span class="label"><a href="/general_reports" class="text-link">Reports</a></span>
             </div>
 
             <div class="nav-item logout">
-                <span class="icon"><img class="svg" src="/Image/svgviewer-output (7).svg" alt=""></span>
+                <span class="icon"><img class="LogOut" src="/Image/svgviewer-output (7).svg" alt=""></span>
                 <span class="label"><a href="/logout" class="text-link" style="color: inherit;">Logout</a></span>
             </div>
         </nav>
@@ -45,30 +64,47 @@
                     <strong>UBAPS</strong> &gt; Dean Home
                 </div>
                 <div class="header-actions">
-                    <div class="user-avatar">DN</div>
+                    <div class="notification-nav">
+                        <img class="svg" src="/Image/svgviewer-output (5).svg" alt="">
+                        <span id="badge-nav" class="badge-nav">0</span>
+                    </div>
+                    <div id="user-avatar" class="user-avatar">DN</div>
                 </div>
             </header>
 
             <main class="content">
-                <h2>Dean of Students Dashboard</h2>
+                <h2 id="welcome-message">Dean of Students Dashboard</h2>
+
+                <div class="apply-row">
+                    <p>To go to decision Page click here </p>
+                    <button class="apply-btn" onclick="location.href='/deandecision'">Judge Page</button>
+                </div>
 
                 <!-- Stats Cards -->
                 <div class="stats-cards">
                     <div class="stat-card">
-                        <p class="stat-label">Active Students</p>
-                        <h2 class="stat-value">5,240</h2>
+                        <div class="stat-info">
+                            <p class="stat-label">Pending Applications</p>
+                            <h2 id="num-pending" class="stat-value">0</h2>
+                        </div>
                     </div>
                     <div class="stat-card">
-                        <p class="stat-label">Welfare Cases</p>
-                        <h2 class="stat-value">12</h2>
+                        <div class="stat-info">
+                            <p class="stat-label">Selected Students</p>
+                            <h2 id="num-selected" class="stat-value">0</h2>
+                        </div>
                     </div>
                     <div class="stat-card">
-                        <p class="stat-label">Bursary Recommendations</p>
-                        <h2 class="stat-value">85</h2>
+                        <div class="stat-info">
+                            <p class="stat-label">Rejected Students</p>
+                            <h2 id="num-rejected" class="stat-value">0</h2>
+                        </div>
                     </div>
                     <div class="stat-card">
-                        <p class="stat-label">Pending Reviews</p>
-                        <h2 class="stat-value">8</h2>
+                        <div class="stat-info">
+                            <p class="stat-label">Pending Letters</p>
+                            <h2 id="num-letters" class="stat-value">0</h2>
+                        </div>
                     </div>
                 </div>
 
@@ -76,22 +112,29 @@
                 <div class="quick-links">
                     <h3>Oversight Actions</h3>
                     <div class="card-grid">
-                        <div class="action-card" onclick="location.href='/apply'">
-                            <div class="card-icon">📁</div>
-                            <h3>Application Oversight</h3>
-                            <p>Monitor student bursary applications and progress</p>
+                        <div class="action-card" onclick="location.href='/deandecision'">
+                            <div class="card-icon"><span class="icon"><img class="svg"
+                                        src="/Image/svgviewer-output (13).svg" alt=""></span></div>
+                            <h3>Judge</h3>
+                            <p>Judge Students Application Forms</p>
                         </div>
                         <div class="action-card" onclick="location.href='/notifications'">
-                            <div class="card-icon">🤝</div>
-                            <h3>Welfare Support</h3>
-                            <p>Manage student feedback and support requests</p>
+                            <div class="card-icon"><span class="icon"><img class="svg"
+                                        src="/Image/svgviewer-output (12).svg" alt=""></span></div>
+                            <h3>Reports</h3>
+                            <p>Click Here to look at reports</p>
                         </div>
                     </div>
                 </div>
             </main>
         </div>
     </div>
+    <script src="/Js/Dashboard.js"></script>
+    <script src="/Js/Role_Selector.js"></script>
+    <script src="/Js/Profile_Loader.js"></script>
     <script src="/Js/Dean_Dashboard.js"></script>
+    <script src="/Js/Notification_Feature.js"></script>
+    <script src="/Js/Notification_counter.js"></script>
 </body>
 
 </html>

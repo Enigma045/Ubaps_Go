@@ -35,6 +35,8 @@ func CreateUser(
 		"admin":           true,
 		"student":         true,
 		"dean_of_student": true,
+		"dean_of_science": true,
+		"dean_of_facult": true,
 		"registrar":       true,
 		"finance_office":  true,
 	}

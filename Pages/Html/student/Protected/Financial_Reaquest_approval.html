@@ -33,12 +33,12 @@
         <span class="label"><a href="/scheme" class="text-link">Bursary Scheme</a></span>
       </div>
 
-      <div class="nav-item active">
+      <div class="nav-item ">
         <span class="icon"><img class="svg" src="/Image/svgviewer-output (13).svg" alt=""></span>
         <span class="label"><a href="/decision" class="text-link">Judge</a></span>
       </div>
 
-      <div class="nav-item">
+      <div class="nav-item active">
         <span class="icon"><img class="svg" src="/Image/svgviewer-output (14).svg" alt=""></span>
         <span class="label"><a href="/request_approval" class="text-link">Financial Approval</a></span>
       </div>
@@ -82,8 +82,8 @@
         <!-- Header -->
         <header class="head">
           <div>
-            <h1>Committee Review</h1>
-            <p class="subtitle">Filter and Review Applicants</p>
+            <h1>Financial Requests</h1>
+            <p class="subtitle">Approve and Reject Financial Requests</p>
           </div>
           <div class="time">
             Jan 6, 2026 · 01:34 AM
@@ -92,14 +92,15 @@
 
         <!-- Tabs -->
         <div class="tabs">
-          <label for="Applicants">Applicants</label>
-          <input type="checkbox" class="active" data-tab="applications" value="submitted">
-          <!-- <label for="Considered">Considered</label>
-          <input type="checkbox" data-tab="payments" value="considered"> -->
-          <label for="Selected">Selected</label>
-          <input type="checkbox" data-tab="users" value="selected">
+          <label for="Selected">Sent</label>
+          <input type="checkbox" data-tab="users" value="sent">
+          <label for="Applicants">Approved</label>
+          <input type="checkbox" class="active" data-tab="applications" value="approved">
+          <label for="Considered">Rejected</label>
+          <input type="checkbox" data-tab="payments" value="rejected">
+          <!-- 
           <label for="Not Selected">Not Selected</label>
-          <input type="checkbox" class="active" data-tab="applications" value="not selected">
+          <input type="checkbox" class="active" data-tab="applications" value="not selected"> -->
         </div>
 
         <!-- Search -->
@@ -112,12 +113,11 @@
           <table class="log-table active" id="applications">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Reg #</th>
-                <th>Parent Status</th>
-                <th>Employment Status</th>
-                <th>Monthly Income</th>
-                <th>Priority</th>
+                <th>Requester Id</th>
+                <th>Requester</th>
+
+                <th>Amount</th>
+                <th>Details</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -248,85 +248,32 @@
             <p id="review-guardian">Father</p>
           </div>
         </div>
-
-        <!-- APPROVAL STATUS TRACKER -->
-        <div class="approval-tracker">
-          <h3>Approval Status</h3>
-          <div class="approval-items" id="approval-items">
-            <div class="approval-item">
-              <span class="approval-role">Registrar</span>
-              <span class="approval-badge pending" id="approval-registrar">Pending</span>
-            </div>
-            <div class="approval-item">
-              <span class="approval-role">Dean of Students</span>
-              <span class="approval-badge pending" id="approval-dean_of_student">Pending</span>
-            </div>
-            <div class="approval-item">
-              <span class="approval-role">Dean of Faculty</span>
-              <span class="approval-badge pending" id="approval-dean_of_facult">Pending</span>
-            </div>
-            <div class="approval-item">
-              <span class="approval-role">Dean of Science</span>
-              <span class="approval-badge pending" id="approval-dean_of_science">Pending</span>
-            </div>
-            <div class="approval-item">
-              <span class="approval-role">Finance Office</span>
-              <span class="approval-badge pending" id="approval-finance_office">Pending</span>
-            </div>
-          </div>
-        </div>
       </div>
+
       <!-- BURSARY ACTION SIDEBAR -->
       <div class="sidebar-action">
-        <div class="sidebar-header">
-          <div class="sidebar-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10" />
-              <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" />
-              <path d="M12 18V6" />
-            </svg>
-          </div>
-          <div>
-            <h4>Assign Bursary</h4>
-            <p class="sidebar-subtitle">All approvals verified</p>
-          </div>
-        </div>
-
-        <div class="sidebar-status-bar">
-          <span class="status-dot approved"></span>
-          <span>Ready for assignment</span>
-        </div>
+        <h4>Assign Bursary</h4>
 
         <div class="form-group">
           <label for="review-scheme-select">Select Scheme</label>
           <select id="review-scheme-select">
-            <option value="none">— Choose a scheme —</option>
+            <option value="none">None</option>
           </select>
         </div>
 
         <div class="form-group">
           <label for="review-amount-input">Bursary Amount (MWK)</label>
-          <div class="input-wrapper">
-            <span class="input-prefix">MWK</span>
-            <input type="number" id="review-amount-input" placeholder="0.00">
-          </div>
+          <input type="number" id="review-amount-input" placeholder="0.00">
         </div>
 
-        <button class="assign-btn" id="review-assign-btn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
-          Finalize Assignment
-        </button>
+        <button class="assign-btn" id="review-assign-btn">Finalize Assignment</button>
       </div>
     </div>
   </div>
 
   <script src="/Js/Dashboard.js"></script>
   <script src="/Js/Profile_Loader.js"></script>
-  <script src="/Js/Committe_Review.js"></script>
+  <script src="/Js/Financial_Reaquest_approval.js"></script>
   <script src="/Js/Notification_Feature.js"></script>
   <script src="/Js/card.js"></script>
 </body>

@@ -55,7 +55,7 @@
             <img class="svg" src="/Image/svgviewer-output (5).svg" alt="">
             <span id="badge-nav" class="badge-nav">0</span>
           </div>
-          <div class="user-avatar">
+          <div id="user-avatar" class="user-avatar">
             RS
           </div>
         </div>
@@ -71,7 +71,7 @@
             <div class="progress"></div>
             <ol>
               <li class="current">Personal</li>
-              <li>Guardian</li>
+              <!-- <li>Guardian</li> -->
               <li>Finance</li>
               <li>Review</li>
             </ol>
@@ -81,7 +81,7 @@
           <form class="form" id="bursaryForm">
             <!-- STEP 1 -->
             <section class="step active bursaryForm">
-              <div class="form-group">
+              <!-- <div class="form-group">
                 <label for="fullName">First Name</label>
                 <input type="text" id="fullName" name="fullName" required placeholder="Richard" value="Richard"
                   disabled>
@@ -89,7 +89,7 @@
               <div class="form-group">
                 <label for="surName">Surname</label>
                 <input type="text" id="surName" name="surName" required placeholder="Sambo" value="Sambo" disabled>
-              </div>
+              </div> -->
               <div class="form-group">
                 <label for="dob">Date of Birth</label>
                 <input type="date" id="dob" name="dob" required>
@@ -117,10 +117,24 @@
                 <input type="text" id="HomeDistrict" name="HomeDistrict" placeholder="Lilongwe" required
                   value="lilongwe">
               </div>
+              <div class="form-group">
+                <label>Accommodation</label>
+                <div class="radio-group">
+                  <label>
+                    <input class="radio" type="radio" name="Accomodation" value="Oncampus" required checked>
+                    On Campus
+                  </label>
+
+                  <label>
+                    <input class="radio" type="radio" name="Accomodation" value="Offcampus" required>
+                    Off Campus
+                  </label>
+                </div>
+              </div>
             </section>
 
             <!-- STEP 2 -->
-            <section class="step bursaryForm">
+            <!-- <section class="step bursaryForm">
               <div class="form-group">
                 <label for="Programme">Programme</label>
                 <input type="text" id="Programme" name="Programme" disabled required value="Computer Engineering">
@@ -165,7 +179,7 @@
                   </label>
                 </div>
               </div>
-            </section>
+            </section> -->
 
             <!-- STEP 3 -->
             <section class="step bursaryForm">
@@ -188,10 +202,10 @@
                   <option>Unemployed</option>
                 </select>
               </div>
-              <div class="form-group">
+              <!-- <div class="form-group">
                 <label for="monthlyIncome">Household Monthly Income (MWK)</label>
                 <input type="number" id="monthlyIncome" name="monthlyIncome" min="0" required value="60000">
-              </div>
+              </div> -->
               <div class="form-group">
                 <label for="otherSupport">Other Financial Support?</label>
                 <select id="otherSupport" name="otherSupport" required>
@@ -199,10 +213,6 @@
                   <option selected value="no">No</option>
                   <option value="yes">Yes</option>
                 </select>
-              </div>
-              <div class="form-group full-width">
-                <label for="tuitionFee">Total Tuition Fee (MWK)</label>
-                <input type="number" id="tuitionFee" name="tuitionFee" min="0" required value="60000">
               </div>
             </section>
 
@@ -215,7 +225,6 @@
                 <p><strong>Review your information before submitting.</strong></p>
                 <div class="review-checklist">
                   <p>✓ Personal details</p>
-                  <p>✓ Guardian information</p>
                   <p>✓ Financial information</p>
                 </div>
                 <p class="review-note">Please ensure all information is correct before submitting your application.</p>
@@ -233,6 +242,8 @@
         </div>
       </div>
     </div>
+    <script src="/Js/Dashboard.js"></script>
+    <script src="/Js/Profile_Loader.js"></script>
     <script src="/Js/Student_Application.js" defer></script>
     <script src="/Js/Notification_Feature.js"></script>
     <script src="/Js/LogOut.js"></script>

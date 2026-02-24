@@ -1,13 +1,22 @@
 /* Dean Dashboard Logic */
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     console.log("Dean Dashboard Initialized");
 
-    // Placeholder for real-time stats updates
-    const updateStats = () => {
-        // Future: Fetch data from /api/dean/stats
-        console.log("Fetching dean stats...");
-    };
 
-    updateStats();
+    // Load Stats
+    if (typeof fetchDeanStats === 'function') {
+        const stats = await fetchDeanStats();
+        if (stats) {
+            const pendingEl = document.getElementById('num-pending');
+            const selectedEl = document.getElementById('num-selected');
+            const rejectedEl = document.getElementById('num-rejected');
+            const lettersEl = document.getElementById('num-letters');
+
+            if (pendingEl) pendingEl.textContent = stats.pending_applications;
+            if (selectedEl) selectedEl.textContent = stats.selected_students;
+            if (rejectedEl) rejectedEl.textContent = stats.rejected_students;
+            if (lettersEl) lettersEl.textContent = stats.pending_letters;
+        }
+    }
 });

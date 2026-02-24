@@ -8,7 +8,8 @@
   <link rel="stylesheet" href="/Css/Layout.css">
   <link rel="stylesheet" href="/Css/Dashboard.css">
   <link rel="stylesheet" href="/Css/Notification.css">
-  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="/Css/Role_Selector.css">
+  <title>Financial Dashboard</title>
 </head>
 
 <body>
@@ -22,7 +23,7 @@
         <span class="label">UNILIA</span>
       </div>
 
-            <div class="nav-item">
+      <div class="nav-item active">
         <span class="icon"><img class="svg" src="/Image/svgviewer-output (3).svg" alt=""></span>
         <span class="label"><a href="/financialdashboard" class="text-link">Home</a></span>
       </div>
@@ -33,11 +34,16 @@
       </div>
 
       <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (13).svg" alt=""></span>
+        <span class="label"><a href="/deandecision" class="text-link">Judge</a></span>
+      </div>
+
+      <div class="nav-item">
         <span class="icon"><img class="svg" src="/Image/svgviewer-output (17).svg" alt=""></span>
         <span class="label"><a href="/financial" class="text-link">Financial Request</a></span>
       </div>
 
-      <div class="nav-item active">
+      <div class="nav-item">
         <span class="icon"><img class="svg" src="/Image/svgviewer-output (12).svg" alt=""></span>
         <span class="label"><a href="/financial_reports" class="text-link">Reports</a></span>
       </div>
@@ -59,7 +65,7 @@
             <img class="svg" src="/Image/svgviewer-output (5).svg" alt="">
             <span id="badge-nav" class="badge-nav">0</span>
           </div>
-          <div class="user-avatar">
+          <div id="user-avatar" class="user-avatar">
             RS
           </div>
         </div>
@@ -67,10 +73,10 @@
 
       <!-- Content -->
       <main class="content">
-        <h2>Welcome, Richard Sambo</h2>
+        <h2 id="welcome-message">Welcome, Financial Officer</h2>
 
         <div class="apply-row">
-          <p>To Make a  Financial Requesr click here </p>
+          <p>To Make a Financial Requesr click here </p>
           <button class="apply-btn">Financial Request Page</button>
         </div>
 
@@ -78,34 +84,30 @@
         <div class="stats-cards">
 
           <div class="stat-card">
-
             <div class="stat-info">
-              <p class="stat-label">Number of Disbursed</p>
-              <h2 class="stat-value">None</h2>
+              <p class="stat-label">Disbursements Made</p>
+              <h2 id="num-disbursements" class="stat-value">0</h2>
             </div>
           </div>
 
           <div class="stat-card">
-
             <div class="stat-info">
-              <p class="stat-label">Number of statements submitted</p>
-              <h2 class="stat-value">None</h2>
+              <p class="stat-label">History Requests</p>
+              <h2 id="num-requests" class="stat-value">0</h2>
             </div>
           </div>
 
           <div class="stat-card">
-
             <div class="stat-info">
               <p class="stat-label">Approved Amount</p>
-              <h2 class="stat-value">MWK 0</h2>
+              <h2 id="approved-amount" class="stat-value">MWK 0</h2>
             </div>
           </div>
 
           <div class="stat-card">
-
             <div class="stat-info">
-              <p class="stat-label">Number of Users</p>
-              <h2 class="stat-value">0</h2>
+              <p class="stat-label">Financial Stability</p>
+              <h2 class="stat-value">Robust</h2>
             </div>
           </div>
 
@@ -132,6 +134,9 @@
 
         </div>
 
+        <script src="/Js/Dashboard.js"></script>
+        <script src="/Js/Role_Selector.js"></script>
+        <script src="/Js/Profile_Loader.js"></script>
         <script src="/Js/Financial_Dashboard.js"></script>
         <script src="/Js/Notification_Feature.js"></script>
 </body>
