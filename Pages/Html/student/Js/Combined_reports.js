@@ -1,209 +1,141 @@
-// Combined Reports Page - Backend Integration
+let currentPage = 1;
+const limit = 20;
 
-// API endpoint configuration
-const API_BASE_URL = '/general_report'; // Adjust based on your backend configuration
-
-/**
- * Fetch combined reports from the backend
- * @param {Object} filters - Optional filters (startDate, endDate, scheme, status)
- */
-async function fetchCombinedReports(filters = {}) {
-    try {
-        const queryParams = new URLSearchParams(filters).toString();
-        const url = `${API_BASE_URL}/combined-reports${queryParams ? '?' + queryParams : ''}`;
-
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error fetching combined reports:', error);
-        showToast("Failed to load combined reports.", "error");
-        return [];
-    }
-}
-
-/**
- * Apply all filters (date range, scheme, status)
- */
-function applyFilters() {
-    const startDate = document.getElementById('startDate').value;
-    const endDate = document.getElementById('endDate').value;
-    const scheme = document.getElementById('schemeFilter').value;
-    const status = document.getElementById('statusFilter').value;
-
-    const filters = {};
-    if (startDate) filters.startDate = startDate;
-    if (endDate) filters.endDate = endDate;
-    if (scheme) filters.scheme = scheme;
-    if (status) filters.status = status;
-
-    fetchCombinedReports(filters).then(reports => {
-        populateReportsTable(reports);
-    });
-}
-
-/**
- * View combined report details
- * @param {string} reportId - The ID of the report to view
- */
-async function viewReportDetails(reportId) {
-    try {
-        const response = await fetch(`${API_BASE_URL}/combined-reports/${reportId}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const reportData = await response.json();
-        console.log('Report details:', reportData);
-        // Handle displaying the report details (e.g., open in modal or new page)
-        return reportData;
-    } catch (error) {
-        console.error('Error viewing report details:', error);
-        showToast("Failed to load report details.", "error");
-    }
-}
-
-/**
- * Export combined report to CSV/PDF
- */
-async function exportReport() {
-    try {
-        const startDate = document.getElementById('startDate').value;
-        const endDate = document.getElementById('endDate').value;
-        const scheme = document.getElementById('schemeFilter').value;
-        const status = document.getElementById('statusFilter').value;
-
-        const filters = {};
-        if (startDate) filters.startDate = startDate;
-        if (endDate) filters.endDate = endDate;
-        if (scheme) filters.scheme = scheme;
-        if (status) filters.status = status;
-
-        const queryParams = new URLSearchParams(filters).toString();
-        const url = `${API_BASE_URL}/combined-reports/export${queryParams ? '?' + queryParams : ''}`;
-
-        const response = await fetch(url, {
-            method: 'GET',
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const blob = await response.blob();
-        const downloadUrl = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = downloadUrl;
-        a.download = `combined_report_${new Date().toISOString().split('T')[0]}.csv`;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(downloadUrl);
-        document.body.removeChild(a);
-    } catch (error) {
-        console.error('Error exporting report:', error);
-        showToast('Failed to export report. Please try again.', 'error');
-    }
-}
-
-/**
- * Search reports
- * @param {string} searchTerm - The search term
- */
-async function searchReports(searchTerm) {
-    try {
-        const response = await fetch(`${API_BASE_URL}/combined-reports/search?q=${encodeURIComponent(searchTerm)}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error searching reports:', error);
-        showToast("Failed to search reports.", "error");
-        return [];
-    }
-}
-
-/**
- * Populate the table with reports data
- * @param {Array} reports - Array of report objects
- */
-function populateReportsTable(reports) {
-    const tbody = document.querySelector('#combined-reports tbody');
-    if (!tbody) return;
-
-    tbody.innerHTML = '';
-
-    reports.forEach(report => {
-        const row = document.createElement('tr');
-        row.className = report.financialStatus === 'disbursed' ? 'success' : 'warning';
-
-        const appStatusClass = report.applicationStatus === 'approved' ? 'approved' :
-            report.applicationStatus === 'rejected' ? 'rejected' : 'pending';
-
-        const finStatusClass = report.financialStatus === 'disbursed' ? 'disbursed' : 'pending';
-
-        row.innerHTML = `
-      <td>${report.studentName}</td>
-      <td>${report.registrationNumber}</td>
-      <td>${report.schemeName}</td>
-      <td>MWK ${report.amount.toLocaleString()}</td>
-      <td><span class="status-badge ${appStatusClass}">${report.applicationStatus}</span></td>
-      <td><span class="status-badge ${finStatusClass}">${report.financialStatus}</span></td>
-      <td>${report.date}</td>
-      <td>
-        <button class="view-btn" onclick="viewReportDetails('${report.id}')">View Details</button>
-      </td>
-    `;
-
-        tbody.appendChild(row);
-    });
-}
-
-// Event listeners
 document.addEventListener('DOMContentLoaded', () => {
-    // Load reports on page load
-    fetchCombinedReports().then(reports => {
-        populateReportsTable(reports);
-    });
+    loadReports(currentPage);
 
-    // Search functionality
     const searchInput = document.querySelector('.search-bar input');
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
-            const searchTerm = e.target.value;
-            if (searchTerm.length > 2) {
-                searchReports(searchTerm).then(reports => {
-                    populateReportsTable(reports);
-                });
-            } else if (searchTerm.length === 0) {
-                fetchCombinedReports().then(reports => {
-                    populateReportsTable(reports);
-                });
-            }
+            // Future: Implement client-side or server-side search
         });
     }
 });
+
+async function loadReports(page) {
+    try {
+        const response = await fetch(`/api/reports/comprehensive?page=${page}&limit=${limit}`);
+        if (!response.ok) throw new Error("Failed to fetch reports");
+        
+        const result = await response.json();
+        const tbody = document.querySelector('#combined-reports tbody');
+        tbody.innerHTML = '';
+
+        if (result.data && result.data.length > 0) {
+            result.data.forEach(report => {
+                const row = document.createElement('tr');
+                row.className = report.status === 'Approved' ? 'success' : 'warning';
+
+                row.innerHTML = `
+                    <td>${report.name} ${report.surname}</td>
+                    <td>${report.application_id}</td>
+                    <td>${report.scheme_name}</td>
+                    <td>MWK ${report.bursary_amount.toLocaleString()}</td>
+                    <td><span class="status-badge approved">${report.status}</span></td>
+                    <td><span class="status-badge ${report.request_status === 'Approved' ? 'disbursed' : 'pending'}">${report.request_status}</span></td>
+                    <td>${new Date(report.applied_at).toLocaleDateString()}</td>
+                    <td>
+                        <button class="view-btn">View Details</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        } else {
+            tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;">No reports found</td></tr>';
+        }
+
+        renderPagination(result.total, page);
+
+    } catch (error) {
+        console.error('Error loading reports:', error);
+        if (window.showToast) showToast("Failed to load reports.", "error");
+    }
+}
+
+function renderPagination(total, page) {
+    const container = document.getElementById("pagination-controls");
+    if (!container) return;
+    container.innerHTML = '';
+    
+    const totalPages = Math.ceil(total / limit);
+    if (totalPages <= 1) return;
+
+    const prevBtn = document.createElement("button");
+    prevBtn.innerText = "Prev";
+    prevBtn.disabled = page === 1;
+    prevBtn.onclick = () => {
+        currentPage--;
+        loadReports(currentPage);
+    };
+    container.appendChild(prevBtn);
+
+    const start = Math.max(1, page - 2);
+    const end = Math.min(totalPages, page + 2);
+
+    for (let i = start; i <= end; i++) {
+        const btn = document.createElement("button");
+        btn.innerText = i;
+        if (i === page) btn.classList.add("active");
+        btn.onclick = () => {
+            currentPage = i;
+            loadReports(currentPage);
+        };
+        container.appendChild(btn);
+    }
+
+    const nextBtn = document.createElement("button");
+    nextBtn.innerText = "Next";
+    nextBtn.disabled = page === totalPages;
+    nextBtn.onclick = () => {
+        currentPage++;
+        loadReports(currentPage);
+    };
+    container.appendChild(nextBtn);
+}
+
+function applyFilters() {
+    currentPage = 1;
+    loadReports(currentPage);
+}
+
+async function exportReport() {
+    try {
+        const response = await fetch(`/api/reports/comprehensive?limit=1000`);
+        const result = await response.json();
+        
+        if (!result.data || result.data.length === 0) {
+            if (window.showToast) showToast("No data to export", "warning");
+            return;
+        }
+
+        const data = result.data;
+        const csvRows = [];
+        const headers = Object.keys(data[0]);
+        csvRows.push(headers.join(','));
+
+        for (const row of data) {
+            const values = headers.map(header => {
+                const val = row[header];
+                return `"${val}"`;
+            });
+            csvRows.push(values.join(','));
+        }
+
+        const csvContent = csvRows.join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.setAttribute('hidden', '');
+        a.setAttribute('href', url);
+        a.setAttribute('download', `report_${new Date().toISOString().slice(0,10)}.csv`);
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        
+        if (window.showToast) showToast("Report exported successfully", "success");
+    } catch (error) {
+        console.error('Export error:', error);
+        if (window.showToast) showToast("Failed to export report", "error");
+    }
+}
+

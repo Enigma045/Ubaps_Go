@@ -73,3 +73,38 @@ func Finance_Operations(
 	log.Println("Inserted rows:", row.RowsAffected())
 	return nil
 }
+
+// Request_Finance_Statement inserts a new record with status 'sent' into financial_history
+func Request_Finance_Statement(tx pgx.Tx, ctx context.Context, studentID int64) error {
+	query := `
+		INSERT INTO financial_history (
+			semester,
+			payment_date,
+			details,
+			payment_amount,
+			student_id,
+			request,
+			updated_at,
+			full_installment
+		)
+		VALUES ($1,$2,$3,$4,$5,$6,$7,$8);
+	`
+
+	_, err := tx.Exec(
+		ctx,
+		query,
+		"N/A",                // semester
+		time.Now(),           // payment_date
+		"Statement Requested", // details
+		0,                    // payment_amount
+		studentID,            // student_id
+		"sent",               // request status
+		time.Now(),           // updated_at
+		0,                    // full_installment
+	)
+	if err != nil {
+		return fmt.Errorf("failed to insert statement request: %w", err)
+	}
+
+	return nil
+}

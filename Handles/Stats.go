@@ -10,6 +10,7 @@ import (
 // StudentStats holds statistics for the student dashboard
 type StudentStats struct {
 	ApplicationStatus string `json:"application_status"`
+    
 	BursaryScheme     string `json:"bursary_scheme"`
 }
 
@@ -17,6 +18,10 @@ type StudentStats struct {
 type RegistrarStats struct {
 	ApprovedAmount     float64 `json:"approved_amount"`
 	NumberOfApplicants int     `json:"number_of_applicants"`
+    PendingApplications int `json:"pending_applications"`
+	ConsideringApplications int `json:"considering_applications"`
+	SelectedStudents    int `json:"selected_students"`
+	RejectedStudents    int `json:"rejected_students"`
 	NumberOfSchemes    int     `json:"number_of_schemes"`
 }
 
@@ -83,13 +88,22 @@ func GetRegistrarStats(pool *pgxpool.Pool, ctx context.Context) (RegistrarStats,
 	}
 
 	// Number of Applicants
-	queryApplicants := `SELECT 
-			COUNT(*) FILTER (WHERE status = 'submitted')	
-		FROM applications`
-	err = pool.QueryRow(ctx, queryApplicants).Scan(&stats.NumberOfApplicants)
+	query := `
+		SELECT 
+			COUNT(*) FILTER (WHERE status = 'submitted'),
+			COUNT(*) FILTER (WHERE status = 'considering'),
+			COUNT(*) FILTER (WHERE status = 'selected'),
+			COUNT(*) FILTER (WHERE status = 'not selected')
+		FROM applications
+	`
+	err = pool.QueryRow(ctx, query).Scan(&stats.PendingApplications, &stats.ConsideringApplications, &stats.SelectedStudents, &stats.RejectedStudents)
 	if err != nil {
 		return stats, err
 	}
+
+	// Assuming pending letters are applications that are 'selected' but haven't had some letter-specific action?
+	// For now, let's just use pending applications count as a placeholder.
+	
 
 	// Number of Schemes
 	querySchemes := `SELECT COUNT(*) FROM bursary_schemes`

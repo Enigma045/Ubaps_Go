@@ -16,6 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
         guardian: document.getElementById('review-guardian'),
         select: document.getElementById('review-scheme-select'),
         amount: document.getElementById('review-amount-input'),
+        reviewStatus: document.getElementById('review-status'),
+        reviewAmount: document.getElementById('review-amount'),
     };
 
     const assignBtn = document.getElementById('review-assign-btn');
@@ -88,6 +90,82 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Toast Feedback for card buttons
+    const statementBtn = document.querySelector('.card-btn.primary');
+    const dossierBtn = document.querySelector('.card-btn.outline');
+
+    // Statement Request Modal Elements
+    const statementModal = document.getElementById('requestStatementModal');
+    const closeStatementBtn = document.getElementById('closeStatementModal');
+    const cancelStatementBtn = document.getElementById('cancelStatement');
+    const confirmStatementBtn = document.getElementById('confirmStatementRequest');
+    const statementStudentName = document.getElementById('statementStudentName');
+
+    if (statementBtn) {
+        statementBtn.addEventListener('click', () => {
+            console.log("Request Statements button clicked");
+            const studentId = fields.id.textContent.trim();
+            console.log("Current Student ID in modal:", studentId);
+
+            if (!studentId || studentId === "ID Number") {
+                showToast("No student selected.", "error");
+                return;
+            }
+            // Populate and show the confirmation modal
+            if (statementStudentName) statementStudentName.textContent = fields.name.textContent;
+            console.log("Showing statement confirmation modal for:", fields.name.textContent);
+            if (statementModal) {
+                statementModal.classList.add('active');
+            } else {
+                console.error("Statement confirmation modal not found in DOM");
+                showToast("Confirmation modal error.", "error");
+            }
+        });
+    }
+
+    const closeStatementModals = () => {
+        if (statementModal) statementModal.classList.remove('active');
+    };
+
+    if (closeStatementBtn) closeStatementBtn.addEventListener('click', closeStatementModals);
+    if (cancelStatementBtn) cancelStatementBtn.addEventListener('click', closeStatementModals);
+
+    if (confirmStatementBtn) {
+        confirmStatementBtn.addEventListener('click', () => {
+            const studentId = fields.id.textContent.trim();
+            console.log("Confirm button clicked. Requesting statement for:", studentId);
+            
+            fetch("/requeststatement", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ reg: studentId })
+            }).then(async res => {
+                console.log("Response status:", res.status);
+                if (!res.ok) {
+                    const errorText = await res.text();
+                    throw new Error(errorText || "Failed to request statement");
+                }
+                return res.json();
+            }).then(data => {
+                console.log("Success data:", data);
+                showToast("Statement request sent successfully.", "success");
+                closeStatementModals();
+            }).catch(err => {
+                console.error("Statement request fetch error:", err);
+                showToast(err.message || "Failed to request statement.", "error");
+                closeStatementModals();
+            });
+        });
+    }
+
+    if (dossierBtn) {
+        dossierBtn.addEventListener('click', () => {
+            showToast("Opening student dossier...", "success");
+        });
+    }
+
     // Finalize Assignment Logic (only if sidebar exists)
     if (assignBtn) {
         assignBtn.addEventListener('click', () => {
@@ -127,99 +205,102 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
-});
 
-async function getScheme() {
-    try {
-        const res = await fetch("/getschemes");
+    async function getScheme() {
+        try {
+            const res = await fetch("/getschemes");
 
-        if (!res.ok) {
-            throw new Error("Failed to fetch schemes");
+            if (!res.ok) {
+                throw new Error("Failed to fetch schemes");
+            }
+
+            const data = await res.json();
+            return data;
+
+        } catch (err) {
+            console.error(err);
+            throw err;
         }
-
-        const data = await res.json();
-        return data;
-
-    } catch (err) {
-        console.error(err);
-        throw err;
     }
-}
 
-// ─── Approval Status Tracker ────────────────────────────────
-function fetchApprovalStatus(regNumber) {
-    fetch("/getapplicationstatus", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ reg: regNumber })
-    })
-        .then(res => {
-            if (!res.ok) throw new Error("Failed to fetch approval status");
-            return res.json();
+    // ─── Approval Status Tracker ────────────────────────────────
+    function fetchApprovalStatus(regNumber) {
+        fetch("/getapplicationstatus", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ reg: regNumber })
         })
-        .then(data => {
-            console.log("Approval status:", data);
+            .then(res => {
+                if (!res.ok) throw new Error("Failed to fetch approval status");
+                return res.json();
+            })
+            .then(data => {
+                console.log("Approval status:", data);
 
-            // Map response keys to badge element IDs
-            const mapping = {
-                registrar_approval_status: "approval-registrar",
-                dean_of_student_approval_status: "approval-dean_of_student",
-                dean_of_facult_approval_status: "approval-dean_of_facult",
-                dean_of_science_approval_status: "approval-dean_of_science",
-                finance_office_approval_status: "approval-finance_office"
-            };
+                // Map response keys to badge element IDs
+                const mapping = {
+                    registrar_approval_status: "approval-registrar",
+                    dean_of_student_approval_status: "approval-dean_of_student",
+                    dean_of_facult_approval_status: "approval-dean_of_facult",
+                    dean_of_science_approval_status: "approval-dean_of_science",
+                    finance_office_approval_status: "approval-finance_office"
+                };
 
-            // Keys that must all be "approved" before the sidebar is shown
-            const requiredApprovals = [
-                "dean_of_student_approval_status",
-                "dean_of_facult_approval_status",
-                "dean_of_science_approval_status",
-                "finance_office_approval_status"
-            ];
+                // Keys that must all be "approved" before the sidebar is shown
+                const requiredApprovals = [
+                    "dean_of_student_approval_status",
+                    "dean_of_facult_approval_status",
+                    "dean_of_science_approval_status",
+                    "finance_office_approval_status"
+                ];
 
-            let allRequiredApproved = true;
+                let allRequiredApproved = true;
 
-            for (const [key, badgeId] of Object.entries(mapping)) {
-                const badge = document.getElementById(badgeId);
-                if (!badge) continue;
+                for (const [key, badgeId] of Object.entries(mapping)) {
+                    const badge = document.getElementById(badgeId);
+                    if (!badge) continue;
 
-                // Handle sql.NullString: {String: "approved", Valid: true}
-                let status = "pending";
-                if (data[key] && data[key].Valid) {
-                    status = data[key].String.toLowerCase();
-                } else if (typeof data[key] === "string" && data[key] !== "") {
-                    status = data[key].toLowerCase();
+                    // Handle sql.NullString: {String: "approved", Valid: true}
+                    let status = "pending";
+                    if (data[key] && data[key].Valid) {
+                        status = data[key].String.toLowerCase().trim();
+                    } else if (typeof data[key] === "string" && data[key] !== "") {
+                        status = data[key].toLowerCase().trim();
+                    }
+
+                    // Check if this required role is not yet approved
+                    if (requiredApprovals.includes(key) && status !== "approved") {
+                        allRequiredApproved = false;
+                    }
+
+                    // Reset classes
+                    badge.className = "approval-badge";
+
+                    if (status === "approved") {
+                        badge.textContent = "Approved";
+                        badge.classList.add("approved");
+                    } else if (status === "rejected" || status === "not selected") {
+                        badge.textContent = "Rejected";
+                        badge.classList.add("rejected");
+                    } else {
+                        badge.textContent = "Pending";
+                        badge.classList.add("pending");
+                    }
                 }
 
-                // Check if this required role is not yet approved
-                if (requiredApprovals.includes(key) && status !== "approved") {
-                    allRequiredApproved = false;
+                // Update overall status and bursary amount using the new autonomous utility
+                updateBursaryCardInfo(regNumber);
+
+                // Show the bursary sidebar only when all required roles approved
+                const sidebar = document.querySelector('.sidebar-action');
+                if (sidebar) {
+                    sidebar.style.display = allRequiredApproved ? '' : 'none';
                 }
-
-                // Reset classes
-                badge.className = "approval-badge";
-
-                if (status === "approved") {
-                    badge.textContent = "Approved";
-                    badge.classList.add("approved");
-                } else if (status === "rejected" || status === "not selected") {
-                    badge.textContent = "Rejected";
-                    badge.classList.add("rejected");
-                } else {
-                    badge.textContent = "Pending";
-                    badge.classList.add("pending");
-                }
-            }
-
-            // Show the bursary sidebar only when all required roles approved
-            const sidebar = document.querySelector('.sidebar-action');
-            if (sidebar) {
-                sidebar.style.display = allRequiredApproved ? '' : 'none';
-            }
-        })
-        .catch(err => {
-            console.error("Approval status error:", err);
-        });
-}
+            })
+            .catch(err => {
+                console.error("Approval status error:", err);
+            });
+    }
+});

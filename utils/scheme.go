@@ -118,8 +118,14 @@ func Scheme_Operations(
 
 func GetBenefactor(
 	pool *pgxpool.Pool,
-	 ctx context.Context,
-) ([]Benefactor, error) {
+	ctx context.Context,
+	limit, offset int,
+) ([]Benefactor, int, error) {
+	var total int
+	err := pool.QueryRow(ctx, "SELECT COUNT(*) FROM bursary_schemes").Scan(&total)
+	if err != nil {
+		return nil, 0, err
+	}
 
 	query := `
 		SELECT 
@@ -131,11 +137,12 @@ func GetBenefactor(
 		gender_restriction,
 		conditions
 		FROM bursary_schemes
+		LIMIT $1 OFFSET $2
 	`
 
-	rows, err := pool.Query(ctx, query)
+	rows, err := pool.Query(ctx, query, limit, offset)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	defer rows.Close()
 
@@ -154,17 +161,17 @@ func GetBenefactor(
 			&benify.Conditions,
 		)
 		if err != nil {
-			return nil, err
+			return nil, 0, err
 		}
 
 		ben = append(ben, benify)
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
-	return ben, nil
+	return ben, total, nil
 }
 
 func DeleteBenefactor(tx pgx.Tx,

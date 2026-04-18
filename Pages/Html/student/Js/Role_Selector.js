@@ -10,7 +10,7 @@ const ROLE_PASSWORDS = [
     "Student@2026",   // student
     "Rich@2002",   // registrarle
     "Rich@2002248",   // adminf
-    "Dean@2002",   // dean_of_student
+    "Student@2002",   // dean_of_student
     "Faculty@2002",   // dean_of_facult
     "Science@2002",   // dean_of_science
     "Rich@2002",   // finance_officer
@@ -22,7 +22,7 @@ const ROLE_EMAILS = [
     "student@unilia.ac.mw",                           // student
     "lemillion045@gmail.com",                             // registrar
     "franciessambo@gmail.com",                             // admin
-    "dean@unilia.ac.mw",                             // dean_of_student
+    "student@unilia.ac.mw",                             // dean_of_student
     "faculty@unilia.ac.mw",                             // dean_of_facult
     "science@unilia.ac.mw",                             // dean_of_science
     "richardsambo@gmail.com",                             // finance_office

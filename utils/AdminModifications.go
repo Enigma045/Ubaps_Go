@@ -21,7 +21,15 @@ func ReciveDetails(
 	pool *pgxpool.Pool,
 	ctx context.Context,
 	userID int64,
-) ([]UserDetails, error) {
+	limit, offset int,
+) ([]UserDetails, int, error) {
+
+	countQuery := `SELECT COUNT(*) FROM users WHERE user_id <> $1`
+	var total int
+	err := pool.QueryRow(ctx, countQuery, userID).Scan(&total)
+	if err != nil {
+		return nil, 0, err
+	}
 
 	query := `
 		SELECT
@@ -33,42 +41,33 @@ func ReciveDetails(
 		is_verified
 		FROM users
 		WHERE user_id <> $1
-        ORDER BY created_at DESC;
+        ORDER BY created_at DESC
+        LIMIT $2 OFFSET $3;
      `
 
-	rows, err := pool.Query(ctx, query, userID)
+	rows, err := pool.Query(ctx, query, userID, limit, offset)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	defer rows.Close()
 
 	var userdetails []UserDetails
-
 	for rows.Next() {
 		var user UserDetails
-
 		err := rows.Scan(
 			&user.First,
 			&user.Last,
 			&user.Email,
 			&user.Phone,
-			//&user.Password,
 			&user.Role,
 			&user.Verified,
-
 		)
 		if err != nil {
-			return nil, err
+			return nil, 0, err
 		}
-
 		userdetails = append(userdetails, user)
 	}
-
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-
-	return userdetails, nil
+	return userdetails, total, nil
 }
 
 func DeleteUser(tx pgx.Tx,

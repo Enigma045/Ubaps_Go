@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"ubaps/Db"
+	"github.com/google/uuid"
 )
 
 /*
@@ -46,6 +47,16 @@ func RequireAuth(next http.Handler) http.Handler {
 
 		cookie, err := r.Cookie("session_id")
 		if err != nil {
+			log.Println("AUTH_DEBUG: No session_id cookie found in request:", err)
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
+		}
+		log.Println("AUTH_DEBUG: Received session_id cookie:", cookie.Value)
+
+		// Parse sessionID as UUID
+		parsedID, err := uuid.Parse(cookie.Value)
+		if err != nil {
+			log.Println("AUTH_DEBUG: Invalid UUID in cookie:", err)
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return
 		}
@@ -63,15 +74,27 @@ func RequireAuth(next http.Handler) http.Handler {
 			FROM sessions s
 			JOIN users u ON u.user_id = s.user_id
 			WHERE s.session_id = $1
-			  AND s.expires_at > NOW()
 			`,
-			cookie.Value,
+			parsedID,
 		).Scan(&userID, &role, &expiresAt)
+		log.Println("AUTH_DEBUG: Query complete.")
 
 		if err != nil {
+			log.Println("AUTH_DEBUG: Session lookup failed for ID", parsedID, ":", err)
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return
 		}
+
+		currentTime := time.Now().UTC()
+		log.Println("AUTH_DEBUG: Session found. Expiration (DB):", expiresAt.Format(time.RFC3339), "Current Time (UTC):", currentTime.Format(time.RFC3339))
+
+		if expiresAt.Before(currentTime) {
+			log.Println("AUTH_DEBUG: Session is EXPIRED according to Go UTC comparison.")
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
+		}
+
+		log.Println("AUTH_DEBUG: Session is VALID. UserID:", userID, "Role:", role)
 
 		// 🔄 Sliding session refresh
 		if time.Until(expiresAt) < refreshThreshold {
@@ -94,9 +117,9 @@ func RequireAuth(next http.Handler) http.Handler {
 					Value:    cookie.Value,
 					Path:     "/",
 					HttpOnly: true,
-					Secure:   true,
+					Secure:   false,
 					Expires:  newExpiry,
-					SameSite: http.SameSiteStrictMode,
+					SameSite: http.SameSiteLaxMode,
 				})
 			}
 		}
@@ -192,9 +215,9 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 		Value:    "",
 		Path:     "/",
 		HttpOnly: true,
-		Secure:   true,
+		Secure:   false,
 		MaxAge:   -1,
-		SameSite: http.SameSiteStrictMode,
+		SameSite: http.SameSiteLaxMode,
 	})
 
 	http.Redirect(w, r, "/Login", http.StatusSeeOther)

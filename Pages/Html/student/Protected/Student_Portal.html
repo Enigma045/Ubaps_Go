@@ -79,7 +79,7 @@
             <span>OR</span>
 
             <button id="browseBtn">Browse Files</button>
-            <input type="file" id="fileInput" hidden multiple>
+            <input type="file" id="fileInput" accept=".pdf,.doc,.docx" hidden>
           </div>
 
           <!-- Uploaded Files -->
@@ -89,6 +89,13 @@
             <div id="fileList">
               <!-- JS injects file items here -->
             </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="submit-section" style="margin-top: 25px; text-align: center;">
+            <button id="sendBtn" class="send-btn" style="padding: 0.8rem 2rem; background: #5fc77a; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; display: none;">
+              Send Letter
+            </button>
           </div>
 
         </div>

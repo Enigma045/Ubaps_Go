@@ -65,7 +65,7 @@ func Filter(body []byte, info [5]string, tx pgx.Tx) string {
 	log.Println("email:", email)
 	//fall loop and array
 	fmt.Println("success1")
-	_,err := Handles.CreateUser(name, surname, email, phone, password, "student", tx,false)
+	_,err := Handles.CreateUser(name, surname, email, phone, password, "student", tx,true)
 	if err != nil {
 		log.Println(err)
 	}
@@ -136,7 +136,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Send verification email (outside transaction)
-	err = services.SendVerificationEmail(reqEmail, token)
+	err = services.SendVerificationEmail("cen-01-14-22@unilia.ac.mw", token)
 	if err != nil {
 		log.Println("Email send error:", err)
 	}

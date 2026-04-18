@@ -2,6 +2,9 @@ const dropZone = document.getElementById("dropZone");
 const browseBtn = document.getElementById("browseBtn");
 const fileInput = document.getElementById("fileInput");
 const fileList = document.getElementById("fileList");
+const sendBtn = document.getElementById("sendBtn");
+
+let selectedFile = null;
 
 /* ==============================
    OPEN FILE PICKER
@@ -36,9 +39,24 @@ dropZone.addEventListener("drop", (e) => {
    HANDLE FILES
 ================================ */
 function handleFiles(files) {
-  [...files].forEach(file => {
-    createFileItem(file);
-  });
+  if (files.length === 0) return;
+  const file = files[0];
+
+  // Basic validation
+  const ext = file.name.substring(file.name.lastIndexOf('.') + 1).toLowerCase();
+  if (ext !== 'pdf' && ext !== 'doc' && ext !== 'docx') {
+    showToast("Invalid file type. Only PDF and Word allowed.", "error");
+    return;
+  }
+
+  selectedFile = file;
+  fileList.innerHTML = '';
+  createFileItem(file);
+  
+  // Show send button
+  sendBtn.style.display = 'inline-block';
+  sendBtn.disabled = false;
+  sendBtn.style.opacity = '1';
 }
 
 /* ==============================
@@ -50,9 +68,10 @@ function createFileItem(file) {
 
   const ext = file.name.split(".").pop().toUpperCase();
   const isPDF = ext === "PDF";
+  const iconClass = isPDF ? "pdf" : (ext === "DOC" || ext === "DOCX" ? "doc" : "txt");
 
   item.innerHTML = `
-    <div class="file-icon ${isPDF ? "pdf" : "txt"}">${ext}</div>
+    <div class="file-icon ${iconClass}">${ext}</div>
 
     <div class="file-info">
       <p>${file.name}</p>
@@ -67,39 +86,73 @@ function createFileItem(file) {
 
   fileList.appendChild(item);
 
-  const progressBar = item.querySelector(".progress-bar span");
-  const percentText = item.querySelector(".percent");
   const removeBtn = item.querySelector(".remove");
-
-  simulateUpload(progressBar, percentText, item);
-
   removeBtn.addEventListener("click", () => {
     item.remove();
+    selectedFile = null;
+    sendBtn.style.display = 'none';
   });
 }
 
 /* ==============================
-   SIMULATE UPLOAD PROGRESS
+   SEND BUTTON CLICK
 ================================ */
-function simulateUpload(bar, percentText, item) {
-  let progress = 0;
+sendBtn.addEventListener("click", () => {
+  if (!selectedFile) return;
+  
+  const item = fileList.querySelector(".file-item");
+  const progressBar = item.querySelector(".progress-bar span");
+  const percentText = item.querySelector(".percent");
+  
+  sendBtn.disabled = true;
+  sendBtn.style.opacity = '0.5';
+  
+  uploadFile(selectedFile, progressBar, percentText, item);
+});
 
-  const interval = setInterval(() => {
-    progress += Math.random() * 10;
+/* ==============================
+   REAL UPLOAD LOGIC
+================================ */
+async function uploadFile(file, bar, percentText, item) {
+  const formData = new FormData();
+  formData.append("letter", file);
 
-    if (progress >= 100) {
-      progress = 100;
-      clearInterval(interval);
+  try {
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "/api/submit-letter", true);
 
-      percentText.textContent = "✔";
-      percentText.classList.add("check");
+    // Track upload progress
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable) {
+        const progress = (e.loaded / e.total) * 100;
+        bar.style.width = progress + "%";
+        percentText.textContent = Math.floor(progress) + "%";
+      }
+    };
 
-      bar.style.width = "100%";
-      bar.style.background = "#5fc77a";
-      return;
-    }
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        bar.style.width = "100%";
+        bar.style.background = "#5fc77a";
+        percentText.textContent = "✔";
+        percentText.classList.add("check");
+        showToast("Letter uploaded successfully!", "success");
+      } else {
+        bar.style.background = "#ff4d4d";
+        percentText.textContent = "✘";
+        showToast(xhr.responseText || "Upload failed.", "error");
+      }
+    };
 
-    bar.style.width = progress + "%";
-    percentText.textContent = Math.floor(progress) + "%";
-  }, 300);
+    xhr.onerror = () => {
+      bar.style.background = "#ff4d4d";
+      percentText.textContent = "✘";
+      showToast("Network error occurred.", "error");
+    };
+
+    xhr.send(formData);
+  } catch (error) {
+    console.error("Upload error:", error);
+    showToast("An unexpected error occurred.", "error");
+  }
 }

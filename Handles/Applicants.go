@@ -33,11 +33,19 @@ func Applicants(
 	pool *pgxpool.Pool,
 	ctx context.Context,
 	applicants []string,
-) ([]Applicant, error) {
+	limit, offset int,
+) ([]Applicant, int, error) {
 
 	// Safety: avoid SQL error on empty slice
 	if len(applicants) == 0 {
-		return []Applicant{}, nil
+		return []Applicant{}, 0, nil
+	}
+
+	countQuery := `SELECT COUNT(*) FROM applications WHERE status = ANY($1)`
+	var total int
+	err := pool.QueryRow(ctx, countQuery, applicants).Scan(&total)
+	if err != nil {
+		return nil, 0, err
 	}
 
 	query := `
@@ -59,21 +67,20 @@ func Applicants(
 	a.reason_for_bursary
     FROM applications a
     JOIN users u ON u.user_id = a.user_id
-    WHERE a.status = ANY($1);
-
+    WHERE a.status = ANY($1)
+    ORDER BY a.application_date DESC
+    LIMIT $2 OFFSET $3;
 	`
 
-	rows, err := pool.Query(ctx, query, applicants)
+	rows, err := pool.Query(ctx, query, applicants, limit, offset)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	defer rows.Close()
 
 	results := make([]Applicant, 0)
-
 	for rows.Next() {
 		var a Applicant
-
 		if err := rows.Scan(
 			&a.First,
 			&a.Last,
@@ -91,17 +98,11 @@ func Applicants(
 			&a.Bursary_amount,
 			&a.Reason,
 		); err != nil {
-			return nil, err
+			return nil, 0, err
 		}
-
 		results = append(results, a)
 	}
-
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-
-	return results, nil
+	return results, total, nil
 }
 
 

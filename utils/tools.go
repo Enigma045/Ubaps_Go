@@ -2,12 +2,18 @@ package utils
 
 import (
 	"database/sql/driver"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"strconv"
 	"time"
 )
+
+func DecodeJSON(r *http.Request, v any) error {
+	defer r.Body.Close()
+	return json.NewDecoder(r.Body).Decode(v)
+}
 
 func Formdata(r *http.Request) (map[string][]string, error) {
 	if r == nil {

@@ -16,7 +16,7 @@ func CreateSessionTx(
 	userID int,
 ) error {
 	sessionID := uuid.New()
-	expires := time.Now().Add(20 * time.Minute)
+	expires := time.Now().UTC().Add(30 * time.Minute)
 
 	_, err := tx.Exec(ctx, `
 	INSERT INTO sessions (session_id,user_id, expires_at)
@@ -29,8 +29,8 @@ func CreateSessionTx(
 		Name:     "session_id",
 		Value:    sessionID.String(),
 		HttpOnly: true,
-		Secure:   true,
-		SameSite: http.SameSiteStrictMode,
+		Secure:   false,
+		SameSite: http.SameSiteLaxMode,
 		Expires:  expires,
 		Path:     "/"})
 	return nil

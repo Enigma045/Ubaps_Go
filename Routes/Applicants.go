@@ -8,31 +8,38 @@ import (
 	"ubaps/Db"
 	"ubaps/Handles"
 	middleware "ubaps/Middleware"
+	"ubaps/utils"
 )
 
 func Applicants(w http.ResponseWriter, r *http.Request) {
-
-	
 	var Pplicants []string
 	ctx := r.Context()
 	w.Header().Set("Content-Type", "application/json")
+	
 	err := json.NewDecoder(r.Body).Decode(&Pplicants)
 	if err != nil {
 		log.Println("Error decoding request body:", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	results,err := Handles.Applicants(Db.DB,ctx,Pplicants)
-	if err != nil{
+
+	page, limit, offset := utils.GetPaginationParams(r)
+
+	results, total, err := Handles.Applicants(Db.DB, ctx, Pplicants, limit, offset)
+	if err != nil {
 		log.Println("Error retriving applicants from database", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	//log.Println("Received applicants data:", Pplicants)
 	w.WriteHeader(http.StatusOK)
-	err = json.NewEncoder(w).Encode(results)
-	if err != nil{
+	err = json.NewEncoder(w).Encode(utils.PaginatedResponse{
+		Data:  results,
+		Total: total,
+		Page:  page,
+		Limit: limit,
+	})
+	if err != nil {
 		log.Println("Error encording applicants to frontend", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

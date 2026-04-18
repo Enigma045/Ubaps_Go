@@ -9,20 +9,20 @@ import (
 	middleware "ubaps/Middleware"
 	"ubaps/utils"
 )
+
 type emailRequest struct {
-	Name string `json:"name"`
+	Name  string `json:"name"`
 	Email string `json:"email"`
 }
 
-func Getuserdetails(w http.ResponseWriter,r *http.Request){
-   // Allow only GET
+func Getuserdetails(w http.ResponseWriter, r *http.Request) {
+	// Allow only GET
 	if r.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-
 	ctx := r.Context()
 
 	userID, ok := middleware.UserIDFromContext(ctx)
@@ -31,18 +31,22 @@ func Getuserdetails(w http.ResponseWriter,r *http.Request){
 		return
 	}
 
-	count, err := utils.ReciveDetails(Db.DB, ctx, userID)
+	page, limit, offset := utils.GetPaginationParams(r)
+
+	details, total, err := utils.ReciveDetails(Db.DB, ctx, userID, limit, offset)
 	if err != nil {
 		log.Println("Error fetching userDetails:", err)
 		http.Error(w, "Failed to fetch userDetails", http.StatusInternalServerError)
 		return
 	}
-	log.Println("Notification count:", count)
-    w.WriteHeader(http.StatusOK)
-	err = json.NewEncoder(w).Encode(count)
-	if err != nil {
-    http.Error(w,"Failed to send Counter",http.StatusInternalServerError)
-	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(utils.PaginatedResponse{
+		Data:  details,
+		Total: total,
+		Page:  page,
+		Limit: limit,
+	})
 }
 
 func DeleteAccount(w http.ResponseWriter,r *http.Request){

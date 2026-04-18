@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/Css/Navbar/Navbar.css">
+  <link rel="stylesheet" href="/Css/Layout.css">
+  <link rel="stylesheet" href="/Css/Dashboard.css">
+  <link rel="stylesheet" href="/Css/Notification.css">
+  <script src="/Js/Toast.js"></script>
+  <link rel="stylesheet" href="/Css/Audit_Trailer.css">
+  <link rel="stylesheet" href="/Css/Bursary_Scheme.css" />
+  <title>Audit Logs Reports</title>
+  <style>
+    .filter-section {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      align-items: flex-end;
+      background: var(--surface-color);
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+    }
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .filter-group label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .filter-group input {
+      padding: 0.5rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+    }
+    .actions-btn-group {
+      margin-left: auto;
+      display: flex;
+      gap: 0.5rem;
+    }
+    .export-btn {
+      background-color: var(--success-color);
+    }
+    .export-btn:hover {
+      background-color: #059669;
+    }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+      padding: 1rem;
+    }
+    .pagination button {
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--border-color);
+      background: var(--surface-color);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .pagination button:hover:not(:disabled) {
+      background: var(--background-color);
+      border-color: var(--primary-color);
+    }
+    .pagination button.active {
+      background: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+    }
+    .pagination button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="logo">
+        <span class="icon"><img src="/Image/logo-icon.png" alt="Logo"></span>
+        <span class="label">UNILIA</span>
+      </div>
+
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (3).svg" alt=""></span>
+        <span class="label"><a href="/admindashboard" class="text-link">Home</a></span>
+      </div>
+
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (11).svg" alt=""></span>
+        <span class="label"><a href="/adminusers" class="text-link">Create Users</a></span>
+      </div>
+
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (8).svg" alt=""></span>
+        <span class="label"><a href="/adminmodification" class="text-link">Users</a></span>
+      </div>
+
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (10).svg" alt=""></span>
+        <span class="label"><a href="/admintrails" class="text-link">Audit Trail</a></span>
+      </div>
+
+      <div class="nav-item active">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (12).svg" alt=""></span>
+        <span class="label"><a href="/audit_reports" class="text-link">Reports</a></span>
+      </div>
+
+      <!-- Logout -->
+      <div class="nav-item logout">
+        <span class="icon"><img class="LogOut" src="/Image/svgviewer-output (7).svg" alt=""></span>
+        <span class="label"><a href="/logout" class="text-link" style="color: inherit;">Logout</a></span>
+      </div>
+    </nav>
+    <!-- Main Area -->
+    <div class="main">
+
+      <!-- Header -->
+      <header class="header">
+        <div class="breadcrumb">
+          <strong>UBAPS</strong> &gt; Audit Reports
+        </div>
+        <div class="header-actions">
+          <div class="notification-nav">
+            <img class="svg" src="/Image/svgviewer-output (5).svg" alt="">
+            <span id="badge-nav" class="badge-nav">0</span>
+          </div>
+          <div id="user-avatar" class="user-avatar">
+            RS
+          </div>
+        </div>
+      </header>
+
+      <div class="app">
+
+        <!-- Header -->
+        <header class="head">
+          <div>
+            <h1>Audit Log Reports</h1>
+            <p class="subtitle">Bursary Award Processing System · Production</p>
+          </div>
+          <div class="time" id="current-time">
+            Jan 6, 2026 · 01:34 AM
+          </div>
+        </header>
+
+        <!-- Filters -->
+        <div class="filter-section">
+          <div class="filter-group">
+            <label for="startDate">Start Date</label>
+            <input type="date" id="startDate">
+          </div>
+          <div class="filter-group">
+            <label for="endDate">End Date</label>
+            <input type="date" id="endDate">
+          </div>
+          <div class="filter-group">
+            <label for="logType">Log Type</label>
+            <select id="logType" style="padding: 0.5rem; border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
+                <option value="applications">Applications</option>
+                <option value="payments">Payments</option>
+                <option value="users">Users</option>
+            </select>
+          </div>
+          <div class="actions-btn-group">
+            <button class="btn" id="apply-filters">Apply Filter</button>
+            <button class="btn export-btn" id="export-report">Export Report</button>
+          </div>
+        </div>
+
+        <!-- Logs Table -->
+        <div class="table-container">
+          <table class="log-table active" id="reports-table">
+            <thead id="table-head">
+              <!-- Dynamically populated -->
+            </thead>
+            <tbody id="table-body">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" id="pagination-controls">
+            <!-- Dynamically populated -->
+        </div>
+
+      </div>
+
+      <script src="/Js/Dashboard.js"></script>
+      <script src="/Js/Profile_Loader.js"></script>
+      <script src="/Js/Audit_Logs_Report.js"></script>
+      <script src="/Js/Notification_Feature.js"></script>
+    </div>
+</body>
+
+</html>

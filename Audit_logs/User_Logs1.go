@@ -80,8 +80,16 @@ func Create_user_log(tx pgx.Tx,
 }
 
 func Get_User_Logs(
-	 pool *pgxpool.Pool,
-	 ctx context.Context) ([]UserLog, error){
+	pool *pgxpool.Pool,
+	ctx context.Context,
+	limit, offset int) ([]UserLog, int, error) {
+
+	countQuery := `SELECT COUNT(*) FROM audit_user_logs WHERE application IS NULL AND amount IS NULL`
+	var total int
+	err := pool.QueryRow(ctx, countQuery).Scan(&total)
+	if err != nil {
+		return nil, 0, err
+	}
 
 	query := `
     SELECT 
@@ -95,17 +103,17 @@ func Get_User_Logs(
     FROM audit_user_logs
     WHERE application IS NULL
       AND amount IS NULL
+    ORDER BY occurred_at DESC
+    LIMIT $1 OFFSET $2
 `
- 	rows, err := pool.Query(ctx, query)
+	rows, err := pool.Query(ctx, query, limit, offset)
 	if err != nil {
-		return nil,err
+		return nil, 0, err
 	}
-
 	defer rows.Close()
-        var logs []UserLog
 
-     	for rows.Next() {
-
+	var logs []UserLog
+	for rows.Next() {
 		var log UserLog
 		err := rows.Scan(
 			&log.OccurredAt,
@@ -117,21 +125,24 @@ func Get_User_Logs(
 			&log.Duration,
 		)
 		if err != nil {
-			return nil,err
+			return nil, 0, err
 		}
-
 		logs = append(logs, log)
 	}
-	if err := rows.Err(); err != nil {
-		return nil,err
-	}
-
-	return logs,nil
+	return logs, total, nil
 }
 
 func Get_Payment_Logs(
-	 pool *pgxpool.Pool,
-	 ctx context.Context) ([]PaymentLog, error){
+	pool *pgxpool.Pool,
+	ctx context.Context,
+	limit, offset int) ([]PaymentLog, int, error) {
+
+	countQuery := `SELECT COUNT(*) FROM audit_user_logs WHERE amount IS NOT NULL`
+	var total int
+	err := pool.QueryRow(ctx, countQuery).Scan(&total)
+	if err != nil {
+		return nil, 0, err
+	}
 
 	query := `
     SELECT 
@@ -146,17 +157,17 @@ func Get_Payment_Logs(
 		amount
     FROM audit_user_logs
     WHERE amount IS NOT NULL
+    ORDER BY occurred_at DESC
+    LIMIT $1 OFFSET $2
 `
- 	rows, err := pool.Query(ctx, query)
+	rows, err := pool.Query(ctx, query, limit, offset)
 	if err != nil {
-		return nil,err
+		return nil, 0, err
 	}
-
 	defer rows.Close()
-        var logs []PaymentLog
 
-     	for rows.Next() {
-
+	var logs []PaymentLog
+	for rows.Next() {
 		var log PaymentLog
 		err := rows.Scan(
 			&log.OccurredAt,
@@ -170,21 +181,24 @@ func Get_Payment_Logs(
 			&log.Amount,
 		)
 		if err != nil {
-			return nil,err
+			return nil, 0, err
 		}
-
 		logs = append(logs, log)
 	}
-	if err := rows.Err(); err != nil {
-		return nil,err
-	}
-
-	return logs,nil
+	return logs, total, nil
 }
 
 func Get_Application_Logs(
-	 pool *pgxpool.Pool,
-	 ctx context.Context) ([]ApplicationLog, error){
+	pool *pgxpool.Pool,
+	ctx context.Context,
+	limit, offset int) ([]ApplicationLog, int, error) {
+
+	countQuery := `SELECT COUNT(*) FROM audit_user_logs WHERE application IS NOT NULL`
+	var total int
+	err := pool.QueryRow(ctx, countQuery).Scan(&total)
+	if err != nil {
+		return nil, 0, err
+	}
 
 	query := `
     SELECT 
@@ -199,17 +213,17 @@ func Get_Application_Logs(
 		amount
     FROM audit_user_logs
     WHERE application IS NOT NULL
+    ORDER BY occurred_at DESC
+    LIMIT $1 OFFSET $2
 `
- 	rows, err := pool.Query(ctx, query)
+	rows, err := pool.Query(ctx, query, limit, offset)
 	if err != nil {
-		return nil,err
+		return nil, 0, err
 	}
-
 	defer rows.Close()
-        var logs []ApplicationLog
 
-     	for rows.Next() {
-
+	var logs []ApplicationLog
+	for rows.Next() {
 		var log ApplicationLog
 		err := rows.Scan(
 			&log.OccurredAt,
@@ -223,14 +237,9 @@ func Get_Application_Logs(
 			&log.Amount,
 		)
 		if err != nil {
-			return nil,err
+			return nil, 0, err
 		}
-
 		logs = append(logs, log)
 	}
-	if err := rows.Err(); err != nil {
-		return nil,err
-	}
-
-	return logs,nil
+	return logs, total, nil
 }

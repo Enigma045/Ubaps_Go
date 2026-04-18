@@ -11,8 +11,6 @@ import (
 	"ubaps/utils"
 )
 
-
-
 func Scheme_Info(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	ctx := r.Context()
@@ -61,63 +59,61 @@ func Scheme_Info(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("You have successfully submitted the application form"))
+	json.NewEncoder(w).Encode(map[string]string{"message": "You have successfully submitted the application form"})
 }
 
-func GetBenefactor(w http.ResponseWriter, r *http.Request){
-   ctx := r.Context()
-   w.Header().Set("Content-Type", "application/json")
-   //userId, ok := middleware.UserIDFromContext(ctx)
-   //if !ok {
-	//	log.Println("Failed to take UserId")
-	//	return
-//}
+func GetBenefactor(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	w.Header().Set("Content-Type", "application/json")
 
-	benefactor, err := utils.GetBenefactor(Db.DB, ctx)
+	page, limit, offset := utils.GetPaginationParams(r)
+
+	benefactor, total, err := utils.GetBenefactor(Db.DB, ctx, limit, offset)
 	if err != nil {
 		log.Println("Failed to get benefactor:", err)
 		http.Error(w, "Failed to get benefactor", http.StatusInternalServerError)
 		return
 	}
 
-	log.Println("Benefactor:", benefactor)
+	response := utils.PaginatedResponse{
+		Data:  benefactor,
+		Total: total,
+		Page:  page,
+		Limit: limit,
+	}
 
-
-	err = json.NewEncoder(w).Encode(benefactor)
+	err = json.NewEncoder(w).Encode(response)
 	if err != nil {
 		log.Println("Failed to encode benefactor:", err)
 		http.Error(w, "Failed to encode benefactor", http.StatusInternalServerError)
 		return
 	}
-
-	
 }
 
+func DeleteBenefactor(w http.ResponseWriter, r *http.Request) {
+	var emailreq emailRequest
 
-func DeleteBenefactor(w http.ResponseWriter,r *http.Request){
-    var emailreq emailRequest
-
-	if r.Method != http.MethodPost{
-    http.Error(w,"wrong Method",http.StatusMethodNotAllowed)
+	if r.Method != http.MethodPost {
+		http.Error(w, "wrong Method", http.StatusMethodNotAllowed)
 	}
 
 	ctx := r.Context()
 
-	tx,err := Db.DB.Begin(ctx)
-    if err != nil {
+	tx, err := Db.DB.Begin(ctx)
+	if err != nil {
 		log.Println(err)
-		http.Error(w,"Failed to create Transction",http.StatusInternalServerError)
-	    return
+		http.Error(w, "Failed to create Transction", http.StatusInternalServerError)
+		return
 	}
 	defer tx.Rollback(ctx)
 
 	err = json.NewDecoder(r.Body).Decode(&emailreq)
 	if err != nil {
 		log.Println(err)
-		http.Error(w,"Invalid JSON",http.StatusBadRequest)
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
-	
+
 	// userid,err := Handles.GetUserIDByEmail(emailreq.Email,tx)
 	// if err != nil {
 	// 	log.Println(err)
@@ -127,10 +123,10 @@ func DeleteBenefactor(w http.ResponseWriter,r *http.Request){
 
 	var name string = emailreq.Name
 
-	err = utils.DeleteBenefactor(tx,ctx,name)
+	err = utils.DeleteBenefactor(tx, ctx, name)
 	if err != nil {
 		log.Println(err)
-		http.Error(w,"Invalid JSON",http.StatusBadRequest)
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 	}
 
 	// Commit transaction
@@ -140,21 +136,20 @@ func DeleteBenefactor(w http.ResponseWriter,r *http.Request){
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("You have succefully deleted the user"))
+	json.NewEncoder(w).Encode(map[string]string{"message": "You have successfully deleted the user"})
 
 }
 
-func GetScheme(w http.ResponseWriter,r *http.Request){
-
+func GetScheme(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
-    ctx := r.Context()
+	ctx := r.Context()
 
-	schemes,err := utils.GetScheme(Db.DB,ctx)
-    if err != nil {
+	schemes, err := utils.GetScheme(Db.DB, ctx)
+	if err != nil {
 		log.Println(err)
-		http.Error(w,"Failed to get schemes",http.StatusInternalServerError)
-	    return
+		http.Error(w, "Failed to get schemes", http.StatusInternalServerError)
+		return
 	}
 
 	w.WriteHeader(http.StatusOK)
@@ -162,90 +157,94 @@ func GetScheme(w http.ResponseWriter,r *http.Request){
 }
 
 type SchemeInfo struct {
-	Reg string `json:"reg"`
+	Reg    string `json:"reg"`
 	Scheme string `json:"scheme"`
 	Amount string `json:"amount"`
 }
 
-func SendScheme_Info(w http.ResponseWriter,r *http.Request){
-
+func SendScheme_Info(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
-    ctx := r.Context()
-	tx,err := Db.DB.Begin(ctx)
+	ctx := r.Context()
+	tx, err := Db.DB.Begin(ctx)
 	if err != nil {
 		log.Println(err)
-		http.Error(w,"Failed to create Transction",http.StatusInternalServerError)
-	    return
+		http.Error(w, "Failed to create Transction", http.StatusInternalServerError)
+		return
 	}
 	defer tx.Rollback(ctx)
 
-    var schemeinfo SchemeInfo
+	var schemeinfo SchemeInfo
 
-    err = json.NewDecoder(r.Body).Decode(&schemeinfo)
-    if err != nil {
+	err = json.NewDecoder(r.Body).Decode(&schemeinfo)
+	if err != nil {
 		log.Println(err)
-		http.Error(w,"Invalid JSON",http.StatusBadRequest)
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
 
-	email := fmt.Sprintf("%s@unilia.ac.mw",schemeinfo.Reg)
-	userid,err := Handles.GetUserIDByEmail(email,tx)
-    if err != nil {
-		log.Println(err)
-		http.Error(w,"Failed to get userid",http.StatusInternalServerError)
-	    return
-	}
-
-	exist,err :=utils.CheckForScheme(tx,ctx,userid)
+	email := fmt.Sprintf("%s@unilia.ac.mw", schemeinfo.Reg)
+	userid, err := Handles.GetUserIDByEmail(email, tx)
 	if err != nil {
 		log.Println(err)
-		http.Error(w,"Failed to check for scheme",http.StatusInternalServerError)
-	    return
+		http.Error(w, "Failed to get userid", http.StatusInternalServerError)
+		return
+	}
+
+	exist, err := utils.CheckForScheme(tx, ctx, userid)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, "Failed to check for scheme", http.StatusInternalServerError)
+		return
 	}
 
 	if exist {
 		log.Println("User already has a scheme")
-		http.Error(w,"User already has a scheme",http.StatusBadRequest)
-	    return
-	}
-
-    schemeid,err := utils.GetSchemeId(schemeinfo.Scheme,tx,ctx)
-	if err != nil {
-		log.Println(err)
-		http.Error(w,"Failed to get schemeid",http.StatusInternalServerError)
-	    return
-	}
-
-	err = utils.CheckSchemeAmount(schemeinfo.Scheme,tx,ctx,schemeinfo.Amount)
-	if err != nil {
-		log.Println(err)
-		http.Error(w,"Amount is less then bursary scheme amount",http.StatusInternalServerError)
-	    return
-	}
-
-	value,err := utils.GetAvailableAmount(tx,ctx,schemeid)
-    if err != nil{
-		log.Println(err)
-		http.Error(w,"Failed to retrieve availabele scheme balnce",http.StatusInternalServerError)
-		return 
-	}
-
-	err = utils.UpdateScheme_Amount(tx,ctx,schemeid,schemeinfo.Amount,value)
-    if err != nil{
-		log.Println(err)
-		http.Error(w,"Failed to update scheme amount scheme balnce",http.StatusInternalServerError)
-		return 
-	}
-
-	err = utils.SendScheme_Info(tx,ctx,userid,schemeid,schemeinfo.Amount)
-	if err != nil {
-		log.Println(err)
-		http.Error(w,"Failed to send scheme info",http.StatusInternalServerError)
+		http.Error(w, "User already has a scheme", http.StatusBadRequest)
 		return
 	}
 
-	tx.Commit(ctx)
+	schemeid, err := utils.GetSchemeId(schemeinfo.Scheme, tx, ctx)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, "Failed to get schemeid", http.StatusInternalServerError)
+		return
+	}
+
+	err = utils.CheckSchemeAmount(schemeinfo.Scheme, tx, ctx, schemeinfo.Amount)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, "Amount is less then bursary scheme amount", http.StatusInternalServerError)
+		return
+	}
+
+	value, err := utils.GetAvailableAmount(tx, ctx, schemeid)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, "Failed to retrieve availabele scheme balnce", http.StatusInternalServerError)
+		return
+	}
+
+	err = utils.UpdateScheme_Amount(tx, ctx, schemeid, schemeinfo.Amount, value)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, "Failed to update scheme amount scheme balnce", http.StatusInternalServerError)
+		return
+	}
+
+	err = utils.SendScheme_Info(tx, ctx, userid, schemeid, schemeinfo.Amount)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, "Failed to send scheme info", http.StatusInternalServerError)
+		return
+	}
+
+	err = tx.Commit(ctx)
+	if err != nil {
+		log.Println("Transaction commit failed:", err)
+		http.Error(w, "Failed to commit transaction", http.StatusInternalServerError)
+		return
+	}
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("You have succefully sent the scheme info"))
+	json.NewEncoder(w).Encode(map[string]string{"message": "You have successfully sent the scheme info"})
 }

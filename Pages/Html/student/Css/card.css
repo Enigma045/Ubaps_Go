@@ -39,6 +39,7 @@
   box-shadow: var(--modal-shadow);
   padding: 32px;
   display: grid;
+  z-index: 1000;
   grid-template-columns: 1fr 280px;
   gap: 24px;
   transform: scale(0.95);
@@ -116,6 +117,16 @@
 .status-badge.pending {
   background: #fef3c7;
   color: #92400e;
+}
+
+.status-badge.approved {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-badge.rejected {
+  background: #fee2e2;
+  color: #991b1b;
 }
 
 .scheme-amount {

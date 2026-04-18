@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const numSchemesEl = document.getElementById('num-schemes');
 
             if (approvedAmountEl) approvedAmountEl.textContent = `MWK ${stats.approved_amount.toLocaleString()}`;
-            if (numApplicantsEl) numApplicantsEl.textContent = stats.number_of_applicants;
+            if (numApplicantsEl) numApplicantsEl.textContent =  stats.pending_applications + stats.considering_applications;
             if (numSchemesEl) numSchemesEl.textContent = stats.number_of_schemes;
         }
     }

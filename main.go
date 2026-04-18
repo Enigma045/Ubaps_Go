@@ -52,6 +52,8 @@ func main() {
 	mux.Handle("/gettotalamount", middleware.RequireAuth(http.HandlerFunc(Routes.GetTotalAmount)))
 	//Review Card
 	mux.Handle("/getapplicationstatus", middleware.RequireAuth(http.HandlerFunc(Routes.GetApplicationStatus)))
+	mux.Handle("/requeststatement", middleware.RequireAuth(http.HandlerFunc(Routes.Request_Statement)))
+	mux.Handle("/getstatementrequests", middleware.RequireAuth(http.HandlerFunc(Routes.GetStatementRequests)))
 
 	// Statistics endpoints
 	mux.Handle("/stats/student", middleware.RequireAuth(http.HandlerFunc(Routes.StatsStudent)))
@@ -60,6 +62,14 @@ func main() {
 	mux.Handle("/stats/dean", middleware.RequireAuth(http.HandlerFunc(Routes.StatsDean)))
 	mux.Handle("/stats/finance", middleware.RequireAuth(http.HandlerFunc(Routes.StatsFinance)))
 	mux.Handle("/user/profile", middleware.RequireAuth(http.HandlerFunc(Routes.UserProfile)))
+
+	// Report endpoints
+	mux.Handle("/api/reports/comprehensive", middleware.RequireAuth(middleware.RequireRole("registrar", "finance_office", "admin")(http.HandlerFunc(Routes.ExportComprehensiveReport))))
+	
+	// Letter API endpoints
+	mux.Handle("/api/submit-letter", middleware.RequireAuth(middleware.RequireRole("student")(http.HandlerFunc(Routes.SubmitLetter))))
+	mux.Handle("/api/get-letters", middleware.RequireAuth(middleware.RequireRole("registrar")(http.HandlerFunc(Routes.GetLettersList))))
+	mux.Handle("/api/download-letter", middleware.RequireAuth(middleware.RequireRole("registrar")(http.HandlerFunc(Routes.DownloadLetter))))
 
 	/*
 		|--------------------------------------------------------------------------
@@ -202,6 +212,15 @@ func main() {
 		middleware.RequireAuth(
 			middleware.RequireRole("admin")(
 				http.HandlerFunc(Routes.AdminTrails_Page),
+			),
+		),
+	)
+
+	mux.Handle(
+		"/audit_reports",
+		middleware.RequireAuth(
+			middleware.RequireRole("admin")(
+				http.HandlerFunc(Routes.AuditReports_Page),
 			),
 		),
 	)

@@ -1,14 +1,14 @@
 // Letters Receive Page - Backend Integration
 
 // API endpoint configuration
-const API_BASE_URL = '/receive_letters'; // Adjust based on your backend configuration
+const API_BASE_URL = '/api'; 
 
 /**
  * Fetch all letters from the backend
  */
 async function fetchLetters() {
   try {
-    const response = await fetch(`${API_BASE_URL}/letters`, {
+    const response = await fetch(`${API_BASE_URL}/get-letters`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -20,38 +20,11 @@ async function fetchLetters() {
     }
 
     const data = await response.json();
-    return data;
+    return data; // Array of LetterMetadata
   } catch (error) {
     console.error('Error fetching letters:', error);
     showToast("Failed to load letters.", "error");
     return [];
-  }
-}
-
-/**
- * View a specific letter
- * @param {string} letterId - The ID of the letter to view
- */
-async function viewLetter(letterId) {
-  try {
-    const response = await fetch(`${API_BASE_URL}/letters/${letterId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const letterData = await response.json();
-    // Handle displaying the letter (e.g., open in modal or new page)
-    console.log('Letter data:', letterData);
-    return letterData;
-  } catch (error) {
-    console.error('Error viewing letter:', error);
-    showToast("Failed to load letter details.", "error");
   }
 }
 
@@ -61,23 +34,24 @@ async function viewLetter(letterId) {
  */
 async function downloadLetter(letterId) {
   try {
-    const response = await fetch(`${API_BASE_URL}/letters/${letterId}/download`, {
-      method: 'GET',
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
+    // Backend expects ?id=...
+    const downloadUrl = `${API_BASE_URL}/download-letter?id=${letterId}`;
+    
+    // Simply redirecting or opening in new tab is often easiest for downloads
+    // But using fetch allows for better error handling
+    const response = await fetch(downloadUrl);
+    if (!response.ok) throw new Error("File not found");
+    
     const blob = await response.blob();
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `letter_${letterId}.pdf`;
+    a.download = `letter_${letterId}`; // Browser will usually pick up correct extension from Content-Type
     document.body.appendChild(a);
     a.click();
     window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
+    
     showToast("Download started!", "success");
   } catch (error) {
     console.error('Error downloading letter:', error);
@@ -86,33 +60,15 @@ async function downloadLetter(letterId) {
 }
 
 /**
- * Search letters
- * @param {string} searchTerm - The search term
+ * View a specific letter (Proxy for download/opening in new tab)
  */
-async function searchLetters(searchTerm) {
-  try {
-    const response = await fetch(`${API_BASE_URL}/letters/search?q=${encodeURIComponent(searchTerm)}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error searching letters:', error);
-    return [];
-  }
+function viewLetter(letterId) {
+  const viewUrl = `${API_BASE_URL}/download-letter?id=${letterId}`;
+  window.open(viewUrl, '_blank');
 }
 
 /**
  * Populate the table with letters data
- * @param {Array} letters - Array of letter objects
  */
 function populateLettersTable(letters) {
   const tbody = document.querySelector('#letters tbody');
@@ -120,12 +76,18 @@ function populateLettersTable(letters) {
 
   tbody.innerHTML = '';
 
+  if (letters.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No letters found.</td></tr>';
+    return;
+  }
+
   letters.forEach(letter => {
     const row = document.createElement('tr');
-    row.className = letter.status === 'pending' ? 'warning' : 'success';
+    // Using green for all received letters for now
+    row.className = 'success';
 
     row.innerHTML = `
-      <td>${letter.status === 'pending' ? '🟡' : '🟢'}</td>
+      <td>🟢</td>
       <td>${letter.studentName}</td>
       <td>${letter.registrationNumber}</td>
       <td>${letter.letterType}</td>
@@ -147,20 +109,18 @@ document.addEventListener('DOMContentLoaded', () => {
     populateLettersTable(letters);
   });
 
-  // Search functionality
+  // Search functionality (local filtering for now as API search isn't implemented)
   const searchInput = document.querySelector('.search-bar input');
   if (searchInput) {
     searchInput.addEventListener('input', (e) => {
-      const searchTerm = e.target.value;
-      if (searchTerm.length > 2) {
-        searchLetters(searchTerm).then(letters => {
-          populateLettersTable(letters);
-        });
-      } else if (searchTerm.length === 0) {
-        fetchLetters().then(letters => {
-          populateLettersTable(letters);
-        });
-      }
+      const searchTerm = e.target.value.toLowerCase();
+      fetchLetters().then(allLetters => {
+        const filtered = allLetters.filter(l => 
+          l.studentName.toLowerCase().includes(searchTerm) || 
+          l.registrationNumber.toLowerCase().includes(searchTerm)
+        );
+        populateLettersTable(filtered);
+      });
     });
   }
 });

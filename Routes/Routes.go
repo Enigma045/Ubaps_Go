@@ -104,6 +104,16 @@ func AdminTrails_Page(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
+func AuditReports_Page(w http.ResponseWriter, r *http.Request) {
+	data, err := os.ReadFile("Pages/Html/student/Protected/Audit_Logs_Report.html")
+	if err != nil {
+		http.Error(w, "Page not found", http.StatusNotFound)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html")
+	w.Write(data)
+}
+
 func AdminUsers_Page(w http.ResponseWriter, r *http.Request) {
 	data, err := os.ReadFile("Pages/Html/student/Protected/Admin_Users.html")
 	if err != nil {
