@@ -9,7 +9,7 @@ import (
 
 // User_Created inserts a notification for a newly created user.
 // It uses the provided transaction tx.
-func User_Created(user_id int64, tx pgx.Tx,message string,title string) error {
+func Send_notification(user_id int64, tx pgx.Tx,message string,title string) error {
 	query := `
 	INSERT INTO notifications (
 		recipient_user_id,

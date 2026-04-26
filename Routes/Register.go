@@ -120,7 +120,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(map[string]string{"error": "Failed to retrieve new user ID"})
 		return
 	}
-	err = notifications.User_Created(userID, tx, "Your account has been created.","Account Created")
+	err = notifications.Send_notification(userID, tx, "Your account has been created.","Account Created")
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(map[string]string{"error": "Failed to create notification"})

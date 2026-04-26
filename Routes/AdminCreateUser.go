@@ -58,7 +58,7 @@ func CreateUser(w http.ResponseWriter,r *http.Request) {
 		return
 	}
    log.Println(user)
-	err = notifications.User_Created(userID, tx, "Your account has been created.","Account Created")
+	err = notifications.Send_notification(userID, tx, "Your account has been created.","Account Created")
 	if err != nil {
 		log.Println(err)
 		http.Error(w,"Failed to create user notification",http.StatusInternalServerError)
