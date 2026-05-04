@@ -6,8 +6,8 @@ import (
 )
 
 func SendEmail(to, subject, body string) error {
-	from := "cen-01-14-22@unilia.ac.mw"
-	password := "rrfa fthh yngg lcad"
+	from := "richardsambo94@gmail.com"
+	password := "opsi gofk ezyy pzal"
 
 	msg := "MIME-Version: 1.0\r\n" +
 		"Content-Type: text/html; charset=\"UTF-8\"\r\n" +

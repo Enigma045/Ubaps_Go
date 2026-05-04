@@ -1,91 +1,84 @@
 document.addEventListener("DOMContentLoaded", () => {
   const tabs = document.querySelectorAll(".tabs input");
-  const tables = document.querySelectorAll(".log-table");
+  const modal = document.getElementById("modal");
+  const closeModalBtns = document.querySelectorAll("#closeModal, #closeModal2");
+  const payForm = modal?.querySelector("form");
+  const modalTitle = modal?.querySelector("h3");
+  let activeStudent = null;
 
+  // ── Close modal ──────────────────────────────────────────────────────────────
+  closeModalBtns.forEach(btn => {
+    btn.addEventListener("click", () => modal?.classList.remove("active"));
+  });
+
+  // ── Payment confirm ───────────────────────────────────────────────────────────
+  if (payForm) {
+    payForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!activeStudent) return;
+
+      try {
+        const response = await fetch("/payinstallment", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: activeStudent.id, name: activeStudent.name }),
+          credentials: "include"
+        });
+
+        if (!response.ok) throw new Error(await response.text() || "Payment failed");
+
+        showToast(`Payment processed for ${activeStudent.name}`, "success");
+        modal?.classList.remove("active");
+        fetchFinancialRequests(getInitialStatuses());
+      } catch (error) {
+        console.error("Payment error:", error);
+        showToast(error.message, "error");
+      }
+    });
+  }
+
+  // ── Tab change ────────────────────────────────────────────────────────────────
   tabs.forEach(tab => {
-    console.log(tab)
     tab.addEventListener("change", () => {
-
-      // Remove active state from tabs
-      tabs.forEach(t => t.classList.remove("active"));
-      tab.classList.add("active");
-
-      // Hide all tables
-      tables.forEach(table => table.classList.remove("active"));
-
-      // Show selected table
-      const target = tab.dataset.tab;
-      document.getElementById(target).classList.add("active");
+      fetchFinancialRequests(getInitialStatuses());
     });
   });
 
-
-  document.getElementById("RequestForm").onsubmit = async e => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const res = await fetch("/sendrequest", {
-      method: "POST",
-      body: formData,
-      credentials: "include"
-    });
-
-    if (res.ok) {
-      showToast("Financial request processed successfully!", "success");
-      setTimeout(() => window.location.reload(), 2000);
-    } else {
-      const text = await res.text();
-      showToast(text || "Failed to process request.", "error");
-    }
-  };
-
-  // Fetch and render data
-  const fetchFinancialRequests = async () => {
+  // ── Fetch ─────────────────────────────────────────────────────────────────────
+  const fetchFinancialRequests = async (statuses = ["selected"]) => {
     try {
+      if (statuses.length === 0) { renderTable([]); return; }
+
       const response = await fetch("/applicants", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(["selected"]), // Populating with students who have been selected
+        body: JSON.stringify(statuses),
         credentials: "include"
       });
 
       if (!response.ok) throw new Error("Failed to fetch applicants");
 
       const result = await response.json();
-      // Handle paginated response structure { data: [], total: x, ... }
       renderTable(result.data || []);
     } catch (error) {
-      console.error("Error fetching selected applicants:", error);
-      showToast("Failed to load selected students.", "error");
+      console.error("Error fetching applicants:", error);
+      showToast("Failed to load students.", "error");
     }
   };
 
-  const fetchTotalAmount = async () => {
-    try {
-      const response = await fetch("/gettotalamount", {
-        method: "GET",
-        credentials: "include"
-      });
-
-      if (!response.ok) throw new Error("Failed to fetch total amount");
-
-      const amounts = await response.json();
-      const total = amounts ? amounts.reduce((sum, amt) => sum + amt, 0) : 0;
-      const totalEl = document.querySelector(".tabs h4");
-      if (totalEl) totalEl.textContent = `MWK ${total.toLocaleString()}`;
-    } catch (error) {
-      console.error("Error fetching total amount:", error);
-    }
-  };
-
+  // ── Render ────────────────────────────────────────────────────────────────────
   const renderTable = (applicants) => {
     const tbody = document.getElementById("financial-requests-body");
     if (!tbody) return;
     tbody.innerHTML = "";
 
     if (!applicants || applicants.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No selected students found</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;">No students found</td></tr>';
       return;
     }
+
+    const infoIcon = `<svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor"><path d="M560-680v-80h320v80H560Zm0 160v-80h320v80H560Zm0 160v-80h320v80H560Zm-240-40q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35ZM80-160v-76q0-21 10-40t28-30q45-27 95.5-40.5T320-360q56 0 106.5 13.5T522-306q18 11 28 30t10 40v76H80Zm86-80h308q-35-20-74-30t-80-10q-41 0-80 10t-74 30Zm154-240q17 0 28.5-11.5T360-520q0-17-11.5-28.5T320-560q-17 0-28.5 11.5T280-520q0 17 11.5 28.5T320-480Zm0-40Zm0 280Z"/></svg>`;
+    const payIcon  = `<svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor"><path d="M840-200v-80H200v80h640Zm0-160v-240H200v240h640Zm0-320v-80H200v80h640ZM200-80q-33 0-56.5-23.5T120-160v-640q0-33 23.5-56.5T200-880h640q33 0 56.5 23.5T920-800v640q0 33-23.5 56.5T840-80H200ZM200-800h640v640H200v-640Z"/></svg>`;
 
     applicants.forEach(app => {
       const row = document.createElement("tr");
@@ -94,16 +87,39 @@ document.addEventListener("DOMContentLoaded", () => {
         <td>${app.registration_number || "N/A"}</td>
         <td>${app.parent_guardian_status || "N/A"}</td>
         <td><span class="status status-paid">${app.guardian_employment_status || "N/A"}</span></td>
-        <td>${app.programme || "N/A"}</td>
+        <td>${app.scheme_name || "N/A"}</td>
         <td><span class="status status-paid">${app.bursary_amount ? parseFloat(app.bursary_amount).toLocaleString() : "0"}</span></td>
-        <td><button title="${app.reason ? app.reason.String : "No details provided"}">More Info</button></td>
-        <td><button class="pay-btn" data-id="${app.registration_number}" data-name="${app.first_name} ${app.last_name}">Pay Installment</button></td>
+        <td>
+          <div style="display:flex;gap:8px;">
+            <button class="action-btn info-btn" title="${app.reason ? app.reason.String : "No details"}">${infoIcon}</button>
+            <button class="action-btn pay-btn" title="Pay Installment">${payIcon}</button>
+          </div>
+        </td>
       `;
+
+      // Attach click directly — avoids SVG event-target issues
+      row.querySelector(".pay-btn").addEventListener("click", () => {
+        activeStudent = {
+          id: app.registration_number,
+          name: `${app.first_name} ${app.last_name}`
+        };
+        if (modalTitle) modalTitle.textContent = `Pay ${activeStudent.name} Fees?`;
+        modal?.classList.add("active");
+      });
+
       tbody.appendChild(row);
     });
   };
 
-  // Initial load
-  fetchFinancialRequests();
-  fetchTotalAmount();
+  // ── Initial status helper ─────────────────────────────────────────────────────
+  const getInitialStatuses = () => {
+    const statuses = Array.from(tabs)
+      .filter(t => t.checked)
+      .map(t => t.value);
+
+    return statuses;
+  };
+
+  // ── Boot ──────────────────────────────────────────────────────────────────────
+  fetchFinancialRequests(getInitialStatuses());
 });

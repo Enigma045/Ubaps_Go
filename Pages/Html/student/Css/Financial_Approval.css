@@ -55,12 +55,33 @@
 .tabs {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 24px;
   background: #f1f5f9;
-  padding: 16px 20px;
+  padding: 12px 20px;
   border-radius: 12px;
   margin-bottom: 24px;
   border: 1px solid var(--border-color);
+}
+
+.tab-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tab-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--primary-color);
+}
+
+.tab-item label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  cursor: pointer;
+  user-select: none;
 }
 
 .tabs h4 {

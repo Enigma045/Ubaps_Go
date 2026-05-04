@@ -92,6 +92,7 @@ func main() {
 		| Login page route
 		|--------------------------------------------------------------------------
 	*/
+	mux.Handle("/payinstallment", middleware.RequireAuth(http.HandlerFunc(Routes.PayInstallment)))
 	mux.HandleFunc("/commitee", Routes.Commitee)
 	mux.HandleFunc("/Login", Routes.Login_page)
 	mux.HandleFunc("/", Routes.Sign_Up_page)

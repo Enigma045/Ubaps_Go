@@ -9,6 +9,10 @@ import (
 	"time"
 	"ubaps/Db"
 	middleware "ubaps/Middleware"
+	notifications "ubaps/Notifications"
+	user_logs "ubaps/Audit_logs"
+	"ubaps/Handles"
+	"fmt"
 )
 
 type LetterMetadata struct {
@@ -60,17 +64,64 @@ func SubmitLetter(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Upsert into letters table
+	start := time.Now()
+	ctx := r.Context()
+	tx, err := Db.DB.Begin(ctx)
+	if err != nil {
+		http.Error(w, "Failed to begin transaction", http.StatusInternalServerError)
+		return
+	}
+	defer tx.Rollback(ctx)
+
+	// Check if letter already exists
+	var exists bool
+	err = tx.QueryRow(ctx, "SELECT EXISTS(SELECT 1 FROM letters WHERE user_id = $1)", userId).Scan(&exists)
+	if err != nil {
+		http.Error(w, "Database error", http.StatusInternalServerError)
+		return
+	}
+
+	if exists {
+		// Notify student they already sent the letter
+		notifications.Send_notification(userId, tx, "You have already sent the student letter.", "Letter Already Sent")
+		// Log failure
+		user_logs.Create_user_log(tx, &userId, "student", "STUDENT_LETTER_ALREADY_SENT", fmt.Sprintf("user:%d", userId), "FAILED", time.Since(start))
+		
+		if err := tx.Commit(ctx); err != nil {
+			http.Error(w, "Failed to commit transaction", http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("You have already sent the student letter"))
+		return
+	}
+
+	// Insert into letters table
 	query := `
 		INSERT INTO letters (user_id, letter, created_at)
 		VALUES ($1, $2, $3)
-		ON CONFLICT (user_id) 
-		DO UPDATE SET letter = $2, created_at = $3
 	`
-	_, err = Db.DB.Exec(r.Context(), query, userId, content, time.Now())
+	_, err = tx.Exec(ctx, query, userId, content, time.Now())
 	if err != nil {
 		log.Println("Database error in SubmitLetter:", err)
 		http.Error(w, "Failed to save letter", http.StatusInternalServerError)
+		return
+	}
+
+	// Success path
+	notifications.Send_notification(userId, tx, "You have successfully sent the student letter.", "Letter Submitted")
+	user_logs.Create_user_log(tx, &userId, "student", "STUDENT_LETTER_SUBMITTED", fmt.Sprintf("user:%d", userId), "SUCCESS", time.Since(start))
+
+	// Get user email for broadcast
+	email, _ := Handles.GetEmailByUserID(userId, tx)
+
+	// Broadcast to users of different types (excluding students and admin)
+	if staffIDs, err := Handles.GetUserIDsOfDifferentTypes(tx, "student"); err == nil {
+		notifications.BroadcastNotification(staffIDs, tx, fmt.Sprintf("A student (%s) has submitted a letter.", email), "New Letter Received")
+	}
+
+	if err := tx.Commit(ctx); err != nil {
+		http.Error(w, "Failed to commit transaction", http.StatusInternalServerError)
 		return
 	}
 

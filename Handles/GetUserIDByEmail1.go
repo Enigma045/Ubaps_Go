@@ -109,3 +109,43 @@ func TimePtr(s string) (*time.Time, error) {
 	}
 	return &t, nil
 }
+
+// GetUserIDsOfDifferentTypes retrieves IDs of all users who are not of the excludedType and not admins.
+func GetUserIDsOfDifferentTypes(tx pgx.Tx, excludedType string) ([]int64, error) {
+	query := `SELECT user_id FROM users WHERE user_type != $1 AND user_type != 'admin'`
+	rows, err := tx.Query(context.Background(), query, excludedType)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var ids []int64
+	for rows.Next() {
+		var id int64
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		ids = append(ids, id)
+	}
+	return ids, nil
+}
+
+// GetAdmins retrieves IDs of all admin users.
+func GetAdmins(tx pgx.Tx) ([]int64, error) {
+	query := `SELECT user_id FROM users WHERE user_type = 'admin'`
+	rows, err := tx.Query(context.Background(), query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var ids []int64
+	for rows.Next() {
+		var id int64
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		ids = append(ids, id)
+	}
+	return ids, nil
+}

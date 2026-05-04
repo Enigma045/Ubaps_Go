@@ -26,6 +26,7 @@ type Applicant struct {
 	Relative_support string `json:"relative_support"`
 	Bursary_amount string `json:"bursary_amount"`
 	Reason sql.NullString `json:"reason"`
+	SchemeName string `json:"scheme_name"`
 
 }
 
@@ -41,9 +42,33 @@ func Applicants(
 		return []Applicant{}, 0, nil
 	}
 
-	countQuery := `SELECT COUNT(*) FROM applications WHERE status = ANY($1)`
+	// Filter out virtual statuses like 'paid' (if not in enum) to avoid Postgres Enum errors
+	// Note: 'paid' is now in the enum, but we still keep the feesPaidRequested logic for financial_request check
+	var realStatuses []string
+	var feesPaidRequested bool
+	for _, s := range applicants {
+		realStatuses = append(realStatuses, s)
+		if s == "paid" {
+			feesPaidRequested = true
+		}
+	}
+
+	// If no real statuses were provided and paid wasn't requested, return early
+	if len(realStatuses) == 0 && !feesPaidRequested {
+		return []Applicant{}, 0, nil
+	}
+
+	countQuery := `
+		SELECT COUNT(*) 
+		FROM applications a
+		WHERE (a.status = ANY($1))
+		   OR ($2 = true AND EXISTS (
+		       SELECT 1 FROM financial_request fr 
+		       WHERE fr.user_id = a.user_id AND fr.request_status = 'approved'
+		   ))
+	`
 	var total int
-	err := pool.QueryRow(ctx, countQuery, applicants).Scan(&total)
+	err := pool.QueryRow(ctx, countQuery, realStatuses, feesPaidRequested).Scan(&total)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -64,15 +89,21 @@ func Applicants(
 	a.guardian_employment_status,
 	a.other_financial_support,
 	a.bursary_amount,
-	a.reason_for_bursary
+	a.reason_for_bursary,
+	COALESCE(s.scheme_name, 'No Scheme')
     FROM applications a
     JOIN users u ON u.user_id = a.user_id
-    WHERE a.status = ANY($1)
+	LEFT JOIN bursary_schemes s ON s.scheme_id = a.scheme_id
+    WHERE (a.status = ANY($1))
+       OR ($4 = true AND EXISTS (
+           SELECT 1 FROM financial_request fr 
+           WHERE fr.user_id = a.user_id AND fr.request_status = 'approved'
+       ))
     ORDER BY a.application_date DESC
     LIMIT $2 OFFSET $3;
 	`
 
-	rows, err := pool.Query(ctx, query, applicants, limit, offset)
+	rows, err := pool.Query(ctx, query, realStatuses, limit, offset, feesPaidRequested)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -97,6 +128,7 @@ func Applicants(
 			&a.Relative_support,
 			&a.Bursary_amount,
 			&a.Reason,
+			&a.SchemeName,
 		); err != nil {
 			return nil, 0, err
 		}
@@ -194,4 +226,23 @@ func RejectStudent(tx pgx.Tx, ctx context.Context, userId int64,Role string) (st
 		return "", err
 	}
 	return "Application Rejected successfully", nil
+}
+
+func PayInstallment(tx pgx.Tx, ctx context.Context, userId int64) (string, error) {
+	// 1. Update application status
+	fmt.Println("Processing payment for user:", userId)
+	queryApp := `UPDATE applications SET status = 'paid' WHERE user_id = $1`
+	_, err := tx.Exec(ctx, queryApp, userId)
+	if err != nil {
+		return "", err
+	}
+
+	// 2. Approve any pending financial requests for this user
+	// queryReq := `UPDATE financial_request SET request_status = 'approved' WHERE user_id = $1 AND request_status = 'pending'`
+	// _, err = tx.Exec(ctx, queryReq, userId) // We don't strictly care if no pending requests existed
+    // if err != nil {
+	// 	return "", err
+	// }
+	 
+	return "Payment processed successfully", nil
 }

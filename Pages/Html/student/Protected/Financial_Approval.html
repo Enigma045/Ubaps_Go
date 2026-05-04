@@ -84,9 +84,14 @@
 
         <!-- Tabs -->
         <div class="tabs">
-          <h4>MWK 0</h4>
-          <p class="para">Request Amount for Disbursement 👉</p>
-          <button class="request" id="openModalRequest">Send Request</button>
+          <div class="tab-item">
+            <input type="checkbox" class="active" data-tab="applications" value="selected" id="Selected" checked>
+            <label for="Selected">Selected Students</label>
+          </div>
+          <div class="tab-item">
+            <input type="checkbox" data-tab="applications" value="paid" id="Paid">
+            <label for="Paid">Paid Students</label>
+          </div>
         </div>
 
         <!-- Search -->
@@ -105,8 +110,7 @@
                 <th>Employment Status</th>
                 <th>Bursary Scheme</th>
                 <th>Amount Assigned</th>
-                <th>Details</th>
-                <th>Disbursement</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody id="financial-requests-body">
@@ -117,32 +121,7 @@
 
       </div>
 
-      <!-- Modal Overlay -->
-      <div class="modalRequest" id="modalRequest">
-        <div class="modal-card-Request">
-          <form id="RequestForm">
-            <div class="filter-row">
-              <h1>Confirm Request</h1>
-              <div class="close" id="closeModalRequest">X</div>
-            </div>
-            <div class="filter-row">
-              <div class="form-group">
-                <label for="Detail">Detail</label>
-                <input type="text" id="Detail" name="detail" placeholder="Enter detail..." required>
-              </div>
-            </div>
-            <div class="filter-row">
-              <div class="form-group">
-                <label for="amount">Amount</label>
-                <input type="number" id="amount" name="amount" placeholder="400000" required>
-              </div>
-            </div>
-            <div class="filter-row">
-              <button class="request" style="width: 100%;">Send Request</button>
-            </div>
-          </form>
-        </div>
-      </div>
+
 
       <!-- Modal Overlay 2 -->
       <div class="modal" id="modal">
@@ -169,8 +148,7 @@
   <script src="/Js/Dashboard.js"></script>
   <script src="/Js/Profile_Loader.js"></script>
   <script src="/Js/Financial_Approval.js"></script>
-  <script src="/Js/Test_Request.js"></script>
-  <script src="/Js/Test_dusbersment.js"></script>
+  <script src="/Js/Notification_Feature.js"></script>
 </body>
 
 </html>

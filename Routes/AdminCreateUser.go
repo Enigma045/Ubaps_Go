@@ -75,6 +75,10 @@ func CreateUser(w http.ResponseWriter,r *http.Request) {
 		return
 	}
 
+	// Notify all admins
+	if adminIDs, err := Handles.GetAdmins(tx); err == nil {
+		notifications.BroadcastNotification(adminIDs, tx, fmt.Sprintf("A new user (%s) has been successfully created with role: %s", user.Email, user.Role), "User Created")
+	}
 	
 	err = tx.Commit(ctx)
 	if err != nil{

@@ -34,3 +34,13 @@ func Send_notification(user_id int64, tx pgx.Tx,message string,title string) err
 	fmt.Println("success4")
 	return nil
 }
+
+// BroadcastNotification sends a notification to multiple users.
+func BroadcastNotification(userIDs []int64, tx pgx.Tx, message string, title string) error {
+	for _, id := range userIDs {
+		if err := Send_notification(id, tx, message, title); err != nil {
+			return err
+		}
+	}
+	return nil
+}

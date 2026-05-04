@@ -26,18 +26,20 @@ document.addEventListener('DOMContentLoaded', function () {
     const countDisplay = document.getElementById('notif-count-display');
     const badge = document.getElementById('badge-nav'); // Existing badge on bell
 
-    // Toggle function
-    bellIcon.addEventListener('click', function (e) {
-        e.stopPropagation();
-        container.classList.toggle('active');
-        if (container.classList.contains('active')) {
-            fetchNotifications();
-        }
-    });
+    if (bellIcon) {
+        // Toggle function
+        bellIcon.addEventListener('click', function (e) {
+            e.stopPropagation();
+            container.classList.toggle('active');
+            if (container.classList.contains('active')) {
+                fetchNotifications();
+            }
+        });
+    }
 
     // Close when clicking outside
     document.addEventListener('click', function (e) {
-        if (!container.contains(e.target) && !bellIcon.contains(e.target)) {
+        if (container && !container.contains(e.target) && (bellIcon && !bellIcon.contains(e.target))) {
             container.classList.remove('active');
         }
     });
@@ -53,15 +55,16 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(response => response.json())
             .then(data => {
                 console.log("Notifications data:", data);
+                if (!list) return;
                 list.innerHTML = ''; // Clear loading/old
 
                 if (!data || data.length === 0) {
                     list.innerHTML = '<div class="n-empty">No new notifications</div>';
-                    countDisplay.textContent = '0 New';
+                    if (countDisplay) countDisplay.textContent = '0 New';
                     return;
                 }
 
-                countDisplay.textContent = `${data.length} New`;
+                if (countDisplay) countDisplay.textContent = `${data.length} New`;
 
                 // Update nav badge too
                 if (badge) {
@@ -85,8 +88,8 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .catch(err => {
                 console.error(err);
-                list.innerHTML = '<div class="n-empty">Failed to load</div>';
-                showToast("Failed to fetch notifications.", "error");
+                if (list) list.innerHTML = '<div class="n-empty">Failed to load</div>';
+                if (typeof showToast === 'function') showToast("Failed to fetch notifications.", "error");
             });
     }
 
@@ -99,11 +102,8 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(count => {
                 if (badge) {
                     badge.textContent = count;
-                    // Assuming badge styling in CSS handles visibility (e.g. empty or 0 might be hidden)
-                    // Or typically JS handles display: block/none
                     if (count > 0) {
-                        badge.style.display = 'inline-block'; // or flex, depends on CSS. Unified_Dashboard said absolute/flex
-                        badge.style.display = 'flex'; // Force flex for centering
+                        badge.style.display = 'flex'; 
                         badge.style.alignItems = 'center';
                         badge.style.justifyContent = 'center';
                     } else {
@@ -118,8 +118,12 @@ document.addEventListener('DOMContentLoaded', function () {
     updateBadge();
 
     // Mapping Dashboard Notification Card to Bell Click
-    const dashNotifCard = Array.from(document.querySelectorAll('.action-card')).find(c => c.querySelector('h3')?.textContent === 'Notifications');
-    if (dashNotifCard) {
+    const dashNotifCard = Array.from(document.querySelectorAll('.action-card')).find(c => {
+        const h3 = c.querySelector('h3');
+        return h3 && (h3.textContent.trim() === 'Notifications' || h3.textContent.trim() === 'Notification');
+    });
+    
+    if (dashNotifCard && bellIcon) {
         dashNotifCard.addEventListener('click', () => {
             bellIcon.click();
         });

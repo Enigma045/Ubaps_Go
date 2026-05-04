@@ -94,10 +94,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         const lastPointLabel = points[3]?.querySelector('.date');
         if (lastPointLabel) lastPointLabel.textContent = "Rejected";
 
-      } else if (lowerStatus.includes('selected')) {
+      } else if (lowerStatus.includes('selected') || lowerStatus.includes('paid')) {
         index = 3;
         // Update the label on the dot itself
-        
+        if (lowerStatus.includes('paid')) {
+            if (appStatusEl) appStatusEl.textContent = "Paid";
+        }
       } else if (lowerStatus.includes('considering')) {
         index = 2;
       }else if (lowerStatus.includes('not submitted')) {

@@ -162,3 +162,48 @@ func RejectStudent(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+func PayInstallment(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content", "application/json")
+	ctx := r.Context()
+
+	tx, err := Db.DB.Begin(ctx)
+	if err != nil {
+		log.Println("Error starting transaction:", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer tx.Rollback(ctx)
+
+	var student activeStudent
+	err = json.NewDecoder(r.Body).Decode(&student)
+	if err != nil {
+		log.Println("Error decoding request body:", err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	email := fmt.Sprintf("%s@unilia.ac.mw", student.StudentID)
+	UserId, err := Handles.GetUserIDByEmail(email, tx)
+	if err != nil {
+		log.Println("Error getting user ID from email:", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	results, err := Handles.PayInstallment(tx, ctx, UserId)
+	if err != nil {
+		log.Println("Error processing payment in database", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	tx.Commit(ctx)
+	w.WriteHeader(http.StatusOK)
+	err = json.NewEncoder(w).Encode(results)
+	if err != nil {
+		log.Println("Error encoding payment response to frontend", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}

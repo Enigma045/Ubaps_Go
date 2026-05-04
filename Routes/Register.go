@@ -136,7 +136,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Send verification email (outside transaction)
-	err = services.SendVerificationEmail("cen-01-14-22@unilia.ac.mw", token)
+	err = services.SendVerificationEmail("richardsambo94@gmail.com", token)
 	if err != nil {
 		log.Println("Email send error:", err)
 	}
@@ -146,6 +146,12 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	duration := time.Since(start)
 	user_logs.Create_user_log(tx, &userID, "student", "STUDENT_ACCOUNT_CREATED", fmt.Sprintf("user:%d", userID), "SUCCESS", duration)
 	//i wonder whatt happens if the acountis not verified
+
+	// Notify all admins
+	if adminIDs, err := Handles.GetAdmins(tx); err == nil {
+		notifications.BroadcastNotification(adminIDs, tx, fmt.Sprintf("A new student user (%s) has registered.", reqEmail), "New User Registration")
+	}
+
 	//User_logs
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{

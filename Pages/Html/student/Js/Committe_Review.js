@@ -25,6 +25,7 @@ function updatePayloadAndFetch() {
     }
     if (filter[1].checked) {
         currentPayload.push(filter[1].value);
+        currentPayload.push("paid");
     }
     if (filter[2].checked) {
         currentPayload.push(filter[2].value);

@@ -93,7 +93,7 @@ function populateLettersTable(letters) {
       <td>${letter.letterType}</td>
       <td>${letter.dateSubmitted}</td>
       <td>
-        <button class="view-btn" onclick="viewLetter('${letter.id}')">View</button>
+        <button class="view-btn" onclick="viewLetter('${letter.id}')"><img class="svg-btn" src="/Image/svgviewer-output (15).svg" alt=""></button>
         <button class="download-btn" onclick="downloadLetter('${letter.id}')">Download</button>
       </td>
     `;
