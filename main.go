@@ -54,6 +54,7 @@ func main() {
 	mux.Handle("/getapplicationstatus", middleware.RequireAuth(http.HandlerFunc(Routes.GetApplicationStatus)))
 	mux.Handle("/requeststatement", middleware.RequireAuth(http.HandlerFunc(Routes.Request_Statement)))
 	mux.Handle("/getstatementrequests", middleware.RequireAuth(http.HandlerFunc(Routes.GetStatementRequests)))
+	mux.Handle("/api/get-financial-history", middleware.RequireAuth(http.HandlerFunc(Routes.GetFinancialHistory)))
 
 	// Statistics endpoints
 	mux.Handle("/stats/student", middleware.RequireAuth(http.HandlerFunc(Routes.StatsStudent)))
@@ -70,6 +71,7 @@ func main() {
 	mux.Handle("/api/submit-letter", middleware.RequireAuth(middleware.RequireRole("student")(http.HandlerFunc(Routes.SubmitLetter))))
 	mux.Handle("/api/get-letters", middleware.RequireAuth(middleware.RequireRole("registrar")(http.HandlerFunc(Routes.GetLettersList))))
 	mux.Handle("/api/download-letter", middleware.RequireAuth(middleware.RequireRole("registrar")(http.HandlerFunc(Routes.DownloadLetter))))
+	mux.Handle("/api/send-letter", middleware.RequireAuth(middleware.RequireRole("registrar")(http.HandlerFunc(Routes.SendLetter))))
 
 	/*
 		|--------------------------------------------------------------------------

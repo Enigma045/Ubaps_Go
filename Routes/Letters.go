@@ -12,6 +12,7 @@ import (
 	notifications "ubaps/Notifications"
 	user_logs "ubaps/Audit_logs"
 	"ubaps/Handles"
+	"ubaps/services"
 	"fmt"
 )
 
@@ -19,6 +20,7 @@ type LetterMetadata struct {
 	ID                 int       `json:"id"`
 	StudentName        string    `json:"studentName"`
 	RegistrationNumber string    `json:"registrationNumber"`
+	LetterName         string    `json:"letterName"`
 	LetterType         string    `json:"letterType"`
 	DateSubmitted      string    `json:"dateSubmitted"`
 	Status             string    `json:"status"`
@@ -49,6 +51,8 @@ func SubmitLetter(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer file.Close()
+
+	letterName := header.Filename
 
 	// Validate file type by extension
 	ext := strings.ToLower(header.Filename[strings.LastIndex(header.Filename, ".")+1:])
@@ -98,10 +102,10 @@ func SubmitLetter(w http.ResponseWriter, r *http.Request) {
 
 	// Insert into letters table
 	query := `
-		INSERT INTO letters (user_id, letter, created_at)
-		VALUES ($1, $2, $3)
+		INSERT INTO letters (user_id, letter, letter_name, created_at)
+		VALUES ($1, $2, $3, $4)
 	`
-	_, err = tx.Exec(ctx, query, userId, content, time.Now())
+	_, err = tx.Exec(ctx, query, userId, content, letterName, time.Now())
 	if err != nil {
 		log.Println("Database error in SubmitLetter:", err)
 		http.Error(w, "Failed to save letter", http.StatusInternalServerError)
@@ -138,6 +142,7 @@ func GetLettersList(w http.ResponseWriter, r *http.Request) {
 			l.letters_id,
 			u.name || ' ' || u.surname as full_name,
 			a.registration_number,
+			l.letter_name,
 			l.created_at
 		FROM letters l
 		JOIN users u ON u.user_id = l.user_id
@@ -159,7 +164,7 @@ func GetLettersList(w http.ResponseWriter, r *http.Request) {
 		var createdAt time.Time
 		var regNum *string
 
-		if err := rows.Scan(&l.ID, &l.StudentName, &regNum, &createdAt); err != nil {
+		if err := rows.Scan(&l.ID, &l.StudentName, &regNum, &l.LetterName, &createdAt); err != nil {
 			log.Println("Scan error in GetLettersList:", err)
 			continue
 		}
@@ -171,7 +176,11 @@ func GetLettersList(w http.ResponseWriter, r *http.Request) {
 		}
 		
 		l.DateSubmitted = createdAt.Format("2006-01-02 15:04")
-		l.LetterType = "Thank You Letter"
+		if l.LetterName != "" {
+			l.LetterType = l.LetterName
+		} else {
+			l.LetterType = "Student Letter"
+		}
 		l.Status = "received"
 		letters = append(letters, l)
 	}
@@ -188,16 +197,79 @@ func DownloadLetter(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var content []byte
-	err := Db.DB.QueryRow(r.Context(), "SELECT letter FROM letters WHERE letters_id = $1", id).Scan(&content)
+	var letterName string
+	err := Db.DB.QueryRow(r.Context(), "SELECT letter, letter_name FROM letters WHERE letters_id = $1", id).Scan(&content, &letterName)
 	if err != nil {
 		http.Error(w, "Letter not found", http.StatusNotFound)
 		return
+	}
+
+	// Fallback if letterName is empty
+	if letterName == "" {
+		letterName = "letter_" + id
 	}
 
 	// Detection of content type (simplified)
 	contentType := http.DetectContentType(content)
 	
 	w.Header().Set("Content-Type", contentType)
-	w.Header().Set("Content-Disposition", "attachment; filename=letter_"+id)
+	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s\"", letterName))
 	w.Write(content)
+}
+
+func SendLetter(w http.ResponseWriter, r *http.Request) {
+	id := r.URL.Query().Get("id")
+	if id == "" {
+		http.Error(w, "Missing letter ID", http.StatusBadRequest)
+		return
+	}
+
+	ctx := r.Context()
+	var content []byte
+	var letterName string
+	var studentUserId int64
+
+	// 1. Get letter data
+	err := Db.DB.QueryRow(ctx, "SELECT letter, letter_name, user_id FROM letters WHERE letters_id = $1", id).Scan(&content, &letterName, &studentUserId)
+	if err != nil {
+		log.Println("Error fetching letter for sending:", err)
+		http.Error(w, "Letter not found", http.StatusNotFound)
+		return
+	}
+
+	// 2. Get benefactor email for this student
+	var benefactorEmail string
+	var benefactorName string
+	query := `
+		SELECT bs.benefactor_email, bs.benefactor_name
+		FROM bursary_schemes bs
+		JOIN applications a ON a.scheme_id = bs.scheme_id
+		WHERE a.user_id = $1
+	`
+	err = Db.DB.QueryRow(ctx, query, studentUserId).Scan(&benefactorEmail, &benefactorName)
+	if err != nil {
+		log.Println("Error fetching benefactor email for student:", studentUserId, err)
+		http.Error(w, "Benefactor information not found for this student. Ensure the student is assigned to a scheme.", http.StatusBadRequest)
+		return
+	}
+
+	// 3. Send email
+	subject := "New Student Letter Received: " + letterName
+	body := fmt.Sprintf(`
+		<h3>Dear %s,</h3>
+		<p>You have received a new letter from a student under your bursary scheme.</p>
+		<p>Please find the attached document: <strong>%s</strong></p>
+		<br>
+		<p>Best regards,<br>UBAPS System</p>
+	`, benefactorName, letterName)
+
+	err = services.SendEmailWithAttachment(benefactorEmail, subject, body, letterName, content)
+	if err != nil {
+		log.Println("Failed to send email to benefactor:", err)
+		http.Error(w, "Failed to send email to benefactor", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Letter sent to benefactor successfully"))
 }

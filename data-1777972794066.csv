@@ -1,0 +1,121 @@
+"dbms","table_catalog","table_schema","table_name","column_name","ordinal_position","data_type","character_maximum_length","constraint_type","table_schema-2","table_name-2","column_name-2"
+"postgresql","Ubaps","public","users","email",4,"character varying",150,"UNIQUE",NULL,NULL,NULL
+"postgresql","Ubaps","public","users","phone",5,"character varying",20,"UNIQUE",NULL,NULL,NULL
+"postgresql","Ubaps","public","users","user_id",1,"integer",NULL,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","Ubaps","public","notifications","notification_id",1,"bigint",NULL,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","Ubaps","public","notifications","recipient_user_id",2,"bigint",NULL,"FOREIGN KEY","public","users","user_id"
+"postgresql","Ubaps","public","email_verifications","email",2,"text",NULL,"UNIQUE",NULL,NULL,NULL
+"postgresql","Ubaps","public","email_verifications","email",2,"text",NULL,"FOREIGN KEY","public","users","email"
+"postgresql","Ubaps","public","email_verifications","id",1,"bigint",NULL,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","Ubaps","public","audit_user_logs","user_id",3,"bigint",NULL,"FOREIGN KEY","public","users","user_id"
+"postgresql","Ubaps","public","audit_user_logs","id",1,"bigint",NULL,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","Ubaps","public","sessions","session_id",1,"uuid",NULL,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","Ubaps","public","sessions","user_id",2,"integer",NULL,"FOREIGN KEY","public","users","user_id"
+"postgresql","Ubaps","public","bursary_schemes","scheme_id",1,"integer",NULL,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","Ubaps","public","bursary_schemes","user_id",12,"integer",NULL,"FOREIGN KEY","public","users","user_id"
+"postgresql","Ubaps","public","applications","user_id",2,"integer",NULL,"FOREIGN KEY","public","users","user_id"
+"postgresql","Ubaps","public","applications","user_id",2,"integer",NULL,"UNIQUE",NULL,NULL,NULL
+"postgresql","Ubaps","public","applications","scheme_id",3,"integer",NULL,"FOREIGN KEY","public","bursary_schemes","scheme_id"
+"postgresql","Ubaps","public","applications","application_id",1,"integer",NULL,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","Ubaps","public","financial_history","id",1,"integer",NULL,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","Ubaps","public","financial_request","user_id",2,"integer",NULL,"FOREIGN KEY","public","users","user_id"
+"postgresql","Ubaps","public","financial_request","request_id",1,"integer",NULL,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","Ubaps","public","dusbersment","user_id",2,"integer",NULL,"FOREIGN KEY","public","users","user_id"
+"postgresql","Ubaps","public","dusbersment","user_id",2,"integer",NULL,"FOREIGN KEY","public","users","user_id"
+"postgresql","Ubaps","public","dusbersment","user_id",2,"integer",NULL,"FOREIGN KEY","public","users","user_id"
+"postgresql","Ubaps","public","dusbersment","aplication_id",3,"integer",NULL,"FOREIGN KEY","public","applications","application_id"
+"postgresql","Ubaps","public","dusbersment","dusbersment_id",1,"integer",NULL,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","Ubaps","public","financial_history","user_id",14,"integer",NULL,"FOREIGN KEY","public","users","user_id"
+"postgresql","Ubaps","public","financial_history","user_id",14,"integer",NULL,"FOREIGN KEY","public","users","user_id"
+"postgresql","Ubaps","public","financial_history","user_id",14,"integer",NULL,"FOREIGN KEY","public","users","user_id"
+"postgresql","Ubaps","public","letters","letters_id",1,"integer",NULL,"PRIMARY KEY",NULL,NULL,NULL
+"postgresql","Ubaps","public","letters","user_id",2,"integer",NULL,"UNIQUE",NULL,NULL,NULL
+"postgresql","Ubaps","public","letters","user_id",2,"integer",NULL,"FOREIGN KEY","public","users","user_id"
+"postgresql","Ubaps","public","letters","user_id",2,"integer",NULL,"FOREIGN KEY","public","users","user_id"
+"postgresql","Ubaps","public","letters","user_id",2,"integer",NULL,"FOREIGN KEY","public","users","user_id"
+"postgresql","Ubaps","public","bursary_schemes","created_at",14,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","financial_history","updated_at",12,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","financial_history","installment_status",10,"boolean",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","financial_request","request_status",10,"USER-DEFINED",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","bursary_schemes","scheme_name",2,"character varying",200,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","users","name",2,"character varying",100,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","applications","registration_number",10,"character varying",50,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","notifications","read_at",7,"timestamp with time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","bursary_schemes","gender_restriction",8,"character varying",10,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","financial_history","request",4,"character varying",20,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","financial_request","previous_amount",3,"numeric",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","applications","home_district",8,"character varying",100,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","users","last_login",12,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","financial_request","updated_at",8,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","financial_history","semester",3,"character varying",20,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","applications","dean_of_science_approval_status",30,"USER-DEFINED",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","audit_user_logs","amount",10,"numeric",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","applications","parent_guardian_status",14,"character varying",50,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","financial_history","student_id",2,"integer",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","applications","accommodation",13,"character varying",50,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","applications","finance_office_approval_status",29,"USER-DEFINED",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","notifications","is_read",5,"boolean",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","applications","submission_timestamp",23,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","financial_history","previous_amount",6,"numeric",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","applications","dean_of_facult_approval_status",31,"USER-DEFINED",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","applications","last_updated",24,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","applications","gender",7,"character varying",10,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","financial_history","created_at",11,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","bursary_schemes","updated_at",15,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","dusbersment","assigned_amount",4,"numeric",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","financial_history","payment_date",13,"date",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","users","is_verified",9,"boolean",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","bursary_schemes","benefactor_name",3,"character varying",200,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","financial_history","payment_amount",7,"numeric",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","audit_user_logs","duration_ms",8,"integer",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","users","verification_token",13,"character varying",255,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","financial_request","cumulative_amount",5,"numeric",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","applications","date_of_birth",6,"date",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","financial_request","created_at",7,"timestamp with time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","users","is_active",8,"boolean",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","applications","other_financial_support",18,"text",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","audit_user_logs","occurred_at",2,"timestamp with time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","applications","bursary_amount",17,"numeric",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","financial_history","cumulative_amount",8,"numeric",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","financial_request","payment_amount",4,"numeric",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","bursary_schemes","available_balance",6,"numeric",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","applications","programme",9,"character varying",100,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","audit_user_logs","target",6,"text",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","letters","letter",3,"bytea",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","users","updated_at",11,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","users","password_hash",6,"character varying",255,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","bursary_schemes","conditions",10,"text",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","dusbersment","payed",5,"boolean",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","applications","reason_for_bursary",19,"text",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","audit_user_logs","application",9,"text",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","applications","status",5,"USER-DEFINED",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","applications","application_date",4,"date",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","audit_user_logs","action",5,"text",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","applications","expected_completion",11,"character varying",20,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","bursary_schemes","is_active",11,"boolean",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","email_verifications","expires_at",4,"timestamp with time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","sessions","expires_at",3,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","sessions","created_at",4,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","email_verifications","created_at",5,"timestamp with time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","notifications","notification_type",3,"USER-DEFINED",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","users","surname",3,"character varying",100,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","audit_user_logs","status",7,"text",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","bursary_schemes","total_fund_amount",5,"numeric",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","financial_history","details",5,"text",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","financial_history","full_installment",9,"numeric",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","users","verification_expires",14,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","users","created_at",10,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","letters","letter_name",5,"character varying",80,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","bursary_schemes","benefactor_email",4,"character varying",150,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","applications","registrar_approval_status",33,"USER-DEFINED",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","applications","guardian_employment_status",15,"character varying",100,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","email_verifications","token",3,"text",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","letters","created_at",4,"timestamp with time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","financial_request","details",9,"text",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","notifications","title",8,"text",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","users","user_type",7,"USER-DEFINED",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","notifications","created_at",6,"timestamp with time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","applications","dean_of_student_approval_status",32,"USER-DEFINED",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","notifications","message",4,"text",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","audit_user_logs","user_role",4,"text",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","applications","created_at",25,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL

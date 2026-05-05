@@ -99,6 +99,8 @@ function createFileItem(file) {
 ================================ */
 sendBtn.addEventListener("click", () => {
   if (!selectedFile) return;
+
+  const letterName = selectedFile.name;
   
   const item = fileList.querySelector(".file-item");
   const progressBar = item.querySelector(".progress-bar span");

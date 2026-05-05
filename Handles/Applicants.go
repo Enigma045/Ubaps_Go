@@ -219,9 +219,14 @@ func RejectStudent(tx pgx.Tx, ctx context.Context, userId int64,Role string) (st
 	
    //check
 
-	role := fmt.Sprintf("%s_approval_status",Role)
-	query := fmt.Sprintf(`UPDATE applications SET %s = 'rejected' , status = 'considering' WHERE user_id = $1`,role)
-	_, err = tx.Exec(ctx, query, userId)
+	status := "considering"
+	if Role == "registrar" {
+		status = "not selected"
+	}
+
+	role := fmt.Sprintf("%s_approval_status", Role)
+	query := fmt.Sprintf(`UPDATE applications SET %s = 'rejected' , status = $2 WHERE user_id = $1`, role)
+	_, err = tx.Exec(ctx, query, userId, status)
 	if err != nil {
 		return "", err
 	}

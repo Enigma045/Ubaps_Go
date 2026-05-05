@@ -248,7 +248,7 @@
             <h3>Verification Documents</h3>
             <div class="statement-actions">
               <button class="card-btn primary">Request Statements</button>
-              <button class="card-btn outline">View Full Dossier</button>
+              <button class="card-btn outline" id="view-dossier-btn">View Full Dossier</button>
             </div>
           </div>
         </div>
@@ -352,6 +352,46 @@
           </svg>
           Finalize Assignment
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dossier Modal -->
+  <div class="modal" id="dossierModal">
+    <div class="modal-content" style="max-width: 800px;">
+      <button class="close-modal" id="closeDossier">&times;</button>
+      <div class="modal-header">
+        <div class="icon-container" style="background: #f0f9ff;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+          </svg>
+        </div>
+        <h2>Student Financial Dossier</h2>
+      </div>
+      <div class="modal-body">
+        <div class="student-dossier-summary" style="margin-bottom: 20px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+          <h4 id="dossier-student-name" style="margin-bottom: 5px; color: #1e293b;">Student Name</h4>
+          <p id="dossier-student-reg" style="font-size: 0.9rem; color: #64748b;">Registration Number</p>
+        </div>
+        <div class="table-container" style="max-height: 400px; overflow-y: auto;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead style="background: #f1f5f9; position: sticky; top: 0;">
+              <tr>
+                <th style="padding: 10px; text-align: left; border-bottom: 2px solid #e2e8f0;">Semester</th>
+                <th style="padding: 10px; text-align: left; border-bottom: 2px solid #e2e8f0;">Date</th>
+                <th style="padding: 10px; text-align: left; border-bottom: 2px solid #e2e8f0;">Details</th>
+                <th style="padding: 10px; text-align: right; border-bottom: 2px solid #e2e8f0;">Amount (MWK)</th>
+              </tr>
+            </thead>
+            <tbody id="dossier-history-tbody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="cancel" id="closeDossierFooter">Close Dossier</button>
       </div>
     </div>
   </div>

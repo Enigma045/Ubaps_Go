@@ -1,9 +1,11 @@
 package Routes
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 	"ubaps/Db"
 	"ubaps/Handles"
 	"ubaps/utils"
@@ -15,37 +17,38 @@ func Fees(w http.ResponseWriter, r *http.Request) {
 	tx, err := Db.DB.Begin(ctx)
 
 	if err != nil {
-		http.Error(w, "Database Failed transctions Error ", http.StatusInternalServerError)
+		http.Error(w, "Database Failed transactions Error", http.StatusInternalServerError)
 		return
 	}
 	defer tx.Rollback(ctx)
+
 	reg := r.FormValue("student_id")
 	email := fmt.Sprintf("%s@unilia.ac.mw", reg)
 
 	data, err := utils.Formdata(r)
 	if err != nil {
-		http.Error(w, "Formdate Error ", http.StatusInternalServerError)
+		http.Error(w, "Formdata Error", http.StatusInternalServerError)
 		return
 	}
 	log.Println(email)
 	student_id, err := Handles.GetUserIDByEmail(email, tx)
 	if err != nil {
 		log.Println(err)
-		http.Error(w, "Failed to get student_id ", http.StatusInternalServerError)
+		http.Error(w, "Failed to get student_id", http.StatusInternalServerError)
 		return
 	}
 	err = utils.Finance_Operations(tx, ctx, data, student_id)
 	if err != nil {
 		log.Println(err)
-		http.Error(w, "Failed to get student_id ", http.StatusInternalServerError)
+		http.Error(w, "Failed to perform finance operations", http.StatusInternalServerError)
 		return
 	}
-	tx.Commit(ctx)
-	if err != nil {
-		http.Error(w, "Database Failed to commit Error ", http.StatusInternalServerError)
+
+	if err := tx.Commit(ctx); err != nil {
+		http.Error(w, "Database Failed to commit Error", http.StatusInternalServerError)
 		return
 	}
-	w.Write([]byte("Fees statement successufuly sent"))
+	w.Write([]byte("Fees statement successfully sent"))
 }
 
 func Request_Statement(w http.ResponseWriter, r *http.Request) {
@@ -96,4 +99,90 @@ func Request_Statement(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(`{"message": "Statement request sent successfully"}`))
+}
+
+func GetFinancialHistory(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	ctx := r.Context()
+
+	var payload struct {
+		Reg string `json:"reg"`
+	}
+	if err := utils.DecodeJSON(r, &payload); err != nil {
+		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		return
+	}
+
+	if payload.Reg == "" {
+		http.Error(w, "Student registration number is required", http.StatusBadRequest)
+		return
+	}
+
+	tx, err := Db.DB.Begin(ctx)
+	if err != nil {
+		log.Println("Error starting transaction:", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+	defer tx.Rollback(ctx)
+
+	email := fmt.Sprintf("%s@unilia.ac.mw", payload.Reg)
+	studentID, err := Handles.GetUserIDByEmail(email, tx)
+	if err != nil {
+		log.Println("Error resolving student ID:", err)
+		http.Error(w, "Student not found", http.StatusNotFound)
+		return
+	}
+
+	query := `
+		SELECT 
+			semester, 
+			payment_date, 
+			details, 
+			payment_amount, 
+			full_installment, 
+			request, 
+			updated_at 
+		FROM financial_history 
+		WHERE student_id = $1 
+		ORDER BY updated_at DESC
+	`
+
+	rows, err := tx.Query(ctx, query, studentID)
+	if err != nil {
+		log.Println("Error fetching financial history:", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	type HistoryItem struct {
+		Semester        string    `json:"semester"`
+		Date            time.Time `json:"date"`
+		Details         string    `json:"details"`
+		Amount          float64   `json:"amount"`
+		FullInstallment float64   `json:"full_installment"`
+		Status          string    `json:"status"`
+		UpdatedAt       time.Time `json:"updated_at"`
+	}
+
+	var history []HistoryItem
+	for rows.Next() {
+		var item HistoryItem
+		if err := rows.Scan(
+			&item.Semester,
+			&item.Date,
+			&item.Details,
+			&item.Amount,
+			&item.FullInstallment,
+			&item.Status,
+			&item.UpdatedAt,
+		); err != nil {
+			log.Println("Error scanning history row:", err)
+			continue
+		}
+		history = append(history, item)
+	}
+
+	json.NewEncoder(w).Encode(history)
 }

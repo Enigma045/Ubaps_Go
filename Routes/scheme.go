@@ -9,6 +9,10 @@ import (
 	"ubaps/Handles"
 	middleware "ubaps/Middleware"
 	"ubaps/utils"
+	notifications "ubaps/Notifications"
+	user_logs "ubaps/Audit_logs"
+	"ubaps/services"
+	"time"
 )
 
 func Scheme_Info(w http.ResponseWriter, r *http.Request) {
@@ -163,22 +167,22 @@ type SchemeInfo struct {
 }
 
 func SendScheme_Info(w http.ResponseWriter, r *http.Request) {
-
+	start := time.Now()
 	w.Header().Set("Content-Type", "application/json")
 	ctx := r.Context()
 	tx, err := Db.DB.Begin(ctx)
 	if err != nil {
 		log.Println(err)
-		http.Error(w, "Failed to create Transction", http.StatusInternalServerError)
+		http.Error(w, "Failed to create Transaction", http.StatusInternalServerError)
 		return
 	}
 	defer tx.Rollback(ctx)
 
 	var schemeinfo SchemeInfo
-
 	err = json.NewDecoder(r.Body).Decode(&schemeinfo)
 	if err != nil {
 		log.Println(err)
+		user_logs.Create_user_log(tx, nil, "registrar", "BURSARY_SELECTION_FAILED", "Invalid JSON payload", "FAILED", time.Since(start))
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
@@ -187,6 +191,7 @@ func SendScheme_Info(w http.ResponseWriter, r *http.Request) {
 	userid, err := Handles.GetUserIDByEmail(email, tx)
 	if err != nil {
 		log.Println(err)
+		user_logs.Create_user_log(tx, nil, "registrar", "BURSARY_SELECTION_FAILED", fmt.Sprintf("Student not found: %s", schemeinfo.Reg), "FAILED", time.Since(start))
 		http.Error(w, "Failed to get userid", http.StatusInternalServerError)
 		return
 	}
@@ -194,12 +199,14 @@ func SendScheme_Info(w http.ResponseWriter, r *http.Request) {
 	exist, err := utils.CheckForScheme(tx, ctx, userid)
 	if err != nil {
 		log.Println(err)
+		user_logs.Create_user_log(tx, &userid, "registrar", "BURSARY_SELECTION_FAILED", "Internal database check error", "FAILED", time.Since(start))
 		http.Error(w, "Failed to check for scheme", http.StatusInternalServerError)
 		return
 	}
 
 	if exist {
 		log.Println("User already has a scheme")
+		user_logs.Create_user_log(tx, &userid, "registrar", "BURSARY_SELECTION_FAILED", "User already assigned a scheme", "FAILED", time.Since(start))
 		http.Error(w, "User already has a scheme", http.StatusBadRequest)
 		return
 	}
@@ -207,6 +214,7 @@ func SendScheme_Info(w http.ResponseWriter, r *http.Request) {
 	schemeid, err := utils.GetSchemeId(schemeinfo.Scheme, tx, ctx)
 	if err != nil {
 		log.Println(err)
+		user_logs.Create_user_log(tx, &userid, "registrar", "BURSARY_SELECTION_FAILED", fmt.Sprintf("Scheme not found: %s", schemeinfo.Scheme), "FAILED", time.Since(start))
 		http.Error(w, "Failed to get schemeid", http.StatusInternalServerError)
 		return
 	}
@@ -214,6 +222,7 @@ func SendScheme_Info(w http.ResponseWriter, r *http.Request) {
 	err = utils.CheckSchemeAmount(schemeinfo.Scheme, tx, ctx, schemeinfo.Amount)
 	if err != nil {
 		log.Println(err)
+		user_logs.Create_user_log(tx, &userid, "registrar", "BURSARY_SELECTION_FAILED", "Insufficient scheme funds", "FAILED", time.Since(start))
 		http.Error(w, "Amount is less then bursary scheme amount", http.StatusInternalServerError)
 		return
 	}
@@ -221,23 +230,51 @@ func SendScheme_Info(w http.ResponseWriter, r *http.Request) {
 	value, err := utils.GetAvailableAmount(tx, ctx, schemeid)
 	if err != nil {
 		log.Println(err)
-		http.Error(w, "Failed to retrieve availabele scheme balnce", http.StatusInternalServerError)
+		user_logs.Create_user_log(tx, &userid, "registrar", "BURSARY_SELECTION_FAILED", "Failed to retrieve balance", "FAILED", time.Since(start))
+		http.Error(w, "Failed to retrieve available scheme balance", http.StatusInternalServerError)
 		return
 	}
 
 	err = utils.UpdateScheme_Amount(tx, ctx, schemeid, schemeinfo.Amount, value)
 	if err != nil {
 		log.Println(err)
-		http.Error(w, "Failed to update scheme amount scheme balnce", http.StatusInternalServerError)
+		user_logs.Create_user_log(tx, &userid, "registrar", "BURSARY_SELECTION_FAILED", "Balance update failed", "FAILED", time.Since(start))
+		http.Error(w, "Failed to update scheme balance", http.StatusInternalServerError)
 		return
 	}
 
 	err = utils.SendScheme_Info(tx, ctx, userid, schemeid, schemeinfo.Amount)
 	if err != nil {
 		log.Println(err)
+		user_logs.Create_user_log(tx, &userid, "registrar", "BURSARY_SELECTION_FAILED", "Status update failed", "FAILED", time.Since(start))
 		http.Error(w, "Failed to send scheme info", http.StatusInternalServerError)
 		return
 	}
+
+	// 1. Notify Student (In-app)
+	notifications.Send_notification(userid, tx, fmt.Sprintf("Congratulations! You have been selected for the %s scheme with an amount of MWK %s.", schemeinfo.Scheme, schemeinfo.Amount), "Bursary Selection")
+
+	// 2. Notify Student (SMS)
+	if phone, err := Handles.GetUserPhoneByID(userid, tx); err == nil && phone != "" {
+		smsMsg := fmt.Sprintf("Congratulations! You have been selected for the %s bursary scheme (MWK %s). Log in to your portal for details.", schemeinfo.Scheme, schemeinfo.Amount)
+		services.SendSMS("0998111960", smsMsg)
+	}
+
+	// 3. Email Administrator
+	subject := "Bursary Selection Finalized"
+	body := fmt.Sprintf(`
+		<h3>Bursary Selection Alert</h3>
+		<p>A student has been officially selected for a bursary scheme.</p>
+		<ul>
+			<li><strong>Student Reg:</strong> %s</li>
+			<li><strong>Scheme:</strong> %s</li>
+			<li><strong>Amount:</strong> MWK %s</li>
+		</ul>
+	`, schemeinfo.Reg, schemeinfo.Scheme, schemeinfo.Amount)
+	services.SendEmail("richardsambo94@gmail.com", subject, body)
+
+	// 3. Audit Log
+	user_logs.Create_user_log(tx, &userid, "registrar", "STUDENT_SELECTED_FOR_BURSARY", fmt.Sprintf("Student:%s, Scheme:%s, Amount:%s", schemeinfo.Reg, schemeinfo.Scheme, schemeinfo.Amount), "SUCCESS", time.Since(start))
 
 	err = tx.Commit(ctx)
 	if err != nil {

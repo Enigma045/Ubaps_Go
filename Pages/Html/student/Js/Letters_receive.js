@@ -32,7 +32,7 @@ async function fetchLetters() {
  * Download a letter
  * @param {string} letterId - The ID of the letter to download
  */
-async function downloadLetter(letterId) {
+async function downloadLetter(letterId, filename) {
   try {
     // Backend expects ?id=...
     const downloadUrl = `${API_BASE_URL}/download-letter?id=${letterId}`;
@@ -46,7 +46,7 @@ async function downloadLetter(letterId) {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `letter_${letterId}`; // Browser will usually pick up correct extension from Content-Type
+    a.download = filename || `letter_${letterId}`; // Use the provided filename
     document.body.appendChild(a);
     a.click();
     window.URL.revokeObjectURL(url);
@@ -56,6 +56,28 @@ async function downloadLetter(letterId) {
   } catch (error) {
     console.error('Error downloading letter:', error);
     showToast("Failed to download letter.", "error");
+  }
+}
+
+/**
+ * Send a letter to the benefactor
+ * @param {string} letterId - The ID of the letter to send
+ */
+async function sendLetter(letterId) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/send-letter?id=${letterId}`, {
+      method: 'GET',
+    });
+
+    if (!response.ok) {
+      const errorMsg = await response.text();
+      throw new Error(errorMsg || "Failed to send letter");
+    }
+
+    showToast("Letter sent to benefactor successfully!", "success");
+  } catch (error) {
+    console.error('Error sending letter:', error);
+    showToast(error.message || "Failed to send letter.", "error");
   }
 }
 
@@ -94,7 +116,7 @@ function populateLettersTable(letters) {
       <td>${letter.dateSubmitted}</td>
       <td>
         <button class="view-btn" onclick="viewLetter('${letter.id}')"><img class="svg-btn" src="/Image/svgviewer-output (15).svg" alt=""></button>
-        <button class="download-btn" onclick="downloadLetter('${letter.id}')">Download</button>
+        <button class="download-btn" onclick="sendLetter('${letter.id}')">Send</button>
       </td>
     `;
 

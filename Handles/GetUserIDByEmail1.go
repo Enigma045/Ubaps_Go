@@ -44,10 +44,28 @@ func GetEmailByUserID(userID int64, tx pgx.Tx) (string, error) {
 		if err == pgx.ErrNoRows {
 			return "", fmt.Errorf("user not found for UserId: %d", userID)
 		}
-		return "", fmt.Errorf("failed to get user ID: %w", err)
+		return "", fmt.Errorf("failed to get user email: %w", err)
 	}
 	fmt.Println("success3")
 	return email, nil
+}
+
+func GetUserPhoneByID(userID int64, tx pgx.Tx) (string, error) {
+	if userID <= 0 {
+		return "", fmt.Errorf("userID must be a positive integer")
+	}
+
+	var phone string
+	query := `SELECT phone FROM users WHERE user_id = $1 LIMIT 1`
+
+	err := tx.QueryRow(context.Background(), query, userID).Scan(&phone)
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return "", fmt.Errorf("user not found for UserId: %d", userID)
+		}
+		return "", fmt.Errorf("failed to get user phone: %w", err)
+	}
+	return phone, nil
 }
 
 func GetRegNumberFromEmail(email string) string {
