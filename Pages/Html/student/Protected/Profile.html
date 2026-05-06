@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/Css/Navbar/Navbar.css">
+    <link rel="stylesheet" href="/Css/Layout.css">
+    <link rel="stylesheet" href="/Css/Dashboard.css">
+    <link rel="stylesheet" href="/Css/Notification.css">
+    <link rel="stylesheet" href="/Css/Admin_Users_Form.css">
+    <script src="/Js/Toast.js"></script>
+    <title>Profile Settings - UBAPS</title>
+    <style>
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .settings-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        .settings-card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            color: #1e293b;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 0.75rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        @media (max-width: 968px) {
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="logo">
+                <span class="icon"><img src="/Image/logo-icon.png" alt="Logo"></span>
+                <span class="label">UNILIA</span>
+            </div>
+
+            <div class="nav-item">
+                <span class="icon"><img class="svg" src="/Image/svgviewer-output (3).svg" alt=""></span>
+                <span class="label"><a id="home-link" href="#" class="text-link">Home</a></span>
+            </div>
+
+            <!-- Logout -->
+            <div class="nav-item logout" style="margin-top: auto;">
+                <span class="icon"><img class="LogOut" src="/Image/svgviewer-output (7).svg" alt=""></span>
+                <span class="label"><a href="/logout" class="text-link" style="color: inherit;">Logout</a></span>
+            </div>
+        </nav>
+
+        <!-- Main Area -->
+        <div class="main">
+            <!-- Header -->
+            <header class="header">
+                <div class="breadcrumb">
+                    <strong>UBAPS</strong> &gt; Profile Settings
+                </div>
+                <div class="header-actions">
+                    <div class="notification-nav">
+                        <img class="svg" src="/Image/svgviewer-output (5).svg" alt="">
+                        <span id="badge-nav" class="badge-nav">0</span>
+                    </div>
+                    <div id="user-avatar" class="user-avatar">
+                        --
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-area" style="padding: 2rem;">
+                <h1>Profile Settings</h1>
+                <p style="color: #64748b;">Manage your account information and security settings.</p>
+
+                <div class="profile-grid">
+                    <!-- Personal Info -->
+                    <div class="settings-card">
+                        <h2>Personal Information</h2>
+                        <form id="profileForm">
+                            <div class="form-group">
+                                <label for="firstName">First Name</label>
+                                <input type="text" id="firstName" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Surname</label>
+                                <input type="text" id="lastName" name="surname" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" id="phone" name="phone" required>
+                            </div>
+                            <button type="submit" class="register-btn" style="width: 100%;">Save Changes</button>
+                        </form>
+                    </div>
+
+                    <!-- Security -->
+                    <div class="settings-card">
+                        <h2>Security & Password</h2>
+                        <form id="passwordForm">
+                            <div class="form-group">
+                                <label for="oldPassword">Current Password</label>
+                                <input type="password" id="oldPassword" name="oldPassword" required placeholder="••••••••">
+                            </div>
+                            <div class="form-group">
+                                <label for="newPassword">New Password</label>
+                                <input type="password" id="newPassword" name="newPassword" required minlength="8" placeholder="••••••••">
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmPassword">Confirm New Password</label>
+                                <input type="password" id="confirmPassword" name="confirmPassword" required minlength="8" placeholder="••••••••">
+                            </div>
+                            <button type="submit" class="register-btn" style="width: 100%; background-color: #475569;">Change Password</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/Js/Dashboard.js"></script>
+    <script src="/Js/Profile_Loader.js"></script>
+    <script src="/Js/Profile.js"></script>
+    <script src="/Js/Notification_Feature.js"></script>
+    <script>
+        // Set home link based on role
+        document.addEventListener('DOMContentLoaded', async () => {
+            const profile = await fetchUserProfile();
+            const homeLink = document.getElementById('home-link');
+            if (profile.role === 'admin') homeLink.href = '/admindashboard';
+            else if (profile.role === 'student') homeLink.href = '/dashboard';
+            else if (profile.role === 'registrar') homeLink.href = '/registrardashboard';
+            else if (profile.role === 'finance_office') homeLink.href = '/financialdashboard';
+            else if (profile.role.startsWith('dean')) homeLink.href = '/deandashboard';
+        });
+    </script>
+</body>
+
+</html>

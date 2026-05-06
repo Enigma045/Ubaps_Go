@@ -89,7 +89,7 @@ func SubmitLetter(w http.ResponseWriter, r *http.Request) {
 		// Notify student they already sent the letter
 		notifications.Send_notification(userId, tx, "You have already sent the student letter.", "Letter Already Sent")
 		// Log failure
-		user_logs.Create_user_log(tx, &userId, "student", "STUDENT_LETTER_ALREADY_SENT", fmt.Sprintf("user:%d", userId), "FAILED", time.Since(start))
+		user_logs.Create_user_log(tx, &userId, "student", "STUDENT_LETTER_ALREADY_SENT", fmt.Sprintf("user:%d", userId), "FAILED", time.Since(start), &userId)
 		
 		if err := tx.Commit(ctx); err != nil {
 			http.Error(w, "Failed to commit transaction", http.StatusInternalServerError)
@@ -114,7 +114,7 @@ func SubmitLetter(w http.ResponseWriter, r *http.Request) {
 
 	// Success path
 	notifications.Send_notification(userId, tx, "You have successfully sent the student letter.", "Letter Submitted")
-	user_logs.Create_user_log(tx, &userId, "student", "STUDENT_LETTER_SUBMITTED", fmt.Sprintf("user:%d", userId), "SUCCESS", time.Since(start))
+	user_logs.Create_user_log(tx, &userId, "student", "STUDENT_LETTER_SUBMITTED", fmt.Sprintf("user:%d", userId), "SUCCESS", time.Since(start), &userId)
 
 	// Get user email for broadcast
 	email, _ := Handles.GetEmailByUserID(userId, tx)
@@ -218,6 +218,7 @@ func DownloadLetter(w http.ResponseWriter, r *http.Request) {
 }
 
 func SendLetter(w http.ResponseWriter, r *http.Request) {
+	start := time.Now()
 	id := r.URL.Query().Get("id")
 	if id == "" {
 		http.Error(w, "Missing letter ID", http.StatusBadRequest)
@@ -225,12 +226,20 @@ func SendLetter(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ctx := r.Context()
+	tx, err := Db.DB.Begin(ctx)
+	if err != nil {
+		log.Println("Error starting transaction:", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+	defer tx.Rollback(ctx)
+
 	var content []byte
 	var letterName string
 	var studentUserId int64
 
 	// 1. Get letter data
-	err := Db.DB.QueryRow(ctx, "SELECT letter, letter_name, user_id FROM letters WHERE letters_id = $1", id).Scan(&content, &letterName, &studentUserId)
+	err = tx.QueryRow(ctx, "SELECT letter, letter_name, user_id FROM letters WHERE letters_id = $1", id).Scan(&content, &letterName, &studentUserId)
 	if err != nil {
 		log.Println("Error fetching letter for sending:", err)
 		http.Error(w, "Letter not found", http.StatusNotFound)
@@ -246,7 +255,7 @@ func SendLetter(w http.ResponseWriter, r *http.Request) {
 		JOIN applications a ON a.scheme_id = bs.scheme_id
 		WHERE a.user_id = $1
 	`
-	err = Db.DB.QueryRow(ctx, query, studentUserId).Scan(&benefactorEmail, &benefactorName)
+	err = tx.QueryRow(ctx, query, studentUserId).Scan(&benefactorEmail, &benefactorName)
 	if err != nil {
 		log.Println("Error fetching benefactor email for student:", studentUserId, err)
 		http.Error(w, "Benefactor information not found for this student. Ensure the student is assigned to a scheme.", http.StatusBadRequest)
@@ -266,7 +275,21 @@ func SendLetter(w http.ResponseWriter, r *http.Request) {
 	err = services.SendEmailWithAttachment(benefactorEmail, subject, body, letterName, content)
 	if err != nil {
 		log.Println("Failed to send email to benefactor:", err)
+		user_logs.Create_user_log(tx, nil, "staff", "FORWARD_LETTER_FAILED", fmt.Sprintf("LetterID:%s, Benefactor:%s", id, benefactorEmail), "FAILED", time.Since(start), &studentUserId)
 		http.Error(w, "Failed to send email to benefactor", http.StatusInternalServerError)
+		return
+	}
+
+	// Notify student that their letter was forwarded
+	notifications.Send_notification(studentUserId, tx, fmt.Sprintf("Your student letter (%s) has been successfully forwarded to your benefactor (%s).", letterName, benefactorName), "Letter Forwarded")
+
+	// Audit Log
+	staffID, _ := middleware.UserIDFromContext(ctx)
+	user_logs.Create_user_log(tx, &staffID, "staff", "STUDENT_LETTER_FORWARDED", fmt.Sprintf("LetterID:%s, Student:%d, Benefactor:%s", id, studentUserId, benefactorEmail), "SUCCESS", time.Since(start), &studentUserId)
+
+	if err := tx.Commit(ctx); err != nil {
+		log.Println("Transaction commit failed:", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 

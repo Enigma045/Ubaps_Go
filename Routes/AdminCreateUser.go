@@ -9,7 +9,9 @@ import (
 	user_logs "ubaps/Audit_logs"
 	"ubaps/Db"
 	"ubaps/Handles"
+	middleware "ubaps/Middleware"
 	notifications "ubaps/Notifications"
+	"ubaps/services"
 )
 type User struct{
 
@@ -25,7 +27,7 @@ func CreateUser(w http.ResponseWriter,r *http.Request) {
 	start := time.Now()
 	var user User
     if r.Method != http.MethodPost{
-		http.Error(w,"This is no a post methord",http.StatusMethodNotAllowed)
+		http.Error(w,"This is not a post method",http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -36,7 +38,7 @@ func CreateUser(w http.ResponseWriter,r *http.Request) {
 	tx,err := Db.DB.Begin(ctx)
 	if err != nil{
 		log.Println(err)
-		http.Error(w,"Transction Failed to create",http.StatusInternalServerError)
+		http.Error(w,"Transaction Failed to create",http.StatusInternalServerError)
 		return
 	}
 
@@ -44,9 +46,16 @@ func CreateUser(w http.ResponseWriter,r *http.Request) {
 
 	
 
+	performerID, _ := middleware.UserIDFromContext(ctx)
+	var performerIDPtr *int64
+	if performerID != 0 {
+		performerIDPtr = &performerID
+	}
+
 	err = json.NewDecoder(r.Body).Decode(&user)
     if err != nil{
 		log.Println(err)
+		user_logs.Create_user_log(tx, performerIDPtr, "admin", "USER_CREATION_FAILED", "Invalid JSON payload", "FAILED", time.Since(start), nil)
 		http.Error(w,"Failed to get payload",http.StatusInternalServerError)
 		return
 	}
@@ -54,6 +63,7 @@ func CreateUser(w http.ResponseWriter,r *http.Request) {
 	userID,err := Handles.CreateUser(user.First,user.Last,user.Email,user.Phone,user.Password,user.Role,tx,true)
     if err != nil{
 		log.Println(err)
+		user_logs.Create_user_log(tx, performerIDPtr, "admin", "USER_CREATION_FAILED", fmt.Sprintf("Email:%s Error:%s", user.Email, err.Error()), "FAILED", time.Since(start), nil)
 		http.Error(w,"Failed to create user",http.StatusInternalServerError)
 		return
 	}
@@ -61,18 +71,15 @@ func CreateUser(w http.ResponseWriter,r *http.Request) {
 	err = notifications.Send_notification(userID, tx, "Your account has been created.","Account Created")
 	if err != nil {
 		log.Println(err)
+		user_logs.Create_user_log(tx, performerIDPtr, user.Role, "USER_NOTIFICATION_FAILED", "Notification delivery failed during creation", "FAILED", time.Since(start), &userID)
 		http.Error(w,"Failed to create user notification",http.StatusInternalServerError)
 		return
 	}
 
-	
-
 	duration := time.Since(start)
-	err = user_logs.Create_user_log(tx, &userID, user.Role, fmt.Sprintf("%s_ACCOUNT_CREATED", user.Role), fmt.Sprintf("user:%d", userID), "SUCCESS", duration)
+	err = user_logs.Create_user_log(tx, performerIDPtr, "admin", "USER_ACCOUNT_CREATED", fmt.Sprintf("user:%d, role:%s", userID, user.Role), "SUCCESS", duration, &userID)
 	if err != nil {
 		log.Println(err)
-		http.Error(w,"Failed to create user log",http.StatusInternalServerError)
-		return
 	}
 
 	// Notify all admins
@@ -81,11 +88,22 @@ func CreateUser(w http.ResponseWriter,r *http.Request) {
 	}
 	
 	err = tx.Commit(ctx)
-	if err != nil{
+	if err != nil {
 		log.Println(err)
-		http.Error(w,"Transction Failed to commit",http.StatusInternalServerError)
+		user_logs.Create_user_log(nil, performerIDPtr, "admin", "USER_CREATION_COMMIT_FAILED", user.Email, "FAILED", time.Since(start), &userID)
+		http.Error(w, "Transaction Failed to commit", http.StatusInternalServerError)
 		return
 	}
-    w.WriteHeader(http.StatusOK)
-	w.Write([]byte("User succefully created"))
+
+	// Send Welcome Email
+	err = services.SendWelcomeEmail(user.Email, user.Password, user.Role)
+	if err != nil {
+		log.Println("Failed to send welcome email:", err)
+		user_logs.Create_user_log(nil, performerIDPtr, "admin", "WELCOME_EMAIL_FAILED", fmt.Sprintf("User: %s, Error: %s", user.Email, err.Error()), "FAILED", time.Since(start), &userID)
+	} else {
+		user_logs.Create_user_log(nil, performerIDPtr, "admin", "WELCOME_EMAIL_SENT", fmt.Sprintf("Welcome email sent to %s", user.Email), "SUCCESS", time.Since(start), &userID)
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"message": "User successfully created and welcome email sent"})
 }

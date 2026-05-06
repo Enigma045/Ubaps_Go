@@ -9,6 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const lastNameInput = document.getElementById("editLastName");
     const emailInput = document.getElementById("editEmail");
     const phoneInput = document.getElementById("editPhone");
+    const statusSelect = document.getElementById("editStatus");
+    const triggerResetBtn = document.getElementById("triggerReset");
 
     let originalEmail = null;
 
@@ -23,23 +25,48 @@ document.addEventListener("DOMContentLoaded", () => {
         const row = editButton.closest("tr");
         if (!row) return;
 
-        const fullName = row.querySelector(".name").innerText;
-        const email = row.querySelector(".email").innerText;
-        const phone = row.querySelectorAll("td")[3].innerText; // Phone is the 4th column (index 3)
-
-        // Split full name (assuming First Last format)
-        const nameParts = fullName.split(" ");
-        const first = nameParts[0] || "";
-        const last = nameParts.slice(1).join(" ") || "";
-
+        // Retrieve user data from data attribute (we'll set this in Admin_Modification.js)
+        const user = JSON.parse(row.dataset.user || "{}");
+        
         // Populate fields
-        firstNameInput.value = first;
-        lastNameInput.value = last;
-        emailInput.value = email;
-        phoneInput.value = phone;
-        originalEmail = email;
+        firstNameInput.value = user.first || "";
+        lastNameInput.value = user.last || "";
+        emailInput.value = user.email || "";
+        phoneInput.value = user.phone || "";
+        statusSelect.value = user.status || "active";
+        originalEmail = user.email;
 
         editModal.classList.add("active");
+    });
+
+    // Handle Password Reset Trigger
+    triggerResetBtn.addEventListener("click", async () => {
+        if (!originalEmail) return;
+        
+        if (!confirm(`Are you sure you want to trigger a password reset for ${originalEmail}?`)) return;
+
+        triggerResetBtn.disabled = true;
+        triggerResetBtn.textContent = "Triggering...";
+
+        try {
+            const response = await fetch("/api/admin/trigger-reset", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: originalEmail })
+            });
+
+            if (response.ok) {
+                showToast("Password reset link sent to admin/user.", "success");
+            } else {
+                const text = await response.text();
+                showToast(text || "Failed to trigger reset.", "error");
+            }
+        } catch (err) {
+            showToast("Connection error.", "error");
+        } finally {
+            triggerResetBtn.disabled = false;
+            triggerResetBtn.textContent = "Trigger Password Reset";
+        }
     });
 
     const closeEditModal = () => {
@@ -63,13 +90,15 @@ document.addEventListener("DOMContentLoaded", () => {
             first: firstNameInput.value,
             last: lastNameInput.value,
             email: emailInput.value,
-            phone: phoneInput.value
+            phone: phoneInput.value,
+            status: statusSelect.value
         };
 
-        console.log("Saving user data:", updatedData);
+        const saveBtn = e.target.querySelector(".edit-btn-save");
+        saveBtn.disabled = true;
+        saveBtn.textContent = "Saving...";
 
-        // API Call (Endpoint assumed based on common patterns, though user said don't touch Go)
-        fetch("/updateuser", {
+        fetch("/api/admin/update-user", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(updatedData)
@@ -77,7 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(async response => {
                 if (response.ok) {
                     showToast("User updated successfully!", "success");
-                    setTimeout(() => location.reload(), 1500);
+                    setTimeout(() => location.reload(), 1000);
                 } else {
                     const text = await response.text();
                     showToast(text || "Failed to update user.", "error");
@@ -86,6 +115,10 @@ document.addEventListener("DOMContentLoaded", () => {
             .catch(err => {
                 console.error("Error updating user:", err);
                 showToast("An error occurred while updating the user.", "error");
+            })
+            .finally(() => {
+                saveBtn.disabled = false;
+                saveBtn.textContent = "Save Changes";
             });
     });
 });

@@ -165,22 +165,45 @@
         <button class="edit-modal-close">&times;</button>
       </div>
       <form id="editUserForm">
+        <div class="edit-section-title">Personal Information</div>
+        
         <div class="edit-form-group">
           <label for="editFirstName">First Name</label>
-          <input type="text" id="editFirstName" required>
+          <input type="text" id="editFirstName" placeholder="e.g. John" required>
         </div>
+        
         <div class="edit-form-group">
           <label for="editLastName">Surname</label>
-          <input type="text" id="editLastName" required>
+          <input type="text" id="editLastName" placeholder="e.g. Doe" required>
         </div>
-        <div class="edit-form-group">
-          <label for="editEmail">Email address</label>
-          <input type="email" id="editEmail" required>
+        
+        <div class="edit-form-group full-width">
+          <label for="editEmail">Email Address</label>
+          <input type="email" id="editEmail" placeholder="john.doe@example.com" required>
         </div>
+        
         <div class="edit-form-group">
           <label for="editPhone">Phone Number</label>
-          <input type="tel" id="editPhone" required>
+          <input type="tel" id="editPhone" placeholder="099..." required>
         </div>
+        
+        <div class="edit-form-group">
+          <label for="editStatus">Account Status</label>
+          <select id="editStatus">
+            <option value="active">Active</option>
+            <option value="suspended">Suspended</option>
+            <option value="banned">Banned</option>
+          </select>
+        </div>
+        
+        <div class="edit-section-title">Security & Compliance</div>
+        
+        <div class="edit-form-group full-width">
+          <label>Password Management</label>
+          <button type="button" class="trigger-reset-btn" id="triggerReset">Trigger Password Reset</button>
+          <p class="helper-text">This will generate a secure reset link and notify the user via email.</p>
+        </div>
+
         <div class="edit-modal-footer">
           <button type="button" class="edit-btn edit-btn-cancel" id="cancelEdit">Cancel</button>
           <button type="submit" class="edit-btn edit-btn-save">Save Changes</button>

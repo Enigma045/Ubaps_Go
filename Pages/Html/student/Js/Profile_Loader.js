@@ -54,6 +54,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 <p>${displayRole}</p>
                             </div>
                             <div class="profile-actions">
+                                <a href="/user/profile-settings" class="profile-link">
+                                    <span>My Profile</span>
+                                </a>
                                 <a href="/logout" class="profile-link">
                                     <span>Logout</span>
                                 </a>

@@ -21,6 +21,7 @@ async function loadUsers(page) {
         if (result.data && result.data.length > 0) {
             result.data.forEach(user => {
                 const tr = document.createElement("tr");
+                tr.dataset.user = JSON.stringify(user);
 
                 const name = document.createElement("td");
                 name.className = "name";

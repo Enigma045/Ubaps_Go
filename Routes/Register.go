@@ -23,28 +23,31 @@ func Contains(body []byte, filter string) (string, error) {
 	var jsonData map[string]interface{}
 	err := json.Unmarshal(body, &jsonData)
 	if err != nil {
-		log.Println("Error parsing JSON:", err)
+		return "", fmt.Errorf("error parsing JSON: %w", err)
 	}
 
 	// Extract a value
-	reg, ok := jsonData[filter].(string)
+	val, ok := jsonData[filter]
 	if !ok {
-		log.Println(fmt.Sprintf("%s not found or not a string", filter))
+		return "", fmt.Errorf("%s not found", filter)
 	}
 
-	return reg, err
+	reg, ok := val.(string)
+	if !ok {
+		return "", fmt.Errorf("%s is not a string", filter)
+	}
+
+	return reg, nil
 }
 
-func Filter(body []byte, info [5]string, tx pgx.Tx) string {
+func Filter(body []byte, info [5]string, tx pgx.Tx) (int64, string, error) {
 	//loop & array hell
-
-	var details [len(info)]string
+	var details [5]string
 
 	for i := 0; i < len(info); i++ {
 		value, err := Contains(body, info[i])
 		if err != nil {
-			log.Println("failed to extract string:", err)
-			continue
+			return 0, "", fmt.Errorf("failed to extract %s: %w", info[i], err)
 		}
 		details[i] = value
 	}
@@ -65,11 +68,12 @@ func Filter(body []byte, info [5]string, tx pgx.Tx) string {
 	log.Println("email:", email)
 	//fall loop and array
 	fmt.Println("success1")
-	_,err := Handles.CreateUser(name, surname, email, phone, password, "student", tx,true)
+	userID, err := Handles.CreateUser(name, surname, email, phone, password, "student", tx, true)
 	if err != nil {
-		log.Println(err)
+		log.Println("CreateUser Error:", err)
+		return 0, "", err
 	}
-	return email
+	return userID, email, nil
 }
 
 func Register(w http.ResponseWriter, r *http.Request) {
@@ -83,6 +87,8 @@ func Register(w http.ResponseWriter, r *http.Request) {
 
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
+		log.Println("Read Body Error:", err)
+		user_logs.Create_user_log(nil, nil, "student", "REGISTRATION_FAILED", "Failed to read request body", "FAILED", time.Since(start), nil)
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(map[string]string{"error": "Failed to read request body"})
 		return
@@ -92,6 +98,8 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	// Start transaction
 	tx, err := Db.DB.BeginTx(context.Background(), pgx.TxOptions{})
 	if err != nil {
+		log.Println("Begin Tx Error:", err)
+		user_logs.Create_user_log(nil, nil, "student", "REGISTRATION_FAILED", "Failed to start database transaction", "FAILED", time.Since(start), nil)
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(map[string]string{"error": "Failed to start DB transaction"})
 		return
@@ -106,22 +114,19 @@ func Register(w http.ResponseWriter, r *http.Request) {
 
 	// Extract user info from JSON
 	info := [5]string{"name", "surname", "phone", "password", "reg_number"}
-	reqEmail := Filter(body, info, tx) // Filter should call Handles.CreateUser inside tx and return email
-	if reqEmail == "" {
+	userID, reqEmail, err := Filter(body, info, tx)
+	if err != nil {
+		user_logs.Create_user_log(tx, nil, "student", "REGISTRATION_FAILED", err.Error(), "FAILED", time.Since(start), nil)
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]string{"error": "Failed to parse user info"})
+		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
 		return
 	}
 
 	// Insert notification
-	userID, err := Handles.GetUserIDByEmail(reqEmail, tx)
+	err = notifications.Send_notification(userID, tx, "Your account has been created.", "Account Created")
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]string{"error": "Failed to retrieve new user ID"})
-		return
-	}
-	err = notifications.Send_notification(userID, tx, "Your account has been created.","Account Created")
-	if err != nil {
+		log.Println("Send_notification Error:", err)
+		user_logs.Create_user_log(tx, &userID, "student", "REGISTRATION_NOTIFICATION_FAILED", "Failed to send welcome notification", "FAILED", time.Since(start), &userID)
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(map[string]string{"error": "Failed to create notification"})
 		return
@@ -130,26 +135,31 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	// Generate verification token
 	token, err := utils.GenerateVerificationToken(reqEmail, tx)
 	if err != nil {
+		log.Println("Token Generation Error:", err)
+		user_logs.Create_user_log(tx, &userID, "student", "REGISTRATION_FAILED", "Token generation failure", "FAILED", time.Since(start), &userID)
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(map[string]string{"error": "Failed to generate token"})
 		return
 	}
 
-	// Send verification email (outside transaction)
-	err = services.SendVerificationEmail("richardsambo94@gmail.com", token)
-	if err != nil {
-		log.Println("Email send error:", err)
+	// Send verification email (outside transaction logic, non-fatal)
+	if mailErr := services.SendVerificationEmail("richardsambo94@gmail.com", token); mailErr != nil {
+		log.Println("Email send error:", mailErr)
+		user_logs.Create_user_log(tx, &userID, "student", "REGISTRATION_EMAIL_FAILED", "Verification email delivery failed", "FAILED", time.Since(start), &userID)
 	}
+
 	fmt.Println("success7")
 	// Respond with valid JSON
 	//User_logs
 	duration := time.Since(start)
-	user_logs.Create_user_log(tx, &userID, "student", "STUDENT_ACCOUNT_CREATED", fmt.Sprintf("user:%d", userID), "SUCCESS", duration)
+	user_logs.Create_user_log(tx, &userID, "student", "STUDENT_ACCOUNT_CREATED", fmt.Sprintf("user:%d", userID), "SUCCESS", duration, &userID)
 	//i wonder whatt happens if the acountis not verified
 
-	// Notify all admins
-	if adminIDs, err := Handles.GetAdmins(tx); err == nil {
+	// Notify all admins (non-fatal)
+	if adminIDs, adminErr := Handles.GetAdmins(tx); adminErr == nil {
 		notifications.BroadcastNotification(adminIDs, tx, fmt.Sprintf("A new student user (%s) has registered.", reqEmail), "New User Registration")
+	} else {
+		log.Println("GetAdmins Error:", adminErr)
 	}
 
 	//User_logs

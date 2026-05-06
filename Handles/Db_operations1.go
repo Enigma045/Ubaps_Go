@@ -68,3 +68,33 @@ func CreateUser(
 	fmt.Println("success2")
 	return userID,nil
 }
+
+func UpdateUserProfile(ctx context.Context, tx pgx.Tx, userID int64, name, surname, email, phone string) error {
+	query := `
+		UPDATE users 
+		SET name = $1, surname = $2, email = $3, phone = $4, updated_at = NOW()
+		WHERE user_id = $5
+	`
+	_, err := tx.Exec(ctx, query, name, surname, email, phone, userID)
+	return err
+}
+
+func UpdateUserPassword(ctx context.Context, tx pgx.Tx, userID int64, newPassword string) error {
+	hash, err := HashPassword(newPassword)
+	if err != nil {
+		return err
+	}
+	query := `UPDATE users SET password_hash = $1, updated_at = NOW() WHERE user_id = $2`
+	_, err = tx.Exec(ctx, query, hash, userID)
+	return err
+}
+
+func AdminUpdateUser(ctx context.Context, tx pgx.Tx, userID int64, name, surname, email, phone, status string) error {
+	query := `
+		UPDATE users 
+		SET name = $1, surname = $2, email = $3, phone = $4, account_status = $5, updated_at = NOW()
+		WHERE user_id = $6
+	`
+	_, err := tx.Exec(ctx, query, name, surname, email, phone, status, userID)
+	return err
+}

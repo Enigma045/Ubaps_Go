@@ -80,9 +80,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (stats) {
       const appStatusEl = document.getElementById('app-status');
       const bursarySchemeEl = document.getElementById('bursary-scheme');
+      const feesPaidEl = document.getElementById('fees-paid');
 
       if (appStatusEl) appStatusEl.textContent = stats.application_status;
       if (bursarySchemeEl) bursarySchemeEl.textContent = stats.bursary_scheme;
+      if (feesPaidEl) feesPaidEl.textContent = `MWK ${stats.fees_paid.toLocaleString()}`;
 
       // Update timeline based on status
       let index = 0;

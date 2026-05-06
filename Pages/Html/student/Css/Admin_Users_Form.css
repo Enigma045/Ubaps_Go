@@ -223,9 +223,15 @@ input[type="radio"] {
 .controls {
     display: flex;
     justify-content: space-between;
+    align-items: flex-end;
     margin-top: var(--spacing-xl);
     padding-top: var(--spacing-lg);
     border-top: 1px solid var(--border-color);
+    gap: var(--spacing-lg);
+}
+
+.role-selection {
+    flex: 1;
 }
 
 button {
@@ -236,26 +242,22 @@ button {
     border-radius: var(--radius-md);
     cursor: pointer;
     font-weight: 600;
-    transition: background-color 0.2s;
+    transition: all 0.2s;
     font-size: 0.875rem;
+    height: 42px; /* Match standard input height */
 }
 
 button:hover {
     background: #1e40af;
+    transform: translateY(-1px);
 }
 
 /* Specific Button Styles */
 #submit {
     display: block;
     background: #2563eb;
-    padding: 0.5rem 1rem;
-    width: 100px;
-    height: 40px;
-    margin-top: 25px;
-}
-
-#submit:hover {
-    background: #1e40af;
+    min-width: 140px;
+    height: 42px;
 }
 
 #prev {

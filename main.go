@@ -24,6 +24,8 @@ func main() {
 	mux.HandleFunc("/register", Routes.Register)
 	mux.HandleFunc("/verify-email", Routes.VerifyEmail)
 	mux.HandleFunc("/Authorize", Routes.Login)
+	mux.HandleFunc("/api/forgot-password", Routes.ForgotPasswordAPI)
+	mux.HandleFunc("/api/reset-password", Routes.ResetPasswordAPI)
 	mux.HandleFunc("/fees", Routes.Fees)
 	mux.Handle("/sendrequest", middleware.RequireAuth(http.HandlerFunc(Routes.Approval)))
 	mux.Handle("/getnotifications", middleware.RequireAuth(http.HandlerFunc(Routes.Notifications)))
@@ -63,6 +65,11 @@ func main() {
 	mux.Handle("/stats/dean", middleware.RequireAuth(http.HandlerFunc(Routes.StatsDean)))
 	mux.Handle("/stats/finance", middleware.RequireAuth(http.HandlerFunc(Routes.StatsFinance)))
 	mux.Handle("/user/profile", middleware.RequireAuth(http.HandlerFunc(Routes.UserProfile)))
+	mux.Handle("/user/profile/detailed", middleware.RequireAuth(http.HandlerFunc(Routes.GetDetailedProfile)))
+	mux.Handle("/api/user/profile/update", middleware.RequireAuth(http.HandlerFunc(Routes.UpdateProfile)))
+	mux.Handle("/api/user/profile/change-password", middleware.RequireAuth(http.HandlerFunc(Routes.ChangePassword)))
+	mux.Handle("/api/admin/update-user", middleware.RequireAuth(middleware.RequireRole("admin")(http.HandlerFunc(Routes.AdminUpdateUserAPI))))
+	mux.Handle("/api/admin/trigger-reset", middleware.RequireAuth(middleware.RequireRole("admin")(http.HandlerFunc(Routes.TriggerPasswordResetAPI))))
 
 	// Report endpoints
 	mux.Handle("/api/reports/comprehensive", middleware.RequireAuth(middleware.RequireRole("registrar", "finance_office", "admin")(http.HandlerFunc(Routes.ExportComprehensiveReport))))
@@ -97,6 +104,8 @@ func main() {
 	mux.Handle("/payinstallment", middleware.RequireAuth(http.HandlerFunc(Routes.PayInstallment)))
 	mux.HandleFunc("/commitee", Routes.Commitee)
 	mux.HandleFunc("/Login", Routes.Login_page)
+	mux.HandleFunc("/forgot-password", Routes.ForgotPassword_page)
+	mux.HandleFunc("/reset-password", Routes.ResetPassword_page)
 	mux.HandleFunc("/", Routes.Sign_Up_page)
 	mux.HandleFunc("/request", Routes.Request_Page)
 	//mux.HandleFunc("/financial", Routes.Approval_Page)
@@ -112,6 +121,13 @@ func main() {
 			middleware.RequireRole("student")(
 				http.HandlerFunc(Routes.StudentDashboard),
 			),
+		),
+	)
+
+	mux.Handle(
+		"/user/profile-settings",
+		middleware.RequireAuth(
+			http.HandlerFunc(Routes.UserProfileSettings_Page),
 		),
 	)
 

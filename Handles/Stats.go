@@ -9,9 +9,9 @@ import (
 
 // StudentStats holds statistics for the student dashboard
 type StudentStats struct {
-	ApplicationStatus string `json:"application_status"`
-    
-	BursaryScheme     string `json:"bursary_scheme"`
+	ApplicationStatus string  `json:"application_status"`
+	BursaryScheme     string  `json:"bursary_scheme"`
+	FeesPaid          float64 `json:"fees_paid"`
 }
 
 // RegistrarStats holds statistics for the registrar dashboard
@@ -54,19 +54,32 @@ type UserProfile struct {
 	Role string `json:"role"`
 }
 
+// UserProfileDetailed holds comprehensive user information
+type UserProfileDetailed struct {
+	Name    string `json:"name"`
+	Surname string `json:"surname"`
+	Email   string `json:"email"`
+	Phone   string `json:"phone"`
+	Role    string `json:"role"`
+}
+
 // GetStudentStats fetches stats for a specific student
 func GetStudentStats(pool *pgxpool.Pool, ctx context.Context, userID int64) (StudentStats, error) {
 	var stats StudentStats
 	query := `
 		SELECT 
 			COALESCE(a.status, 'not submitted'),
-			COALESCE(s.scheme_name, 'None')
+			COALESCE(s.scheme_name, 'None'),
+			CASE 
+				WHEN a.status = 'paid' THEN COALESCE(CAST(NULLIF(TRIM(CAST(a.bursary_amount AS TEXT)), '') AS DOUBLE PRECISION), 0)
+				ELSE 0
+			END
 		FROM users u
 		LEFT JOIN applications a ON a.user_id = u.user_id
 		LEFT JOIN bursary_schemes s ON s.scheme_id = a.scheme_id
 		WHERE u.user_id = $1
 	`
-	err := pool.QueryRow(ctx, query, userID).Scan(&stats.ApplicationStatus, &stats.BursaryScheme)
+	err := pool.QueryRow(ctx, query, userID).Scan(&stats.ApplicationStatus, &stats.BursaryScheme, &stats.FeesPaid)
 	if err != nil && err != sql.ErrNoRows {
 		return stats, err
 	}
@@ -191,5 +204,13 @@ func GetUserProfile(pool *pgxpool.Pool, ctx context.Context, userID int64) (User
 	// Use TRIM and COALESCE to handle potential NULL names
 	query := `SELECT TRIM(COALESCE(name, '') || ' ' || COALESCE(surname, '')), user_type FROM users WHERE user_id = $1`
 	err := pool.QueryRow(ctx, query, userID).Scan(&profile.Name, &profile.Role)
+	return profile, err
+}
+
+// GetDetailedUserProfile fetches all personal info for the current user
+func GetDetailedUserProfile(pool *pgxpool.Pool, ctx context.Context, userID int64) (UserProfileDetailed, error) {
+	var profile UserProfileDetailed
+	query := `SELECT COALESCE(name, ''), COALESCE(surname, ''), email, COALESCE(phone, ''), user_type FROM users WHERE user_id = $1`
+	err := pool.QueryRow(ctx, query, userID).Scan(&profile.Name, &profile.Surname, &profile.Email, &profile.Phone, &profile.Role)
 	return profile, err
 }

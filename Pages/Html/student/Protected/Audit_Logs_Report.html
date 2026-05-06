@@ -78,6 +78,137 @@
       opacity: 0.5;
       cursor: not-allowed;
     }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: var(--surface-color);
+      padding: 0;
+      border-radius: var(--radius-lg);
+      width: 500px;
+      max-width: 90%;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      animation: modalSlideUp 0.3s ease-out;
+    }
+
+    @keyframes modalSlideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header {
+      padding: 1.5rem;
+      background: var(--primary-color);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h3 {
+      margin: 0;
+      font-size: 1.25rem;
+    }
+
+    .close-modal {
+      font-size: 1.5rem;
+      cursor: pointer;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+
+    .close-modal:hover {
+      opacity: 1;
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .detail-row:last-child {
+      border-bottom: none;
+    }
+
+    .detail-label {
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+    }
+
+    .detail-value {
+      font-weight: 500;
+      color: var(--text-primary);
+      text-align: right;
+    }
+
+    .status-pill {
+      padding: 0.25rem 0.75rem;
+      border-radius: 100px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .status-pill.SUCCESS { background: #dcfce7; color: #166534; }
+    .status-pill.FAILED { background: #fee2e2; color: #991b1b; }
+
+    /* Specialized Card Enhancements */
+    .detail-row.highlight {
+      background: #f1f5f9;
+      margin: -1.5rem -1.5rem 1rem -1.5rem;
+      padding: 1.5rem;
+      border-bottom: 2px solid var(--primary-color);
+    }
+
+    .detail-row.highlight .detail-value {
+      font-size: 1.25rem;
+      color: var(--primary-color);
+      font-weight: 800;
+    }
+
+    .detail-row.highlight-amount {
+      background: #ecfdf5;
+      margin: -1.5rem -1.5rem 1rem -1.5rem;
+      padding: 1.5rem;
+      border-bottom: 2px solid var(--success-color);
+    }
+
+    .detail-row.highlight-amount .detail-value {
+      font-size: 1.5rem;
+      color: #059669;
+      font-weight: 900;
+    }
+
+    .detail-row.separator {
+      height: 1px;
+      background: var(--border-color);
+      margin: 1rem 0;
+      padding: 0;
+    }
+
+    tr { cursor: pointer; transition: background 0.2s; }
+    tr:hover { background-color: var(--background-color) !important; }
   </style>
 </head>
 
@@ -194,6 +325,19 @@
             <!-- Dynamically populated -->
         </div>
 
+      </div>
+
+      <!-- Log Detail Modal -->
+      <div id="log-detail-modal" class="modal">
+        <div class="modal-content">
+          <div class="modal-header" id="modal-header">
+            <h3>Audit Log Details</h3>
+            <span class="close-modal" id="close-modal">&times;</span>
+          </div>
+          <div class="modal-body" id="modal-details-body">
+            <!-- Populated via JS -->
+          </div>
+        </div>
       </div>
 
       <script src="/Js/Dashboard.js"></script>

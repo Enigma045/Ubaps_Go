@@ -55,6 +55,8 @@ async function renderTab(tabName) {
             const row = document.createElement("tr");
             row.className = log.status === 'SUCCESS' ? 'success' : (log.status === 'FAILED' ? 'error' : 'warning');
             
+            row.onclick = () => showLogDetails(log, tabName);
+
             if (tabName === "payments") {
                 row.innerHTML = `
                     <td>${new Date(log.occurred_at).toLocaleString()}</td>
@@ -90,6 +92,110 @@ async function renderTab(tabName) {
         console.error(`Error loading ${tabName} logs:`, error);
         if (window.showToast) window.showToast(`Failed to load ${tabName} logs`, "error");
     }
+}
+
+function showLogDetails(log, type) {
+    const modal = document.getElementById("log-detail-modal");
+    const body = document.getElementById("modal-details-body");
+    const headerTitle = document.querySelector("#modal-header h3");
+    
+    let title = "Log Details";
+    let specializedContent = "";
+
+    if (type === 'applications') {
+        title = "Application Audit Detail";
+        specializedContent = `
+            <div class="detail-row highlight">
+                <span class="detail-label">Target Application ID</span>
+                <span class="detail-value">${log.application || 'N/A'}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Target User ID</span>
+                <span class="detail-value">#${log.target_user_id || 'N/A'}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Action Performed</span>
+                <span class="detail-value">${log.action}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Associated Scheme</span>
+                <span class="detail-value">${log.target.includes('Scheme:') ? log.target.split('Scheme:')[1].split(',')[0] : 'Standard Processing'}</span>
+            </div>
+        `;
+    } else if (type === 'payments') {
+        title = "Payment Disbursement Detail";
+        specializedContent = `
+            <div class="detail-row highlight-amount">
+                <span class="detail-label">Amount Processed</span>
+                <span class="detail-value">MWK ${log.amount ? log.amount.toLocaleString() : '0'}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Target Application ID</span>
+                <span class="detail-value">${log.application || 'N/A'}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Target User ID</span>
+                <span class="detail-value">#${log.target_user_id || 'N/A'}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Payment Action</span>
+                <span class="detail-value">${log.action}</span>
+            </div>
+        `;
+    } else {
+        title = "System & User Activity";
+        specializedContent = `
+            <div class="detail-row">
+                <span class="detail-label">System Action</span>
+                <span class="detail-value">${log.action}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Target Entity</span>
+                <span class="detail-value">${log.target}</span>
+            </div>
+            ${log.target_user_id ? `
+            <div class="detail-row">
+                <span class="detail-label">Target User ID</span>
+                <span class="detail-value">#${log.target_user_id}</span>
+            </div>` : ''}
+        `;
+    }
+
+    headerTitle.innerText = title;
+
+    body.innerHTML = `
+        ${specializedContent}
+        <div class="detail-row separator"></div>
+        <div class="detail-row">
+            <span class="detail-label">Occurred At</span>
+            <span class="detail-value">${new Date(log.occurred_at).toLocaleString()}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Performing Role</span>
+            <span class="detail-value">${log.user_role}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Admin ID</span>
+            <span class="detail-value">#${log.user_id || 'System'}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Execution Time</span>
+            <span class="detail-value">${log.duration_ms}ms</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">System Status</span>
+            <span class="status-pill ${log.status}">${log.status}</span>
+        </div>
+    `;
+
+    modal.style.display = 'flex';
+
+    // Close logic
+    const closeBtn = document.getElementById("close-modal");
+    closeBtn.onclick = () => modal.style.display = 'none';
+    window.onclick = (event) => {
+        if (event.target == modal) modal.style.display = 'none';
+    };
 }
 
 function renderPaginationControls(tabName, total) {

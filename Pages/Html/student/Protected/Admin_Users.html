@@ -103,7 +103,7 @@
             </div>
             <div class="form-group">
               <label for="Email">Email</label>
-              <input type="email" id="email" name="Email" required placeholder="CEN-01-14-22@unilia.ac">
+              <input type="email" id="email" name="Email" required placeholder="CEN-01-14-22@unilia.ac.mw">
             </div>
             <div class="form-group">
               <label for="Phone">Phone Number</label>
@@ -144,38 +144,18 @@
 
           <!-- CONTROLS -->
           <div class="controls">
-            <div class="form-group">
-              <label>Users</label>
-              <div class="radio-group">
-                <label>
-                  <input class="radio" type="radio" name="Users" value="registrar" required>
-                  Registrar
-                </label>
-
-                <label>
-                  <input class="radio" type="radio" name="Users" value="finance_office">
-                  Finance Office
-                </label>
-                <label>
-                  <input class="radio" type="radio" name="Users" value="dean_of_student" required>
-                  Dean of Students
-                </label>
-                <label>
-                  <input class="radio" type="radio" name="Users" value="dean_of_science" required>
-                  Dean of Applied Science
-                </label>
-                <label>
-                  <input class="radio" type="radio" name="Users" value="dean_of_facult" required>
-                  Dean of Faculty
-                </label>
-
-                <label>
-                  <input class="radio" type="radio" name="Users" value="student" checked>
-                  Student
-                </label>
-              </div>
+            <div class="form-group role-selection">
+              <label for="userType">Select User Role</label>
+              <select id="userType" name="Users" required>
+                <option value="student" selected>Student</option>
+                <option value="registrar">Registrar</option>
+                <option value="finance_office">Finance Office</option>
+                <option value="dean_of_student">Dean of Students</option>
+                <option value="dean_of_science">Dean of Applied Science</option>
+                <option value="dean_of_facult">Dean of Faculty</option>
+              </select>
             </div>
-            <button type="submit" id="submit">Submit</button>
+            <button type="submit" id="submit">Create User</button>
           </div>
         </form>
 

@@ -13,8 +13,9 @@ type UserDetails struct {
 	Email string `json:"email"`
 	Phone string `json:"phone"`
 	//Password string `json:"password"`
-	Role string `json:"role"`
-	Verified bool `json:"verified"`
+	Role     string `json:"role"`
+	Verified bool   `json:"verified"`
+	Status   string `json:"status"`
 }
 
 func ReciveDetails(
@@ -38,7 +39,8 @@ func ReciveDetails(
         email,
 		phone,
 		user_type,
-		is_verified
+		is_verified,
+		account_status
 		FROM users
 		WHERE user_id <> $1
         ORDER BY created_at DESC
@@ -61,6 +63,7 @@ func ReciveDetails(
 			&user.Phone,
 			&user.Role,
 			&user.Verified,
+			&user.Status,
 		)
 		if err != nil {
 			return nil, 0, err

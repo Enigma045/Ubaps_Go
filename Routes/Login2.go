@@ -95,7 +95,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	duration := time.Since(start)
-	user_logs.Create_user_log(tx, &userID, role, "LOGGED_IN_ACCOUNT", fmt.Sprintf("user:%d", userID), "SUCCESS", duration)
+	user_logs.Create_user_log(tx, &userID, role, "LOGGED_IN_ACCOUNT", fmt.Sprintf("user:%d", userID), "SUCCESS", duration, &userID)
 
 	if err := tx.Commit(ctx); err != nil {
 		log.Println("Transaction commit failed:", err)
