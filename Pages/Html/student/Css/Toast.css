@@ -35,6 +35,16 @@
     /* Red */
 }
 
+.toast.toast-info {
+    border-left-color: #3b82f6;
+    /* Blue */
+}
+
+.toast.toast-warning {
+    border-left-color: #f59e0b;
+    /* Amber */
+}
+
 .toast.toast-closing {
     animation: toast-slide-out 0.4s ease-in forwards;
 }

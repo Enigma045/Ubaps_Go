@@ -3,7 +3,15 @@ const tables = document.querySelectorAll(".log-table");
 const filter = document.querySelector(".tabs").querySelectorAll("input");
 let currentPage = 1;
 const limit = 20;
-let currentPayload = [];
+let currentPayload = {
+    statuses: [],
+    search: '',
+    department: '',
+    scheme: '',
+    parent: '',
+    employment: '',
+    gender: ''
+};
 
 document.addEventListener("DOMContentLoaded", function () {
     // Initial fetch
@@ -15,22 +23,62 @@ document.addEventListener("DOMContentLoaded", function () {
             updatePayloadAndFetch();
         });
     });
+
+    // Advanced filter bar listeners
+    const searchEl = document.getElementById('filter-search');
+    if (searchEl) {
+        searchEl.addEventListener('input', () => {
+            currentPage = 1;
+            updatePayloadAndFetch();
+        });
+    }
+
+    ['filter-dept', 'filter-scheme', 'filter-parent', 'filter-employment', 'filter-gender'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('change', () => {
+            currentPage = 1;
+            updatePayloadAndFetch();
+        });
+    });
+
+    const clearBtn = document.getElementById('clear-filters');
+    if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+            if (searchEl) searchEl.value = '';
+            ['filter-dept', 'filter-scheme', 'filter-parent', 'filter-employment', 'filter-gender'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+            currentPage = 1;
+            updatePayloadAndFetch();
+        });
+    }
 });
 
 function updatePayloadAndFetch() {
-    currentPayload = [];
+    let statusList = [];
     if (filter[0].checked) {
-        currentPayload.push(filter[0].value);
-        currentPayload.push("considering");
+        statusList.push(filter[0].value);
+        statusList.push("considering");
     }
     if (filter[1].checked) {
-        currentPayload.push(filter[1].value);
-        currentPayload.push("paid");
+        statusList.push(filter[1].value);
+        statusList.push("paid");
     }
     if (filter[2].checked) {
-        currentPayload.push(filter[2].value);
+        statusList.push(filter[2].value);
     }
-    
+
+    currentPayload = {
+        statuses: statusList,
+        search: document.getElementById('filter-search')?.value || '',
+        department: document.getElementById('filter-dept')?.value || '',
+        scheme: document.getElementById('filter-scheme')?.value || '',
+        parent: document.getElementById('filter-parent')?.value || '',
+        employment: document.getElementById('filter-employment')?.value || '',
+        gender: document.getElementById('filter-gender')?.value || ''
+    };
+
     fetchApplicants(currentPage);
 }
 
@@ -43,7 +91,7 @@ async function fetchApplicants(page) {
             },
             body: JSON.stringify(currentPayload)
         });
-        
+
         const result = await response.json();
         const tbody = document.getElementById("judge_tbody");
         tbody.innerHTML = "";
@@ -69,6 +117,7 @@ async function fetchApplicants(page) {
                 tr.innerHTML = `
                     <td>${item.first_name} ${item.last_name}</td>
                     <td>${item.registration_number}</td>
+                    <td>${item.gender}</td>
                     <td>${item.parent_guardian_status}</td>
                     <td>${item.guardian_employment_status}</td>
                     <td>${item.relative_support}</td>
@@ -78,11 +127,14 @@ async function fetchApplicants(page) {
                 tbody.appendChild(tr);
             });
         } else {
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No applicants found</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">No applicants found</td></tr>';
         }
 
         renderPagination(result.total, page);
         initModalLogic();
+
+        // Trigger filter after dynamic load
+        if (window.triggerTableFilter) window.triggerTableFilter();
 
     } catch (error) {
         console.error("Error fetching applicants:", error);

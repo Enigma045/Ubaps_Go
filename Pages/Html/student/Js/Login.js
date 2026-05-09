@@ -7,10 +7,15 @@ document.addEventListener("DOMContentLoaded", () => {
     // ✅ Correctly log form values
     console.log(Array.from(formData.entries()));
 
+    const payload = Object.fromEntries(formData.entries());
+
     fetch("/Authorize", {
       method: "POST",
-      body: formData,
-      credentials: "include" // send cookies
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload),
+      credentials: "include"
     }).then(async res => {
       const data = await res.json();
       if (!res.ok) {

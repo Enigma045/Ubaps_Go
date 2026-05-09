@@ -36,21 +36,37 @@ document.addEventListener("DOMContentLoaded", () => {
                 <td>${req.employment_status}</td>
                 <td>${req.income}</td>
                 <td><span class="status warning">${req.priority}</span></td>
-                <td><button class="openModal">Response</button></td>
+                <td>
+                    <div style="display: flex; gap: 5px;">
+                        <button class="openModal">Response</button>
+                        <button class="viewDossier" style="background: #0ea5e9;">Dossier</button>
+                    </div>
+                </td>
             `;
             tableBody.appendChild(tr);
         });
 
-        // Re-bind modal events for new buttons
-        const buttons = tableBody.querySelectorAll(".openModal");
-        buttons.forEach(btn => {
+        // Re-bind modal events
+        tableBody.querySelectorAll(".openModal").forEach(btn => {
             btn.onclick = (e) => {
                 const row = e.target.closest("tr");
                 selectedStudentId = row.querySelector(".student_id").textContent.trim();
-                console.log("Selected Student ID:", selectedStudentId);
                 modal.classList.add("active");
             };
         });
+
+        // Bind Dossier events
+        tableBody.querySelectorAll(".viewDossier").forEach(btn => {
+            btn.onclick = (e) => {
+                const row = e.target.closest("tr");
+                const studentId = row.querySelector(".student_id").textContent.trim();
+                const studentName = row.cells[0].textContent.trim();
+                openDossier(studentId, studentName);
+            };
+        });
+
+        // Trigger filter after dynamic load
+        if (window.triggerTableFilter) window.triggerTableFilter();
     }
 
     if (closeModal) {

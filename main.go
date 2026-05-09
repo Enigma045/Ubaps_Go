@@ -72,8 +72,9 @@ func main() {
 	mux.Handle("/api/admin/trigger-reset", middleware.RequireAuth(middleware.RequireRole("admin")(http.HandlerFunc(Routes.TriggerPasswordResetAPI))))
 
 	// Report endpoints
-	mux.Handle("/api/reports/comprehensive", middleware.RequireAuth(middleware.RequireRole("registrar", "finance_office", "admin")(http.HandlerFunc(Routes.ExportComprehensiveReport))))
-	
+	mux.Handle("/api/reports/comprehensive", middleware.RequireAuth(middleware.RequireRole("registrar", "finance_office", "admin", "dean_of_student", "dean_of_facult", "dean_of_science")(http.HandlerFunc(Routes.ExportComprehensiveReport))))
+	mux.Handle("/api/reports/stats", middleware.RequireAuth(middleware.RequireRole("registrar", "finance_office", "admin", "dean_of_student", "dean_of_facult", "dean_of_science")(http.HandlerFunc(Routes.GetReportStats))))
+
 	// Letter API endpoints
 	mux.Handle("/api/submit-letter", middleware.RequireAuth(middleware.RequireRole("student")(http.HandlerFunc(Routes.SubmitLetter))))
 	mux.Handle("/api/get-letters", middleware.RequireAuth(middleware.RequireRole("registrar")(http.HandlerFunc(Routes.GetLettersList))))
@@ -106,7 +107,8 @@ func main() {
 	mux.HandleFunc("/Login", Routes.Login_page)
 	mux.HandleFunc("/forgot-password", Routes.ForgotPassword_page)
 	mux.HandleFunc("/reset-password", Routes.ResetPassword_page)
-	mux.HandleFunc("/", Routes.Sign_Up_page)
+	mux.HandleFunc("/", Routes.Landing_Page)
+	mux.HandleFunc("/register-account", Routes.Sign_Up_page)
 	mux.HandleFunc("/request", Routes.Request_Page)
 	//mux.HandleFunc("/financial", Routes.Approval_Page)
 
@@ -296,7 +298,7 @@ func main() {
 			),
 		),
 	)
-	
+
 	/*
 		|--------------------------------------------------------------------------
 		| Protected registrar dashboard route

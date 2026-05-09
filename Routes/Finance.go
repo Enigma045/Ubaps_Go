@@ -9,9 +9,18 @@ import (
 	"ubaps/Db"
 	"ubaps/Handles"
 	"ubaps/utils"
+	user_logs "ubaps/Audit_logs"
+	middleware "ubaps/Middleware"
+	notifications "ubaps/Notifications"
 )
 
 func Fees(w http.ResponseWriter, r *http.Request) {
+	start := time.Now()
+	performerID, ok := middleware.UserIDFromContext(r.Context())
+	if !ok {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	ctx := r.Context()
 	tx, err := Db.DB.Begin(ctx)
@@ -45,9 +54,12 @@ func Fees(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := tx.Commit(ctx); err != nil {
+		user_logs.Create_user_log(nil, &performerID, "finance_office", "DOSSIER_RESPONSE_FAILED", fmt.Sprintf("Failed to submit fees statement for %s: %s", reg, err.Error()), "FAILED", time.Since(start), &student_id)
 		http.Error(w, "Database Failed to commit Error", http.StatusInternalServerError)
 		return
 	}
+	
+	user_logs.Create_user_log(nil, &performerID, "finance_office", "DOSSIER_RESPONSE_SUCCESS", fmt.Sprintf("Fees statement successfully sent for %s", reg), "SUCCESS", time.Since(start), &student_id)
 	w.Write([]byte("Fees statement successfully sent"))
 }
 
@@ -91,6 +103,18 @@ func Request_Statement(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Notify Finance Office
+	financeUserIDs, err := Handles.GetUserIDsByRole(tx, "finance_office")
+	if err == nil && len(financeUserIDs) > 0 {
+		performerRole, _ := middleware.RoleFromContext(r.Context())
+		notifications.BroadcastNotification(
+			financeUserIDs, 
+			tx, 
+			fmt.Sprintf("A new financial statement has been requested for %s by %s", payload.Reg, performerRole), 
+			"Statement Requested",
+		)
+	}
+
 	if err := tx.Commit(ctx); err != nil {
 		log.Println("Error committing transaction:", err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
@@ -102,6 +126,7 @@ func Request_Statement(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetFinancialHistory(w http.ResponseWriter, r *http.Request) {
+	start := time.Now()
 	w.Header().Set("Content-Type", "application/json")
 	ctx := r.Context()
 
@@ -182,6 +207,13 @@ func GetFinancialHistory(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 		history = append(history, item)
+	}
+
+	performerID, _ := middleware.UserIDFromContext(r.Context())
+	user_logs.Create_user_log(nil, &performerID, "admin", "DOSSIER_REQUEST_SUCCESS", fmt.Sprintf("Viewed financial dossier for %s", payload.Reg), "SUCCESS", time.Since(start), &studentID)
+
+	if err := tx.Commit(ctx); err != nil {
+		log.Println("Error committing transaction:", err)
 	}
 
 	json.NewEncoder(w).Encode(history)

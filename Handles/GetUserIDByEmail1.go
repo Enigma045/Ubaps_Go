@@ -167,3 +167,22 @@ func GetAdmins(tx pgx.Tx) ([]int64, error) {
 	}
 	return ids, nil
 }
+// GetUserIDsByRole retrieves all user IDs associated with a specific role.
+func GetUserIDsByRole(tx pgx.Tx, role string) ([]int64, error) {
+	query := `SELECT user_id FROM users WHERE user_type = $1`
+	rows, err := tx.Query(context.Background(), query, role)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var ids []int64
+	for rows.Next() {
+		var id int64
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		ids = append(ids, id)
+	}
+	return ids, nil
+}

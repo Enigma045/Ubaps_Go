@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="/Css/Notification.css">
   <script src="/Js/Toast.js"></script>
   <link rel="stylesheet" href="/Css/Financial_Approval.css" />
+  <link rel="stylesheet" href="/Css/Filter_Bar.css">
   <title>Bursary Scheme</title>
 </head>
 
@@ -94,9 +95,49 @@
           </div>
         </div>
 
-        <!-- Search -->
-        <div class="search-bar">
-          <input type="text" placeholder="Search audit logs e.g. role:finance action:approve application:1245" />
+        <!-- Advanced Filters -->
+        <div class="filter-bar">
+          <div class="filter-group search-wide">
+            <label>Search Approvals</label>
+            <input type="text" id="filter-search" placeholder="Name or registration number..." />
+          </div>
+          <div class="filter-group">
+            <label>Department</label>
+            <select id="filter-dept">
+              <option value="">All Departments</option>
+              <option value="CEN">CEN</option>
+              <option value="BPH">BPH</option>
+              <option value="FSN">FSN</option>
+              <option value="EDU">EDU</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Bursary Scheme</label>
+            <select id="filter-scheme">
+              <option value="">All Schemes</option>
+              <!-- Populated if needed -->
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Parent Status</label>
+            <select id="filter-parent">
+              <option value="">All Status</option>
+              <option value="Both Deceased">Both Deceased</option>
+              <option value="One Deceased">One Deceased</option>
+              <option value="Both Alive">Both Alive</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Employment</label>
+            <select id="filter-employment">
+              <option value="">All Types</option>
+              <option value="Unemployed">Unemployed</option>
+              <option value="Self-Employed">Self-Employed</option>
+              <option value="Formal">Formal</option>
+              <option value="Informal">Informal</option>
+            </select>
+          </div>
+          <button id="clear-filters" class="btn-clear">Clear</button>
         </div>
 
         <!-- Logs Table -->
@@ -149,6 +190,7 @@
   <script src="/Js/Profile_Loader.js"></script>
   <script src="/Js/Financial_Approval.js"></script>
   <script src="/Js/Notification_Feature.js"></script>
+  <script src="/Js/Filter_Feature.js"></script>
 </body>
 
 </html>

@@ -40,7 +40,7 @@ func ReciveDetails(
 		phone,
 		user_type,
 		is_verified,
-		account_status
+		is_active
 		FROM users
 		WHERE user_id <> $1
         ORDER BY created_at DESC
@@ -56,6 +56,7 @@ func ReciveDetails(
 	var userdetails []UserDetails
 	for rows.Next() {
 		var user UserDetails
+		var isActive bool
 		err := rows.Scan(
 			&user.First,
 			&user.Last,
@@ -63,10 +64,15 @@ func ReciveDetails(
 			&user.Phone,
 			&user.Role,
 			&user.Verified,
-			&user.Status,
+			&isActive,
 		)
 		if err != nil {
 			return nil, 0, err
+		}
+		if isActive {
+			user.Status = "true"
+		} else {
+			user.Status = "false"
 		}
 		userdetails = append(userdetails, user)
 	}

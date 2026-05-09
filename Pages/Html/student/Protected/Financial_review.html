@@ -2,76 +2,77 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/Css/Navbar/Navbar.css">
-    <link rel="stylesheet" href="/Css/Layout.css">
-    <link rel="stylesheet" href="/Css/Dashboard.css">
-    <link rel="stylesheet" href="/Css/Notification.css">
-    <script src="/Js/Toast.js"></script>
-    <link rel="stylesheet" href="/Css/Bursary_Scheme.css">
-    <link rel="stylesheet" href="/Css/Delete_Modal.css">
-    <link rel="stylesheet" href="/Css/card.css">
-    <title>Bursary Decisions</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/Css/Navbar/Navbar.css">
+  <link rel="stylesheet" href="/Css/Layout.css">
+  <link rel="stylesheet" href="/Css/Dashboard.css">
+  <link rel="stylesheet" href="/Css/Notification.css">
+  <script src="/Js/Toast.js"></script>
+  <link rel="stylesheet" href="/Css/Bursary_Scheme.css">
+  <link rel="stylesheet" href="/Css/Delete_Modal.css">
+  <link rel="stylesheet" href="/Css/card.css">
+  <link rel="stylesheet" href="/Css/Filter_Bar.css">
+  <title>Bursary Decisions</title>
 </head>
 
 <body>
-    <div class="page">
-        <!-- Sidebar -->
-        <nav class="sidebar">
-            <div class="logo">
-                <span class="icon"><img src="/Image/logo-icon.png" alt="Logo"></span>
-                <span class="label">UNILIA</span>
-            </div>
+  <div class="page">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="logo">
+        <span class="icon"><img src="/Image/logo-icon.png" alt="Logo"></span>
+        <span class="label">UNILIA</span>
+      </div>
 
-            <div class="nav-item ">
-                <span class="icon"><img class="svg" src="/Image/svgviewer-output (3).svg" alt=""></span>
-                <span class="label"><a href="/financialdashboard" class="text-link">Home</a></span>
-            </div>
+      <div class="nav-item ">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (3).svg" alt=""></span>
+        <span class="label"><a href="/financialdashboard" class="text-link">Home</a></span>
+      </div>
 
-            <div class="nav-item ">
-                <span class="icon"><img class="svg" src="/Image/svgviewer-output (16).svg" alt=""></span>
-                <span class="label"><a href="/financial_request" class="text-link">Financial Statement</a></span>
-            </div>
+      <div class="nav-item ">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (16).svg" alt=""></span>
+        <span class="label"><a href="/financial_request" class="text-link">Financial Statement</a></span>
+      </div>
 
-            <div class="nav-item active">
-                <span class="icon"><img class="svg" src="/Image/svgviewer-output (13).svg" alt=""></span>
-                <span class="label"><a href="/financial_review" class="text-link">Judge</a></span>
-            </div>
+      <div class="nav-item active">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (13).svg" alt=""></span>
+        <span class="label"><a href="/financial_review" class="text-link">Judge</a></span>
+      </div>
 
-            <div class="nav-item">
-                <span class="icon"><img class="svg" src="/Image/svgviewer-output (17).svg" alt=""></span>
-                <span class="label"><a href="/financial" class="text-link">Financial Request</a></span>
-            </div>
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (17).svg" alt=""></span>
+        <span class="label"><a href="/financial" class="text-link">Financial Request</a></span>
+      </div>
 
-            <div class="nav-item">
-                <span class="icon"><img class="svg" src="/Image/svgviewer-output (12).svg" alt=""></span>
-                <span class="label"><a href="/financial_reports" class="text-link">Reports</a></span>
-            </div>
-            <div class="nav-item logout">
-                <span class="icon"><img class="LogOut" src="/Image/svgviewer-output (7).svg" alt=""></span>
-                <span class="label"><a href="/logout" class="text-link" style="color: inherit;">Logout</a></span>
-            </div>
-        </nav>
-        <!-- Main Area -->
-        <div class="main">
+      <div class="nav-item">
+        <span class="icon"><img class="svg" src="/Image/svgviewer-output (12).svg" alt=""></span>
+        <span class="label"><a href="/financial_reports" class="text-link">Reports</a></span>
+      </div>
+      <div class="nav-item logout">
+        <span class="icon"><img class="LogOut" src="/Image/svgviewer-output (7).svg" alt=""></span>
+        <span class="label"><a href="/logout" class="text-link" style="color: inherit;">Logout</a></span>
+      </div>
+    </nav>
+    <!-- Main Area -->
+    <div class="main">
 
-            <!-- Header -->
-            <header class="header">
-                <div class="breadcrumb">
-                    <strong>UBAPS</strong> &gt; Bursary Decisions
-                </div>
-                <div class="header-actions">
-                    <div class="notification-nav">
-                        <img class="svg" src="/Image/svgviewer-output (5).svg" alt="">
-                        <span id="badge-nav" class="badge-nav">0</span>
-                    </div>
-                    <div id="user-avatar" class="user-avatar">
-                        RS
-                    </div>
-                </div>
-            </header>
-            <div class="app">
+      <!-- Header -->
+      <header class="header">
+        <div class="breadcrumb">
+          <strong>UBAPS</strong> &gt; Bursary Decisions
+        </div>
+        <div class="header-actions">
+          <div class="notification-nav">
+            <img class="svg" src="/Image/svgviewer-output (5).svg" alt="">
+            <span id="badge-nav" class="badge-nav">0</span>
+          </div>
+          <div id="user-avatar" class="user-avatar">
+            RS
+          </div>
+        </div>
+      </header>
+      <div class="app">
 
         <!-- Header -->
         <header class="head">
@@ -96,9 +97,59 @@
           <input type="checkbox" class="active" data-tab="applications" value="not selected">
         </div>
 
-        <!-- Search -->
-        <div class="search-bar">
-          <input type="text" placeholder="Search for student" />
+        <!-- Advanced Filters -->
+        <div class="filter-bar">
+          <div class="filter-group search-wide">
+            <label>Search Student</label>
+            <input type="text" id="filter-search" placeholder="Name or registration number..." />
+          </div>
+          <div class="filter-group">
+            <label>Department</label>
+            <select id="filter-dept">
+              <option value="">All Departments</option>
+              <option value="CEN">CEN</option>
+              <option value="BPH">BPH</option>
+              <option value="FSN">FSN</option>
+              <option value="EDU">EDU</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Priority</label>
+            <select id="filter-priority">
+              <option value="">All Priorities</option>
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Parent Status</label>
+            <select id="filter-parent">
+              <option value="">All Status</option>
+              <option value="Both Deceased">Both Deceased</option>
+              <option value="One Deceased">One Deceased</option>
+              <option value="Both Alive">Both Alive</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Employment</label>
+            <select id="filter-employment">
+              <option value="">All Types</option>
+              <option value="Unemployed">Unemployed</option>
+              <option value="Self-Employed">Self-Employed</option>
+              <option value="Formal">Formal</option>
+              <option value="Informal">Informal</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Gender</label>
+            <select id="filter-gender">
+              <option value="">All Genders</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
+          <button id="clear-filters" class="btn-clear">Clear</button>
         </div>
 
         <!-- Logs Table -->
@@ -108,6 +159,7 @@
               <tr>
                 <th>Name</th>
                 <th>Reg #</th>
+                <th>Gender</th>
                 <th>Parent Status</th>
                 <th>Employment Status</th>
                 <th>Relative Support</th>
@@ -195,7 +247,8 @@
           <h2>Request Statement</h2>
         </div>
         <div class="modal-body">
-          <p class="modal-text">Are you sure you want to request a financial statement from <span id="statementStudentName">this student</span>? This will notify them to provide their payment history.</p>
+          <p class="modal-text">Are you sure you want to request a financial statement from <span
+              id="statementStudentName">this student</span>? This will notify them to provide their payment history.</p>
         </div>
         <div class="modal-footer">
           <button class="cancel" id="cancelStatement">Cancel</button>
@@ -236,6 +289,10 @@
 
         <!-- INFO GRID -->
         <div class="info-grid">
+          <div class="info-item">
+            <h4>Gender</h4>
+            <p id="review-gender">N/A</p>
+          </div>
           <div class="info-item">
             <h4>Parents Status</h4>
             <p id="review-parents">Both Alive</p>
@@ -292,12 +349,56 @@
     </div>
   </div>
 
-    <script src="/Js/Dashboard.js"></script>
-    <script src="/Js/Profile_Loader.js"></script>
-    <script src="/Js/Committe_Review.js"></script>
-    <script src="/Js/Notification_Feature.js"></script>
-    <script src="/Js/Bursary_Card_Updater.js"></script>
-    <script src="/Js/card.js"></script>
+  <!-- Dossier Modal -->
+  <div class="modal" id="dossierModal">
+    <div class="modal-content" style="max-width: 800px;">
+      <button class="close-modal" id="closeDossier">&times;</button>
+      <div class="modal-header">
+        <div class="icon-container" style="background: #f0f9ff;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+          </svg>
+        </div>
+        <h2>Student Financial Dossier</h2>
+      </div>
+      <div class="modal-body">
+        <div class="student-dossier-summary"
+          style="margin-bottom: 20px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+          <h4 id="dossier-student-name" style="margin-bottom: 5px; color: #1e293b;">Student Name</h4>
+          <p id="dossier-student-reg" style="font-size: 0.9rem; color: #64748b;">Registration Number</p>
+        </div>
+        <div class="table-container" style="max-height: 400px; overflow-y: auto;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead style="background: #f1f5f9; position: sticky; top: 0;">
+              <tr>
+                <th style="padding: 10px; text-align: left; border-bottom: 2px solid #e2e8f0;">Semester</th>
+                <th style="padding: 10px; text-align: left; border-bottom: 2px solid #e2e8f0;">Date</th>
+                <th style="padding: 10px; text-align: left; border-bottom: 2px solid #e2e8f0;">Details</th>
+                <th style="padding: 10px; text-align: right; border-bottom: 2px solid #e2e8f0;">Amount (MWK)</th>
+              </tr>
+            </thead>
+            <tbody id="dossier-history-tbody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="cancel" id="closeDossierFooter">Close Dossier</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/Js/Dashboard.js"></script>
+  <script src="/Js/Profile_Loader.js"></script>
+  <script src="/Js/Committe_Review.js"></script>
+  <script src="/Js/Notification_Feature.js"></script>
+  <script src="/Js/Bursary_Card_Updater.js"></script>
+  <script src="/Js/Dossier_Feature.js"></script>
+  <script src="/Js/card.js"></script>
+  <script src="/Js/Filter_Feature.js"></script>
 </body>
 
 </html>

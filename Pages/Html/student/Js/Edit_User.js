@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
         lastNameInput.value = user.last || "";
         emailInput.value = user.email || "";
         phoneInput.value = user.phone || "";
-        statusSelect.value = user.status || "active";
+        statusSelect.value = user.status || "true";
         originalEmail = user.email;
 
         editModal.classList.add("active");
@@ -93,6 +93,12 @@ document.addEventListener("DOMContentLoaded", () => {
             phone: phoneInput.value,
             status: statusSelect.value
         };
+
+        const phoneRegex = /^(09|08)\d{8}$/;
+        if (!phoneRegex.test(phoneInput.value.trim())) {
+            showToast("Phone must be 10 digits and start with 08 or 09", "error");
+            return;
+        }
 
         const saveBtn = e.target.querySelector(".edit-btn-save");
         saveBtn.disabled = true;

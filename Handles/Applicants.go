@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"strings"
 	"ubaps/utils"
 
 	"github.com/jackc/pgx/v5"
@@ -30,50 +31,121 @@ type Applicant struct {
 
 }
 
+type ReportFilters struct {
+	Statuses   []string `json:"statuses"`
+	Search     string   `json:"search"`
+	Department string   `json:"department"`
+	Scheme     string   `json:"scheme"`
+	Parent     string   `json:"parent"`
+	Employment string   `json:"employment"`
+	Gender     string   `json:"gender"`
+}
+
 func Applicants(
 	pool *pgxpool.Pool,
 	ctx context.Context,
-	applicants []string,
+	filters ReportFilters,
 	limit, offset int,
+	year, semester, month string,
 ) ([]Applicant, int, error) {
 
 	// Safety: avoid SQL error on empty slice
-	if len(applicants) == 0 {
+	if len(filters.Statuses) == 0 {
 		return []Applicant{}, 0, nil
 	}
 
-	// Filter out virtual statuses like 'paid' (if not in enum) to avoid Postgres Enum errors
-	// Note: 'paid' is now in the enum, but we still keep the feesPaidRequested logic for financial_request check
 	var realStatuses []string
 	var feesPaidRequested bool
-	for _, s := range applicants {
+	for _, s := range filters.Statuses {
 		realStatuses = append(realStatuses, s)
 		if s == "paid" {
 			feesPaidRequested = true
 		}
 	}
 
-	// If no real statuses were provided and paid wasn't requested, return early
 	if len(realStatuses) == 0 && !feesPaidRequested {
 		return []Applicant{}, 0, nil
 	}
 
-	countQuery := `
+	whereClause := "WHERE ((a.status = ANY($1)) OR ($2 = true AND EXISTS (SELECT 1 FROM financial_request fr WHERE fr.user_id = a.user_id AND fr.request_status = 'approved')))"
+	params := []interface{}{realStatuses, feesPaidRequested}
+	paramCount := 3
+
+	if filters.Search != "" {
+		whereClause += fmt.Sprintf(" AND (u.name ILIKE $%d OR u.surname ILIKE $%d OR a.registration_number ILIKE $%d)", paramCount, paramCount, paramCount)
+		params = append(params, "%"+filters.Search+"%")
+		paramCount++
+	}
+	if filters.Department != "" {
+		whereClause += fmt.Sprintf(" AND a.registration_number ILIKE $%d", paramCount)
+		params = append(params, filters.Department+"%")
+		paramCount++
+	}
+	if filters.Scheme != "" {
+		whereClause += fmt.Sprintf(" AND s.scheme_name = $%d", paramCount)
+		params = append(params, filters.Scheme)
+		paramCount++
+	}
+	if filters.Parent != "" {
+		whereClause += fmt.Sprintf(" AND a.parent_guardian_status = $%d", paramCount)
+		params = append(params, filters.Parent)
+		paramCount++
+	}
+	if filters.Employment != "" {
+		whereClause += fmt.Sprintf(" AND a.guardian_employment_status = $%d", paramCount)
+		params = append(params, filters.Employment)
+		paramCount++
+	}
+	if filters.Gender != "" {
+		whereClause += fmt.Sprintf(" AND a.gender = $%d", paramCount)
+		params = append(params, filters.Gender)
+		paramCount++
+	}
+
+	if year != "" {
+		if len(year) > 4 && strings.Contains(year, "/") {
+			parts := strings.Split(year, "/")
+			whereClause += fmt.Sprintf(" AND (EXTRACT(YEAR FROM a.application_date) = $%d OR EXTRACT(YEAR FROM a.application_date) = $%d)", paramCount, paramCount+1)
+			params = append(params, parts[0], parts[1])
+			paramCount += 2
+		} else {
+			whereClause += fmt.Sprintf(" AND EXTRACT(YEAR FROM a.application_date) = $%d", paramCount)
+			params = append(params, year)
+			paramCount++
+		}
+	}
+	if month != "" {
+		whereClause += fmt.Sprintf(" AND EXTRACT(MONTH FROM a.application_date) = $%d", paramCount)
+		params = append(params, month)
+		paramCount++
+	}
+	if semester != "" {
+		if semester == "1" {
+			whereClause += " AND EXTRACT(MONTH FROM a.application_date) BETWEEN 7 AND 12"
+		} else if semester == "2" {
+			whereClause += " AND EXTRACT(MONTH FROM a.application_date) BETWEEN 1 AND 6"
+		}
+	}
+
+	countQuery := fmt.Sprintf(`
 		SELECT COUNT(*) 
 		FROM applications a
-		WHERE (a.status = ANY($1))
-		   OR ($2 = true AND EXISTS (
-		       SELECT 1 FROM financial_request fr 
-		       WHERE fr.user_id = a.user_id AND fr.request_status = 'approved'
-		   ))
-	`
+		JOIN users u ON u.user_id = a.user_id
+		LEFT JOIN bursary_schemes s ON s.scheme_id = a.scheme_id
+		%s
+	`, whereClause)
 	var total int
-	err := pool.QueryRow(ctx, countQuery, realStatuses, feesPaidRequested).Scan(&total)
+	err := pool.QueryRow(ctx, countQuery, params...).Scan(&total)
 	if err != nil {
 		return nil, 0, err
 	}
 
-	query := `
+	// Add limit and offset to params for the main query
+	mainParams := append(params, limit, offset)
+	limitIdx := len(mainParams) - 1
+	offsetIdx := len(mainParams)
+
+	query := fmt.Sprintf(`
 		SELECT 
     u.name,
     u.surname ,
@@ -94,16 +166,12 @@ func Applicants(
     FROM applications a
     JOIN users u ON u.user_id = a.user_id
 	LEFT JOIN bursary_schemes s ON s.scheme_id = a.scheme_id
-    WHERE (a.status = ANY($1))
-       OR ($4 = true AND EXISTS (
-           SELECT 1 FROM financial_request fr 
-           WHERE fr.user_id = a.user_id AND fr.request_status = 'approved'
-       ))
+    %s
     ORDER BY a.application_date DESC
-    LIMIT $2 OFFSET $3;
-	`
+    LIMIT $%d OFFSET $%d;
+	`, whereClause, limitIdx, offsetIdx)
 
-	rows, err := pool.Query(ctx, query, realStatuses, limit, offset, feesPaidRequested)
+	rows, err := pool.Query(ctx, query, mainParams...)
 	if err != nil {
 		return nil, 0, err
 	}

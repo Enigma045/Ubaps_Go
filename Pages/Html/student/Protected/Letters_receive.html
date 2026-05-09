@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="/Css/Notification.css">
     <script src="/Js/Toast.js"></script>
     <link rel="stylesheet" href="/Css/Letters_receive.css">
+    <link rel="stylesheet" href="/Css/Filter_Bar.css">
     <title>Letters Received</title>
 </head>
 
@@ -90,10 +91,32 @@
                     </div>
                 </header>
 
-                <!-- Search -->
-                <div class="search-bar">
-                    <input type="text"
-                        placeholder="Search letters by student name, registration number, or letter type..." />
+                <!-- Advanced Filters -->
+                <div class="filter-bar">
+                  <div class="filter-group search-wide">
+                    <label>Search Letters</label>
+                    <input type="text" id="filter-search" placeholder="Name or registration number..." />
+                  </div>
+                  <div class="filter-group">
+                    <label>Department</label>
+                    <select id="filter-dept">
+                      <option value="">All Departments</option>
+                      <option value="CEN">CEN</option>
+                      <option value="BPH">BPH</option>
+                      <option value="FSN">FSN</option>
+                      <option value="EDU">EDU</option>
+                    </select>
+                  </div>
+                  <div class="filter-group">
+                    <label>Letter Type</label>
+                    <select id="filter-scheme">
+                      <option value="">All Types</option>
+                      <option value="Bursary Application">Application</option>
+                      <option value="Appeal Letter">Appeal</option>
+                      <option value="Statement">Statement</option>
+                    </select>
+                  </div>
+                  <button id="clear-filters" class="btn-clear">Clear</button>
                 </div>
 
                 <!-- Logs Table -->
@@ -155,6 +178,7 @@
     <script src="/Js/Profile_Loader.js"></script>
     <script src="/Js/Letters_receive.js"></script>
     <script src="/Js/Notification_Feature.js"></script>
+    <script src="/Js/Filter_Feature.js"></script>
 </body>
 
 </html>

@@ -122,6 +122,9 @@ function populateLettersTable(letters) {
 
     tbody.appendChild(row);
   });
+
+  // Trigger filter after dynamic load
+  if (window.triggerTableFilter) window.triggerTableFilter();
 }
 
 // Event listeners
@@ -131,18 +134,5 @@ document.addEventListener('DOMContentLoaded', () => {
     populateLettersTable(letters);
   });
 
-  // Search functionality (local filtering for now as API search isn't implemented)
-  const searchInput = document.querySelector('.search-bar input');
-  if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
-      const searchTerm = e.target.value.toLowerCase();
-      fetchLetters().then(allLetters => {
-        const filtered = allLetters.filter(l => 
-          l.studentName.toLowerCase().includes(searchTerm) || 
-          l.registrationNumber.toLowerCase().includes(searchTerm)
-        );
-        populateLettersTable(filtered);
-      });
-    });
-  }
+  // Filter is now handled by Filter_Feature.js which listens to the new inputs
 });

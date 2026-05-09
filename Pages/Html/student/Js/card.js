@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
         name: document.getElementById('review-name'),
         id: document.getElementById('review-id'),
         course: document.getElementById('review-course'),
+        gender: document.getElementById('review-gender'),
         parents: document.getElementById('review-parents'),
         employment: document.getElementById('review-employment'),
         income: document.getElementById('review-income'),
@@ -23,27 +24,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const assignBtn = document.getElementById('review-assign-btn');
 
     // Open logic
-    tbody.addEventListener('click', async (e) => {
-        const reviewBtn = e.target.closest('.review-btn');
-        if (!reviewBtn) return;
+    if (tbody) {
+        tbody.addEventListener('click', async (e) => {
+            const reviewBtn = e.target.closest('.review-btn');
+            if (!reviewBtn) return;
 
         const row = reviewBtn.closest('tr');
         const cells = row.cells;
 
         // Extract data (based on the table structure in Committe_Review.html)
-        // 0: Name, 1: Reg #, 2: Parent Status, 3: Employment, 4: Income, 5: Priority
+        // 0: Name, 1: Reg #, 2: Gender, 3: Parent Status, 4: Employment, 5: Income, 6: Priority
         const data = {
             name: cells[0].textContent.trim(),
             id: cells[1].textContent.trim(),
-            parents: cells[2].textContent.trim(),
-            employment: cells[3].textContent.trim(),
-            income: cells[4].textContent.trim(),
-            priority: cells[5].textContent.trim()
+            gender: cells[2].textContent.trim(),
+            parents: cells[3].textContent.trim(),
+            employment: cells[4].textContent.trim(),
+            income: cells[5].textContent.trim(),
+            priority: cells[6].textContent.trim()
         };
 
         // Populate modal
         fields.name.textContent = data.name;
         fields.id.textContent = data.id;
+        fields.gender.textContent = data.gender;
         fields.parents.textContent = data.parents;
         fields.employment.textContent = data.employment;
         fields.income.textContent = data.income;
@@ -76,19 +80,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Fetch and update approval status tracker
         fetchApprovalStatus(data.id);
-
     });
+}
 
     // Close logic
-    closeBtn.addEventListener('click', () => {
-        reviewModal.classList.remove('active');
-    });
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            if (reviewModal) reviewModal.classList.remove('active');
+        });
+    }
 
-    window.addEventListener('click', (e) => {
-        if (e.target === reviewModal) {
-            reviewModal.classList.remove('active');
-        }
-    });
+    if (reviewModal) {
+        window.addEventListener('click', (e) => {
+            if (e.target === reviewModal) {
+                reviewModal.classList.remove('active');
+            }
+        });
+    }
 
     // Toast Feedback for card buttons
     const statementBtn = document.querySelector('.card-btn.primary');
@@ -164,72 +172,9 @@ document.addEventListener('DOMContentLoaded', () => {
         dossierBtn.addEventListener('click', () => {
             const studentId = fields.id.textContent.trim();
             const studentName = fields.name.textContent.trim();
-
-            if (!studentId || studentId === "ID Number") {
-                showToast("No student selected.", "error");
-                return;
-            }
-
-            console.log("Fetching dossier for:", studentId);
-            showToast("Fetching student dossier...", "info");
-
-            fetch("/api/get-financial-history", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ reg: studentId })
-            })
-            .then(res => {
-                if (!res.ok) throw new Error("Failed to fetch financial history");
-                return res.json();
-            })
-            .then(data => {
-                const dossierModal = document.getElementById('dossierModal');
-                const dossierTbody = document.getElementById('dossier-history-tbody');
-                const dossierName = document.getElementById('dossier-student-name');
-                const dossierReg = document.getElementById('dossier-student-reg');
-
-                if (dossierName) dossierName.textContent = studentName;
-                if (dossierReg) dossierReg.textContent = studentId;
-
-                if (dossierTbody) {
-                    dossierTbody.innerHTML = "";
-                    if (!data || data.length === 0) {
-                        dossierTbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px;">No financial history found for this student.</td></tr>';
-                    } else {
-                        data.forEach(item => {
-                            const date = new Date(item.date).toLocaleDateString();
-                            const tr = document.createElement('tr');
-                            tr.innerHTML = `
-                                <td style="padding: 10px; border-bottom: 1px solid #f1f5f9;">${item.semester}</td>
-                                <td style="padding: 10px; border-bottom: 1px solid #f1f5f9;">${date}</td>
-                                <td style="padding: 10px; border-bottom: 1px solid #f1f5f9;">${item.details}</td>
-                                <td style="padding: 10px; border-bottom: 1px solid #f1f5f9; text-align: right;">${item.amount.toLocaleString()}</td>
-                            `;
-                            dossierTbody.appendChild(tr);
-                        });
-                    }
-                }
-
-                if (dossierModal) dossierModal.classList.add('active');
-            })
-            .catch(err => {
-                console.error("Dossier fetch error:", err);
-                showToast("Error loading dossier: " + err.message, "error");
-            });
+            openDossier(studentId, studentName);
         });
     }
-
-    // Dossier Modal Close Logic
-    const closeDossierBtn = document.getElementById('closeDossier');
-    const closeDossierFooter = document.getElementById('closeDossierFooter');
-    const dossierModal = document.getElementById('dossierModal');
-
-    const closeDossierModals = () => {
-        if (dossierModal) dossierModal.classList.remove('active');
-    };
-
-    if (closeDossierBtn) closeDossierBtn.addEventListener('click', closeDossierModals);
-    if (closeDossierFooter) closeDossierFooter.addEventListener('click', closeDossierModals);
 
 
     // Finalize Assignment Logic (only if sidebar exists)

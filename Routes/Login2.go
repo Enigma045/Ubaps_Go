@@ -8,7 +8,6 @@ import (
 	"time"
 	user_logs "ubaps/Audit_logs"
 	"ubaps/Db"
-	"ubaps/Handles"
 	"ubaps/services"
 	"ubaps/utils"
 
@@ -29,56 +28,67 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 	defer tx.Rollback(ctx)
 
+	var req struct {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
+
+	if r.Header.Get("Content-Type") == "application/json" {
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(map[string]string{"message": "Invalid request payload"})
+			return
+		}
+	} else {
+		req.Email = r.FormValue("email")
+		req.Password = r.FormValue("password")
+	}
+
 	var (
 		userID      int64
 		hash        string
 		is_verified bool
 		role        string
+		is_active   bool
 	)
-	//password
-	pass,err := Handles.HashPassword("Rich@2002248")
-	if err != nil {
-		log.Println("Password hashing failed:", err)
-	}	
-    log.Println(pass)
-	//
-	err = tx.QueryRow(ctx, `
-	SELECT user_id, password_hash, is_verified , user_type
-	FROM users WHERE email = $1
-	`,
-		r.FormValue("email")).Scan(&userID, &hash, &is_verified, &role)
-	if err != nil {
 
-		http.Error(w, "Invalid email or password", http.StatusUnauthorized)
+	err = tx.QueryRow(ctx, `
+	SELECT user_id, password_hash, is_verified, user_type, is_active
+	FROM users WHERE email = $1
+	`, req.Email).Scan(&userID, &hash, &is_verified, &role, &is_active)
+
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(map[string]string{"message": "Invalid email or password"})
 		return
 	}
-	
+
+	if !is_active {
+		w.WriteHeader(http.StatusForbidden)
+		json.NewEncoder(w).Encode(map[string]string{"message": "Your account is deactivated. Please contact the administrator."})
+		return
+	}
+
 	if !is_verified {
-		token, err := utils.GenerateVerificationToken(r.FormValue("email"), tx)
-		if err != nil {
-			http.Error(w, "Token Generation Failed", http.StatusInternalServerError)
-
+		token, err := utils.GenerateVerificationToken(req.Email, tx)
+		if err == nil {
+			services.SendVerificationEmail(req.Email, token)
 		}
-
-		err = services.SendVerificationEmail(r.FormValue("email"), token)
-		if err != nil {
-			http.Error(w, "Failed to send verification Email", http.StatusInternalServerError)
-		}
-
-		// ✅ COMMIT BEFORE RETURN
+		
 		if err := tx.Commit(ctx); err != nil {
-			http.Error(w, "Server error", http.StatusInternalServerError)
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(map[string]string{"message": "Server error"})
 			return
 		}
 
-		http.Error(w, "This Account is not Verified please verify using your school account", http.StatusForbidden)
+		w.WriteHeader(http.StatusForbidden)
+		json.NewEncoder(w).Encode(map[string]string{"message": "This account is not verified. Please verify using your school account."})
 		return
 	}
-	if bcrypt.CompareHashAndPassword(
-		[]byte(hash),
-		[]byte(r.FormValue("password")),
-	) != nil {
-		http.Error(w, "Invalid Password", http.StatusUnauthorized)
+
+	if bcrypt.CompareHashAndPassword([]byte(hash), []byte(req.Password)) != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(map[string]string{"message": "Invalid password"})
 		return
 	}
 

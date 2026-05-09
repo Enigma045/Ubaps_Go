@@ -16,11 +16,11 @@ import (
 )
 
 func Applicants(w http.ResponseWriter, r *http.Request) {
-	var Pplicants []string
+	var filters Handles.ReportFilters
 	ctx := r.Context()
 	w.Header().Set("Content-Type", "application/json")
 	
-	err := json.NewDecoder(r.Body).Decode(&Pplicants)
+	err := json.NewDecoder(r.Body).Decode(&filters)
 	if err != nil {
 		log.Println("Error decoding request body:", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -28,8 +28,11 @@ func Applicants(w http.ResponseWriter, r *http.Request) {
 	}
 
 	page, limit, offset := utils.GetPaginationParams(r)
+	year := r.URL.Query().Get("year")
+	semester := r.URL.Query().Get("semester")
+	month := r.URL.Query().Get("month")
 
-	results, total, err := Handles.Applicants(Db.DB, ctx, Pplicants, limit, offset)
+	results, total, err := Handles.Applicants(Db.DB, ctx, filters, limit, offset, year, semester, month)
 	if err != nil {
 		log.Println("Error retriving applicants from database", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)

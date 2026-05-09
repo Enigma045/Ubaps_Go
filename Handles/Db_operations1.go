@@ -90,11 +90,12 @@ func UpdateUserPassword(ctx context.Context, tx pgx.Tx, userID int64, newPasswor
 }
 
 func AdminUpdateUser(ctx context.Context, tx pgx.Tx, userID int64, name, surname, email, phone, status string) error {
+	isActive := status == "true"
 	query := `
 		UPDATE users 
-		SET name = $1, surname = $2, email = $3, phone = $4, account_status = $5, updated_at = NOW()
+		SET name = $1, surname = $2, email = $3, phone = $4, is_active = $5, updated_at = NOW()
 		WHERE user_id = $6
 	`
-	_, err := tx.Exec(ctx, query, name, surname, email, phone, status, userID)
+	_, err := tx.Exec(ctx, query, name, surname, email, phone, isActive, userID)
 	return err
 }

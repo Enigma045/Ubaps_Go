@@ -1,10 +1,10 @@
 /**
  * Toast Notification Utility
  * 
- * Usage: showToast("Your message", "success" | "error", 3000)
+ * Usage: showToast("Your message", "success" | "error", 10000)
  */
 
-function showToast(message, type = 'success', duration = 3000) {
+function showToast(message, type = 'success', duration = 10000) {
     // 1. Ensure CSS is loaded
     if (!document.getElementById('toast-styles')) {
         const link = document.createElement('link');
@@ -27,7 +27,13 @@ function showToast(message, type = 'success', duration = 3000) {
     toast.className = `toast toast-${type}`;
 
     // Icon selection
-    const icon = type === 'success' ? '✅' : '❌';
+    const icons = {
+        success: '✅',
+        error: '❌',
+        info: 'ℹ️',
+        warning: '⚠️'
+    };
+    const icon = icons[type] || icons.info;
 
     toast.innerHTML = `
         <div class="toast-icon">${icon}</div>

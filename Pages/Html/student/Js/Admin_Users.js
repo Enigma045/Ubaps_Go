@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // REGEX
     const nameRegex = /^[A-Za-z]{2,}$/;
     const emailRegex = /^[a-zA-Z0-9._%+-]+@unilia\.ac\.mw$/;
-    const phoneRegex = /^09\d{8}$/;
+    const phoneRegex = /^(09|08)\d{8}$/;
     const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
 
     const firstName = document.getElementById("firstName").value.trim();
@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (!phoneRegex.test(phone)) {
-      showToast("Phone must be in format 09XXXXXXXX", "error");
+      showToast("Phone must be 10 digits and start with 08 or 09", "error");
       return;
     }
 

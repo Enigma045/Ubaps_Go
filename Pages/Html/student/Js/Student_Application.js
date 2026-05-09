@@ -5,6 +5,13 @@ const progress = document.querySelector(".progress");
 
 let currentStep = 0;
 
+// Restrict date of birth to past dates
+const dobInput = document.getElementById("dob");
+if (dobInput) {
+  const today = new Date().toISOString().split('T')[0];
+  dobInput.setAttribute('max', today);
+}
+
 function showStep(index) {
   // Remove active class from all steps
   steps.forEach(step => step.classList.remove("active"));

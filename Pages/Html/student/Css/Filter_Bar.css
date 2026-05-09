@@ -1,0 +1,84 @@
+/* Advanced Filter Bar Styles */
+.filter-bar {
+    background: white;
+    padding: 8px 12px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+    margin-bottom: 8px;
+    display: flex;
+    flex-wrap: nowrap; /* Force single row */
+    gap: 10px;
+    align-items: flex-end;
+    border: 1px solid #e2e8f0;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0; /* Allow shrinking to fit one row */
+}
+
+.filter-group label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.filter-bar input,
+.filter-bar select {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    color: #1e293b;
+    background-color: #f8fafc;
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+.filter-bar input:focus,
+.filter-bar select:focus {
+    border-color: #2563eb;
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.filter-bar .btn-clear {
+    padding: 6px 14px;
+    background-color: #f1f5f9;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.filter-bar .btn-clear:hover {
+    background-color: #e2e8f0;
+    color: #1e293b;
+}
+
+/* Specific flex adjustments */
+.filter-group.search-wide {
+    flex: 2;
+    min-width: 0;
+}
+
+@media (max-width: 768px) {
+    .filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-group {
+        width: 100%;
+    }
+}

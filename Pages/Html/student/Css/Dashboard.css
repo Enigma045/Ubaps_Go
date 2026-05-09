@@ -313,10 +313,10 @@
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--border-color);
     overflow-y: auto;
-    /* Scrollable vertically */
     flex: 1;
-    /* Take remaining height */
-    margin-bottom: var(--spacing-xl);
+    /* Fill ALL remaining vertical space */
+    margin-bottom: 0;
+    min-height: 0;
 }
 
 .log-table {
@@ -324,29 +324,23 @@
     border-collapse: collapse;
     font-size: 0.875rem;
     table-layout: fixed;
-    /* Ensures constant column widths */
 }
 
 .log-table th {
     background: #f8fafc;
-    /* Ensure opaque background */
     color: var(--text-secondary);
     font-weight: 600;
     text-align: left;
-    padding: var(--spacing-md) var(--spacing-lg);
+    padding: 8px 12px;
     border-bottom: 2px solid var(--border-color);
-    /* Stronger border for separation */
     white-space: nowrap;
     position: sticky;
-    /* Sticky header */
     top: 0;
     z-index: 10;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    /* Stronger shadow for "float" effect */
 }
 
 .log-table td {
-    padding: var(--spacing-md) var(--spacing-lg);
+    padding: 6px 12px;
     border-bottom: 1px solid var(--border-color);
     color: var(--text-primary);
     vertical-align: middle;
@@ -454,4 +448,256 @@
     font-size: 0.875rem;
     color: var(--text-secondary);
     font-weight: 500;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   REPORTS PAGE — compact layout overrides
+   ═══════════════════════════════════════════════════ */
+
+/* Remove padding from app so table reaches edges */
+.app {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+}
+
+/* Allow inner sections their own side padding */
+.tabs,
+.filter-bar,
+.pagination {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+/* Table fills remaining height, no rounded corners */
+.table-container {
+    background: #fff;
+    border-top: 1px solid #e2e8f0;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+}
+
+.log-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8125rem;
+    table-layout: fixed;
+}
+
+.log-table th {
+    background: #f8fafc;
+    color: #2563eb;
+    font-weight: 700;
+    text-align: left;
+    padding: 6px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.log-table td {
+    padding: 4px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #1e293b;
+    vertical-align: middle;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.log-table tr:last-child td { border-bottom: none; }
+.log-table tr:hover { background: #f1f5f9; }
+
+/* ── Report Top Bar ───────────────────────────────── */
+.report-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.55rem 1.5rem;
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    flex-shrink: 0;
+    gap: 1rem;
+}
+
+.report-title-block h1 {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.report-title-block .subtitle {
+    font-size: 0.68rem;
+    color: #64748b;
+    margin: 0;
+}
+
+.period-controls {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.6rem;
+}
+
+.period-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.period-item label {
+    font-size: 0.58rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.period-item select {
+    padding: 0.28rem 0.55rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    color: #1e293b;
+    background: #f8fafc;
+    cursor: pointer;
+    outline: none;
+    min-width: 110px;
+}
+
+.period-item select:focus {
+    border-color: #2563eb;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+
+/* ── Analytics Strip ─────────────────────────────── */
+.analytics-strip {
+    display: flex;
+    align-items: center;
+    padding: 0 1.5rem;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    flex-shrink: 0;
+    overflow-x: auto;
+    min-height: 46px;
+}
+
+.astat {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0.4rem 0.9rem;
+    gap: 1px;
+    white-space: nowrap;
+    position: relative;
+    cursor: default;
+}
+
+.astat-label {
+    font-size: 0.58rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.astat-value {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #1e293b;
+    letter-spacing: -0.01em;
+    line-height: 1;
+}
+
+/* Coloured status dots */
+.astat-dot {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.45rem;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.astat.approved { padding-left: 1.35rem; }
+.astat.approved .astat-dot  { background: #10b981; }
+.astat.approved .astat-value { color: #065f46; }
+
+.astat.pending  { padding-left: 1.35rem; }
+.astat.pending  .astat-dot  { background: #f59e0b; }
+.astat.pending  .astat-value { color: #92400e; }
+
+.astat.rejected { padding-left: 1.35rem; }
+.astat.rejected .astat-dot  { background: #ef4444; }
+.astat.rejected .astat-value { color: #991b1b; }
+
+.astat.total   .astat-value { color: #2563eb; }
+.astat.value   .astat-value { color: #7c3aed; }
+.astat.avgtime .astat-value { color: #0369a1; }
+
+/* Vertical separators */
+.astat-sep {
+    width: 1px;
+    height: 26px;
+    background: #e2e8f0;
+    flex-shrink: 0;
+    margin: 0 0.25rem;
+}
+
+/* Faculty chips section */
+.astat-faculty {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0 0.9rem;
+    white-space: nowrap;
+}
+
+.astat-faculty > .astat-label {
+    font-size: 0.58rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.faculty-chips {
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: nowrap;
+}
+
+.faculty-chip {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.25rem;
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    background: #dbeafe;
+    border: 1px solid #bfdbfe;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #1d4ed8;
+    white-space: nowrap;
+}
+
+.faculty-chip .chip-count {
+    font-weight: 900;
+    font-size: 0.78rem;
+    color: #1e40af;
+}
+
+.faculty-loading {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    font-style: italic;
 }

@@ -246,6 +246,16 @@ func StudentDashboard(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
+func Landing_Page(w http.ResponseWriter, r *http.Request) {
+	data, err := os.ReadFile("Pages/Html/student/public/Landing.html")
+	if err != nil {
+		http.Error(w, "Page not found", http.StatusNotFound)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html")
+	w.Write(data)
+}
+
 func ApplicationForm(w http.ResponseWriter, r *http.Request) {
 
 	data, err := os.ReadFile("Pages/Html/student/Protected/Student_Application.html")

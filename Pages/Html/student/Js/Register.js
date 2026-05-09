@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Regex rules
   const nameRegex = /^[A-Za-z]{2,}(?:\s[A-Za-z]{2,})*$/;
-  const phoneRegex = /^\d{7,15}$/;
+  const phoneRegex = /^(09|08)\d{8}$/;
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%*?#&]{8,}$/;
   const twoDigitRegex = /^\d{2}$/;
   const regNumberRegex = /^(CEN|BPH|EDH|FSN)-\d{2}-\d{2}-\d{2}$/;
@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Phone
     if (!phoneRegex.test(phoneInput.value.trim())) {
-      showError(phoneInput, "Enter a valid phone number");
+      showError(phoneInput, "Phone must be 10 digits and start with 09 or 08");
       valid = false;
     }
 
@@ -99,6 +99,23 @@ document.addEventListener("DOMContentLoaded", () => {
       showToast("Invalid Registration Number format", "error");
       valid = false;
     }
+
+    // --- Rolling 5-Year Eligibility Window Check ---
+    const yearInput = parseInt(nums[2], 10); // 3rd number segment is the enrolment year
+    const currentYear = new Date().getFullYear() % 100; // last 2 digits e.g. 26
+    const minYear = currentYear - 4;
+    if (valid && (yearInput < minYear || yearInput > currentYear)) {
+      const fullMin = 2000 + minYear;
+      const fullMax = 2000 + currentYear;
+      const fullStudent = 2000 + yearInput;
+      showToast(
+        `Registration is only open to students enrolled between ${fullMin} and ${fullMax}. Your enrolment year (${fullStudent}) is outside this window. Please contact an administrator.`,
+        "error"
+      );
+      valid = false;
+    }
+    // ------------------------------------------------
+
 
     if (!valid) return;
 
