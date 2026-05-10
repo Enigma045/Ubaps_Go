@@ -6,11 +6,11 @@ const limit = 20;
 let currentPayload = {
     statuses: [],
     search: '',
-    department: '',
-    scheme: '',
-    parent: '',
-    employment: '',
-    gender: ''
+    department: [],
+    scheme: [],
+    parent: [],
+    employment: [],
+    gender: []
 };
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -33,22 +33,21 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    ['filter-dept', 'filter-scheme', 'filter-parent', 'filter-employment', 'filter-gender'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.addEventListener('change', () => {
+    const advancedFilter = document.getElementById('filter-advanced');
+    if (advancedFilter) {
+        // Event is handled in Filter_Feature.js, which calls window.onFilterChange
+        window.onFilterChange = () => {
             currentPage = 1;
             updatePayloadAndFetch();
-        });
-    });
+        };
+    }
 
     const clearBtn = document.getElementById('clear-filters');
     if (clearBtn) {
         clearBtn.addEventListener('click', () => {
             if (searchEl) searchEl.value = '';
-            ['filter-dept', 'filter-scheme', 'filter-parent', 'filter-employment', 'filter-gender'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.value = '';
-            });
+            if (advancedFilter) advancedFilter.value = '';
+            window.activeAdvancedFilters = {}; // Clear persistent state
             currentPage = 1;
             updatePayloadAndFetch();
         });
@@ -69,17 +68,26 @@ function updatePayloadAndFetch() {
         statusList.push(filter[2].value);
     }
 
+    const advanced = window.activeAdvancedFilters || {};
+
     currentPayload = {
         statuses: statusList,
         search: document.getElementById('filter-search')?.value || '',
-        department: document.getElementById('filter-dept')?.value || '',
-        scheme: document.getElementById('filter-scheme')?.value || '',
-        parent: document.getElementById('filter-parent')?.value || '',
-        employment: document.getElementById('filter-employment')?.value || '',
-        gender: document.getElementById('filter-gender')?.value || ''
+        department: advanced.dept || [],
+        scheme: advanced.scheme || [],
+        parent: advanced.parent || [],
+        employment: advanced.employment || [],
+        gender: advanced.gender || []
     };
 
     fetchApplicants(currentPage);
+
+    if (window.renderFilterTags) {
+        window.renderFilterTags(currentPayload, () => {
+            currentPage = 1;
+            updatePayloadAndFetch();
+        });
+    }
 }
 
 async function fetchApplicants(page) {
@@ -101,17 +109,24 @@ async function fetchApplicants(page) {
                 const tr = document.createElement("tr");
 
                 const icons = {
-                    review: `<svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor"><path d="M560-680v-80h320v80H560Zm0 160v-80h320v80H560Zm0 160v-80h320v80H560Zm-240-40q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35ZM80-160v-76q0-21 10-40t28-30q45-27 95.5-40.5T320-360q56 0 106.5 13.5T522-306q18 11 28 30t10 40v76H80Zm86-80h308q-35-20-74-30t-80-10q-41 0-80 10t-74 30Zm154-240q17 0 28.5-11.5T360-520q0-17-11.5-28.5T320-560q-17 0-28.5 11.5T280-520q0 17 11.5 28.5T320-480Zm0-40Zm0 280Z" /></svg>`,
+                    review: `<svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor"><path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T35-500q61-137 181-218.5T480-800q146 0 266 81.5T925-500q-61 137-181 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z"/></svg>`,
                     reject: `<svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor"><path d="M240-840h440v520L400-40l-50-50q-7-7-11.5-19t-4.5-23v-14l44-174H120q-32 0-56-24t-24-56v-80q0-7 2-15t4-15l120-282q9-20 30-34t44-14Zm360 80H240L120-480v80h360l-54 220 174-174v-406Zm0 406v-406 406Zm80 34v-80h120v-360H680v-80h200v520H680Z" /></svg>`,
-                    approve: `<svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor"><path d="M720-120H280v-520l280-280 50 50q7 7 11.5 19t4.5 23v14l-44 174h258q32 0 56 24t24 56v80q0 7-2 15t-4 15L794-168q-9 20-30 34t-44 14Zm-360-80h360l120-280v-80H480l54-220-174 174v406Zm0-406v406-406Zm-80-34v80H160v360h120v80H80v-520h200Z" /></svg>`
+                    approve: `<svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor"><path d="M720-120H280v-520l280-280 50 50q7 7 11.5 19t4.5 23v14l-44 174h258q32 0 56 24t24 56v80q0 7-2 15t-4 15L794-168q-9 20-30 34t-44 14Zm-360-80h360l120-280v-80H480l54-220-174 174v406Zm0-406v406-406Zm-80-34v80H160v360h120v80H80v-520h200Z" /></svg>`,
+                    rollback: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>`,
+                    comment: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>`
                 };
 
                 let actions = `<button title="Review" class="action-btn review-btn" data-id="${item.registration_number}">${icons.review}</button>`;
+                actions += `<button title="Comment" class="action-btn comment-btn" data-id="${item.registration_number}" data-name="${item.first_name} ${item.last_name}" data-comments='${JSON.stringify(item.comments || [])}'>${icons.comment}</button>`;
+                
                 if (item.status === "submitted" || item.status === "considering") {
                     actions += `<button title="Approve" class="action-btn approve-btn" data-name="${item.first_name} ${item.last_name}" data-id="${item.registration_number}">${icons.approve}</button>`;
                 }
                 if (["submitted", "selected", "considering"].includes(item.status)) {
                     actions += `<button title="Reject" class="action-btn reject-btn" data-name="${item.first_name} ${item.last_name}" data-id="${item.registration_number}">${icons.reject}</button>`;
+                }
+                if (item.status === "selected") {
+                    actions += `<button title="Rollback" class="action-btn rollback-btn" data-name="${item.first_name} ${item.last_name}" data-id="${item.registration_number}">${icons.rollback}</button>`;
                 }
 
                 tr.innerHTML = `
@@ -184,8 +199,8 @@ function renderPagination(total, page) {
 
 function initModalLogic() {
     const tbody = document.getElementById("judge_tbody");
-    const approveModal = document.getElementById("approveModal");
-    const rejectModal = document.getElementById("rejectModal");
+    const rollbackModal = document.getElementById("rollbackModal");
+    const commentModal = document.getElementById("commentModal");
     let activeStudent = null;
 
     tbody.onclick = e => {
@@ -202,6 +217,12 @@ function initModalLogic() {
         } else if (btn.classList.contains("reject-btn")) {
             document.getElementById("rejectName").textContent = name;
             rejectModal.classList.add("active");
+        } else if (btn.classList.contains("rollback-btn")) {
+            document.getElementById("rollbackName").textContent = name;
+            rollbackModal.classList.add("active");
+        } else if (btn.classList.contains("comment-btn")) {
+            const rawComments = btn.getAttribute("data-comments");
+            openCommentModal(id, name, rawComments);
         } else if (btn.classList.contains("review-btn")) {
             // Review logic is handled by other scripts like card.js
         }
@@ -210,11 +231,88 @@ function initModalLogic() {
     const closeModals = () => {
         approveModal.classList.remove("active");
         rejectModal.classList.remove("active");
+        if (rollbackModal) rollbackModal.classList.remove("active");
+        if (commentModal) commentModal.classList.remove("active");
     };
 
-    document.querySelectorAll(".close-modal, .cancel").forEach(btn => {
+    document.querySelectorAll(".close-modal, .cancel, .btn-cancel").forEach(btn => {
         btn.addEventListener("click", closeModals);
     });
+
+    function openCommentModal(id, name, rawComments) {
+        let comments = [];
+        try {
+            comments = JSON.parse(rawComments) || [];
+        } catch (e) {
+            console.error("Failed to parse comments", e);
+        }
+
+        const list = document.getElementById("comments-list");
+        list.innerHTML = "";
+
+        if (comments.length === 0) {
+            list.innerHTML = `<p style="text-align: center; color: var(--sr-slate-400); font-size: 0.85rem; margin-top: 20px;">No comments yet.</p>`;
+        } else {
+            comments.forEach(c => {
+                const date = new Date(parseFloat(c.date) * 1000).toLocaleString();
+                const div = document.createElement("div");
+                div.style.background = "white";
+                div.style.padding = "10px";
+                div.style.borderRadius = "6px";
+                div.style.borderLeft = "3px solid var(--sr-blue)";
+                div.style.boxShadow = "0 1px 2px rgba(0,0,0,0.05)";
+                div.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span style="font-weight: 700; font-size: 0.8rem; color: var(--sr-slate-700);">${c.name} (${c.role})</span>
+                        <span style="font-size: 0.7rem; color: var(--sr-slate-400);">${date}</span>
+                    </div>
+                    <p style="margin: 0; font-size: 0.85rem; color: var(--sr-slate-600); line-height: 1.4;">${c.text}</p>
+                `;
+                list.appendChild(div);
+            });
+            list.scrollTop = list.scrollHeight;
+        }
+
+        commentModal.classList.add("active");
+    }
+
+    document.getElementById("submitCommentBtn").onclick = () => {
+        const text = document.getElementById("new-comment-text").value.trim();
+        if (!text) return;
+
+        fetch("/api/add-comment", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: activeStudent.id, comment: text })
+        }).then(async response => {
+            if (!response.ok) throw new Error(await response.text() || "Failed to add comment");
+            return response.json();
+        }).then(data => {
+            showToast("Comment posted!", "success");
+            document.getElementById("new-comment-text").value = "";
+            fetchApplicants(currentPage);
+        }).catch(error => {
+            showToast(error.message, "error");
+        });
+        closeModals();
+    };
+
+    document.getElementById("confirmRollback").onclick = () => {
+        fetch("/api/rollback-selection", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: activeStudent.id })
+        }).then(async response => {
+            if (!response.ok) throw new Error(await response.text() || "Rollback failed");
+            return response.json();
+        }).then(data => {
+            showToast(`Selection for ${activeStudent.name} rolled back!`, "success");
+            fetchApplicants(currentPage);
+        }).catch(error => {
+            showToast(error.message, "error");
+        });
+        closeModals();
+    };
 
     document.getElementById("confirmApprove").onclick = () => {
         fetch("/considerstudent", {

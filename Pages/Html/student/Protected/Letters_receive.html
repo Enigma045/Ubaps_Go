@@ -6,11 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/Css/Navbar/Navbar.css">
     <link rel="stylesheet" href="/Css/Layout.css">
-    <link rel="stylesheet" href="/Css/Dashboard.css">
     <link rel="stylesheet" href="/Css/Notification.css">
-    <script src="/Js/Toast.js"></script>
     <link rel="stylesheet" href="/Css/Letters_receive.css">
-    <link rel="stylesheet" href="/Css/Filter_Bar.css">
+    <link rel="stylesheet" href="/Css/Student_reports.css">
     <title>Letters Received</title>
 </head>
 
@@ -37,11 +35,6 @@
                 <span class="icon"><img class="svg" src="/Image/svgviewer-output (13).svg" alt=""></span>
                 <span class="label"><a href="/decision" class="text-link">Judge</a></span>
             </div>
-
-            <!-- <div class="nav-item">
-                <span class="icon"><img class="svg" src="/Image/svgviewer-output (14).svg" alt=""></span>
-                <span class="label"><a href="/request_approval" class="text-link">Financial Approval</a></span>
-            </div> -->
 
             <div class="nav-item active">
                 <span class="icon"><img class="svg" src="/Image/svgviewer-output (15).svg" alt=""></span>
@@ -80,20 +73,22 @@
 
             <div class="app">
 
-                <!-- Header -->
-                <header class="head">
-                    <div>
+                <!-- Report Top Bar -->
+                <div class="report-topbar">
+                    <div class="report-title-block">
                         <h1>Applicant Letters</h1>
                         <p class="subtitle">Bursary Award Processing System · Production</p>
                     </div>
-                    <div class="time">
-                        Jan 6, 2026 · 01:34 AM
+                    <div class="report-selection">
+                        <div class="time" style="font-size: 0.75rem; color: var(--sr-slate-500);">
+                            Jan 6, 2026 · 01:34 AM
+                        </div>
                     </div>
-                </header>
+                </div>
 
-                <!-- Advanced Filters -->
+                <!-- Filter Bar -->
                 <div class="filter-bar">
-                  <div class="filter-group search-wide">
+                  <div class="filter-group" style="flex: 1.5;">
                     <label>Search Letters</label>
                     <input type="text" id="filter-search" placeholder="Name or registration number..." />
                   </div>
@@ -118,55 +113,29 @@
                   </div>
                   <button id="clear-filters" class="btn-clear">Clear</button>
                 </div>
+                <div id="active-filters-container" class="active-filters"></div>
 
                 <!-- Logs Table -->
                 <div class="table-container">
                     <table class="log-table active" id="letters">
                         <thead>
                             <tr>
-                                <th>Status</th>
+                                <th style="width: 60px;">Status</th>
                                 <th>Student Name</th>
-                                <th>Registration Number</th>
+                                <th>Reg #</th>
                                 <th>Letter Type</th>
                                 <th>Date Submitted</th>
-                                <th>Actions</th>
+                                <th style="width: 150px;">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-
-                            <tr class="success">
-                                <td>🟢</td>
-                                <td>Richard Sambo</td>
-                                <td>CEN-01-14-22</td>
-                                <td>Bursary Application</td>
-                                <td>2026-01-05</td>
-                                <td>
-                                    <button class="view-btn">
-                                        <img class="svg-btn" src="/Image/svgviewer-output (15).svg" alt="">
-                                        View
-                                    </button>
-                                    <button class="download-btn">Download</button>
-                                </td>
-                            </tr>
-
-                            <tr class="warning">
-                                <td>🟡</td>
-                                <td>Jane Doe</td>
-                                <td>BPH-02-10-23</td>
-                                <td>Appeal Letter</td>
-                                <td>2026-01-04</td>
-                                <td>
-                                    <button class="view-btn">
-                                        <img class="svg-btn" src="/Image/svgviewer-output (15).svg" alt="">
-                                        View
-                                    </button>
-                                    <button class="download-btn">Download</button>
-                                </td>
-                            </tr>
-
+                            <!-- Data populated by JS, placeholder removed for clean UI -->
                         </tbody>
-
                     </table>
+                </div>
+
+                <div class="pagination" id="pagination-controls">
+                  <!-- Dynamically populated -->
                 </div>
 
             </div>

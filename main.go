@@ -26,7 +26,7 @@ func main() {
 	mux.HandleFunc("/Authorize", Routes.Login)
 	mux.HandleFunc("/api/forgot-password", Routes.ForgotPasswordAPI)
 	mux.HandleFunc("/api/reset-password", Routes.ResetPasswordAPI)
-	mux.HandleFunc("/fees", Routes.Fees)
+	mux.Handle("/fees", middleware.RequireAuth(http.HandlerFunc(Routes.Fees)))
 	mux.Handle("/sendrequest", middleware.RequireAuth(http.HandlerFunc(Routes.Approval)))
 	mux.Handle("/getnotifications", middleware.RequireAuth(http.HandlerFunc(Routes.Notifications)))
 	mux.Handle("/countnotifications", middleware.RequireAuth(http.HandlerFunc(Routes.NotificationCounter)))
@@ -57,6 +57,8 @@ func main() {
 	mux.Handle("/requeststatement", middleware.RequireAuth(http.HandlerFunc(Routes.Request_Statement)))
 	mux.Handle("/getstatementrequests", middleware.RequireAuth(http.HandlerFunc(Routes.GetStatementRequests)))
 	mux.Handle("/api/get-financial-history", middleware.RequireAuth(http.HandlerFunc(Routes.GetFinancialHistory)))
+	mux.Handle("/api/rollback-selection", middleware.RequireAuth(http.HandlerFunc(Routes.RollbackSelection)))
+	mux.Handle("/api/add-comment", middleware.RequireAuth(http.HandlerFunc(Routes.AddComment)))
 
 	// Statistics endpoints
 	mux.Handle("/stats/student", middleware.RequireAuth(http.HandlerFunc(Routes.StatsStudent)))
@@ -74,6 +76,8 @@ func main() {
 	// Report endpoints
 	mux.Handle("/api/reports/comprehensive", middleware.RequireAuth(middleware.RequireRole("registrar", "finance_office", "admin", "dean_of_student", "dean_of_facult", "dean_of_science")(http.HandlerFunc(Routes.ExportComprehensiveReport))))
 	mux.Handle("/api/reports/stats", middleware.RequireAuth(middleware.RequireRole("registrar", "finance_office", "admin", "dean_of_student", "dean_of_facult", "dean_of_science")(http.HandlerFunc(Routes.GetReportStats))))
+	mux.Handle("/api/reports/schemes", middleware.RequireAuth(middleware.RequireRole("registrar", "finance_office", "admin")(http.HandlerFunc(Routes.GetSchemeReports))))
+	mux.Handle("/api/reports/finance", middleware.RequireAuth(middleware.RequireRole("finance_office", "admin")(http.HandlerFunc(Routes.FinancialReportsHandler))))
 
 	// Letter API endpoints
 	mux.Handle("/api/submit-letter", middleware.RequireAuth(middleware.RequireRole("student")(http.HandlerFunc(Routes.SubmitLetter))))

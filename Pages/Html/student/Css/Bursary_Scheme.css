@@ -35,12 +35,13 @@ body {
 /* APP CONTAINER */
 .app {
   max-width: 1200px;
+  max-height: 100vh;
   margin: 40px auto;
   /* background: #0b0f19; */
   background: #ffffff;
   border-radius: 14px;
   border: 0px solid transparent;
-  padding: 24px;
+  padding: 24px 0px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
@@ -549,6 +550,7 @@ button:hover {
   height: 20px;
   color: #fff;
 }
+
 .action:hover {
   width: 20px;
   height: 20px;

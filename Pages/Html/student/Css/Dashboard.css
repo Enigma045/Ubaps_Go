@@ -452,40 +452,51 @@
 
 
 /* ═══════════════════════════════════════════════════
-   REPORTS PAGE — compact layout overrides
+   REPORTS PAGE — full-viewport layout
    ═══════════════════════════════════════════════════ */
 
-/* Remove padding from app so table reaches edges */
+/* 1. Make .main fill the grid cell vertically */
+.main {
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 2. .app fills all space below the header */
 .app {
     flex: 1;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    padding: 0;
+    width: 100%;
+    background: #f8fafc;
 }
 
-/* Allow inner sections their own side padding */
+/* 3. Inner sections get horizontal padding */
 .tabs,
 .filter-bar,
+.active-filters,
 .pagination {
     padding-left: 1.5rem;
     padding-right: 1.5rem;
+    flex-shrink: 0;
 }
 
-/* Table fills remaining height, no rounded corners */
+/* 4. Table container fills ALL remaining vertical space */
 .table-container {
-    background: #fff;
-    border-top: 1px solid #e2e8f0;
-    overflow-y: auto;
     flex: 1;
     min-height: 0;
+    overflow-y: auto;
+    background: #fff;
+    border-top: 1px solid #e2e8f0;
     width: 100%;
 }
 
 .log-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
     table-layout: fixed;
 }
 
@@ -494,7 +505,7 @@
     color: #2563eb;
     font-weight: 700;
     text-align: left;
-    padding: 6px 12px;
+    padding: 12px;
     border-bottom: 1px solid #e2e8f0;
     white-space: nowrap;
     position: sticky;
@@ -503,7 +514,7 @@
 }
 
 .log-table td {
-    padding: 4px 12px;
+    padding: 12px;
     border-bottom: 1px solid #e2e8f0;
     color: #1e293b;
     vertical-align: middle;
@@ -512,8 +523,13 @@
     white-space: nowrap;
 }
 
-.log-table tr:last-child td { border-bottom: none; }
-.log-table tr:hover { background: #f1f5f9; }
+.log-table tr:last-child td {
+    border-bottom: none;
+}
+
+.log-table tr:hover {
+    background: #f1f5f9;
+}
 
 /* ── Report Top Bar ───────────────────────────────── */
 .report-topbar {
@@ -576,7 +592,7 @@
 .period-item select:focus {
     border-color: #2563eb;
     background: #fff;
-    box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
 /* ── Analytics Strip ─────────────────────────────── */
@@ -628,21 +644,53 @@
     border-radius: 50%;
 }
 
-.astat.approved { padding-left: 1.35rem; }
-.astat.approved .astat-dot  { background: #10b981; }
-.astat.approved .astat-value { color: #065f46; }
+.astat.approved {
+    padding-left: 1.35rem;
+}
 
-.astat.pending  { padding-left: 1.35rem; }
-.astat.pending  .astat-dot  { background: #f59e0b; }
-.astat.pending  .astat-value { color: #92400e; }
+.astat.approved .astat-dot {
+    background: #10b981;
+}
 
-.astat.rejected { padding-left: 1.35rem; }
-.astat.rejected .astat-dot  { background: #ef4444; }
-.astat.rejected .astat-value { color: #991b1b; }
+.astat.approved .astat-value {
+    color: #065f46;
+}
 
-.astat.total   .astat-value { color: #2563eb; }
-.astat.value   .astat-value { color: #7c3aed; }
-.astat.avgtime .astat-value { color: #0369a1; }
+.astat.pending {
+    padding-left: 1.35rem;
+}
+
+.astat.pending .astat-dot {
+    background: #f59e0b;
+}
+
+.astat.pending .astat-value {
+    color: #92400e;
+}
+
+.astat.rejected {
+    padding-left: 1.35rem;
+}
+
+.astat.rejected .astat-dot {
+    background: #ef4444;
+}
+
+.astat.rejected .astat-value {
+    color: #991b1b;
+}
+
+.astat.total .astat-value {
+    color: #2563eb;
+}
+
+.astat.value .astat-value {
+    color: #7c3aed;
+}
+
+.astat.avgtime .astat-value {
+    color: #0369a1;
+}
 
 /* Vertical separators */
 .astat-sep {
@@ -662,7 +710,7 @@
     white-space: nowrap;
 }
 
-.astat-faculty > .astat-label {
+.astat-faculty>.astat-label {
     font-size: 0.58rem;
     font-weight: 700;
     color: #94a3b8;

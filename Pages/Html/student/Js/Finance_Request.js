@@ -101,6 +101,45 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
+    function updateTagsAndFilter() {
+        const searchEl = document.getElementById('filter-search');
+        const advanced = window.activeAdvancedFilters || {};
+        const payload = {
+            search: searchEl ? searchEl.value : "",
+            department: advanced.dept || [],
+            priority: advanced.priority || [],
+            parent: advanced.parent || [],
+            employment: advanced.employment || [],
+            gender: advanced.gender || []
+        };
+        if (window.renderFilterTags) {
+            window.renderFilterTags(payload, () => {
+                if (window.triggerTableFilter) window.triggerTableFilter();
+            });
+        }
+        if (window.triggerTableFilter) window.triggerTableFilter();
+    }
+
+    const searchEl = document.getElementById('filter-search');
+    if (searchEl) {
+        searchEl.addEventListener('input', updateTagsAndFilter);
+    }
+
+    const advancedFilter = document.getElementById('filter-advanced');
+    if (advancedFilter) {
+        window.onFilterChange = updateTagsAndFilter;
+    }
+
+    const clearBtn = document.getElementById('clear-filters');
+    if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+            if (searchEl) searchEl.value = '';
+            if (advancedFilter) advancedFilter.value = '';
+            window.activeAdvancedFilters = {};
+            updateTagsAndFilter();
+        });
+    }
+
     // Initial fetch
     fetchStatementRequests();
 });

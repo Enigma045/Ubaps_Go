@@ -133,12 +133,19 @@ func GetDetailedProfile(w http.ResponseWriter, r *http.Request) {
 func GetReportStats(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	
-	// Get period filters from query params
 	year := r.URL.Query().Get("year")
 	semester := r.URL.Query().Get("semester")
 	month := r.URL.Query().Get("month")
 
-	stats, err := Handles.GetReportStats(Db.DB, ctx, year, semester, month)
+	var filters Handles.ReportFilters
+	if r.Method == "POST" && r.Body != nil {
+		err := json.NewDecoder(r.Body).Decode(&filters)
+		if err != nil {
+			log.Println("Error decoding report filters in stats:", err)
+		}
+	}
+
+	stats, err := Handles.GetReportStats(Db.DB, ctx, year, semester, month, filters)
 	if err != nil {
 		log.Println("Error fetching report stats:", err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
@@ -147,4 +154,18 @@ func GetReportStats(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(stats)
+}
+
+func GetSchemeReports(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	
+	reports, err := Handles.GetSchemeReports(Db.DB, ctx)
+	if err != nil {
+		log.Println("Error fetching scheme reports:", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(reports)
 }

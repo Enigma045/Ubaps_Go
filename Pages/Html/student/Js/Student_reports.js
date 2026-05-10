@@ -4,11 +4,11 @@ const limit = 20;
 let currentPayload = {
     statuses: [],
     search: '',
-    department: '',
-    scheme: '',
-    parent: '',
-    employment: '',
-    gender: ''
+    department: [],
+    scheme: [],
+    parent: [],
+    employment: [],
+    gender: []
 };
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Period selectors trigger stats refresh
-    ['period-year','period-semester','period-month'].forEach(id => {
+    ['period-year', 'period-semester', 'period-month'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.addEventListener('change', () => {
             fetchReportStats();
@@ -59,22 +59,35 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    ['filter-dept', 'filter-scheme', 'filter-parent', 'filter-employment', 'filter-gender'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.addEventListener('change', () => {
+    const advancedFilter = document.getElementById('filter-advanced');
+    if (advancedFilter) {
+        // Event is handled in Filter_Feature.js, which calls window.onFilterChange
+        window.onFilterChange = () => {
             currentPage = 1;
             updatePayloadAndFetch();
-        });
+        };
+    }
+
+    ['filter-date-start', 'filter-date-end', 'filter-cohort-start', 'filter-cohort-end'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('change', () => {
+                currentPage = 1;
+                updatePayloadAndFetch();
+            });
+        }
     });
 
     const clearBtn = document.getElementById('clear-filters');
     if (clearBtn) {
         clearBtn.addEventListener('click', () => {
             if (searchEl) searchEl.value = '';
-            ['filter-dept', 'filter-scheme', 'filter-parent', 'filter-employment', 'filter-gender'].forEach(id => {
+            if (advancedFilter) advancedFilter.value = '';
+            ['filter-date-start', 'filter-date-end', 'filter-cohort-start', 'filter-cohort-end'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.value = '';
             });
+            window.activeAdvancedFilters = {}; // Clear persistent state
             currentPage = 1;
             updatePayloadAndFetch();
         });
@@ -87,20 +100,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
 async function generatePDFReport() {
     console.log("Starting PDF generation...");
-    const yearVal     = document.getElementById('period-year')?.value     || '';
+    const yearVal = document.getElementById('period-year')?.value || '';
     const semesterVal = document.getElementById('period-semester')?.value || '';
-    const monthVal    = document.getElementById('period-month')?.value    || '';
+    const monthVal = document.getElementById('period-month')?.value || '';
 
-    const yearLabel     = yearVal || 'All Years';
+    const yearLabel = yearVal || 'All Years';
     const semesterLabel = semesterVal ? `Semester ${semesterVal}` : 'All Semesters';
-    const monthLabel    = monthVal ? `Month ${monthVal}` : 'All Months';
+    const monthLabel = monthVal ? `Month ${monthVal}` : 'All Months';
 
     showToast("Generating PDF Report...", "info");
 
     try {
         const url = `/api/reports/comprehensive?year=${yearVal}&semester=${semesterVal}&month=${monthVal}&limit=5000`;
         console.log("Fetching report data from:", url, "with payload:", currentPayload);
-        
+
         const res = await fetch(url, {
             method: 'POST',
             headers: {
@@ -113,7 +126,7 @@ async function generatePDFReport() {
             const errText = await res.text();
             throw new Error(`Server Error: ${res.status} ${errText}`);
         }
-        
+
         const json = await res.json();
         const data = json.data || [];
         console.log(`Fetched ${data.length} records.`);
@@ -135,18 +148,17 @@ async function generatePDFReport() {
         doc.setFontSize(22);
         doc.setTextColor(30, 41, 59);
         doc.text("UBAPS", 14, 20);
-        
+
         doc.setFontSize(10);
         doc.setTextColor(37, 99, 235);
         doc.text("University Bursary Application & Payment System", 44, 19);
-        
+
         doc.setDrawColor(226, 232, 240);
         doc.line(14, 25, 283, 25);
 
-        doc.setFontSize(14);
-        doc.setTextColor(30, 41, 59);
-        doc.text(`Comprehensive Administrative Report`, 14, 35);
-        
+        const reportTitle = window.currentReportTitle || "Comprehensive Administrative Report";
+        doc.text(reportTitle, 14, 35);
+
         doc.setFontSize(10);
         doc.setTextColor(100, 116, 139);
         doc.text(`Period: ${yearLabel} / ${semesterLabel} / ${monthLabel}`, 14, 42);
@@ -156,6 +168,7 @@ async function generatePDFReport() {
         console.log("Mapping table data...");
         const tableData = data.map(r => [
             r.registration_number || '—',
+            new Date(r.application_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
             `${r.name} ${r.surname}`,
             r.gender || '—',
             r.programme || '—',
@@ -167,27 +180,28 @@ async function generatePDFReport() {
         console.log("Generating AutoTable...");
         doc.autoTable({
             startY: 55,
-            head: [['Reg. Number', 'Student Name', 'Sex', 'Department', 'Status', 'Bursary Scheme', 'Amount (MWK)']],
+            head: [['Reg. Number', 'App. Date', 'Student Name', 'Sex', 'Department', 'Status', 'Bursary Scheme', 'Amount (MWK)']],
             body: tableData,
             theme: 'grid',
-            headStyles: { 
-                fillColor: [30, 41, 59], 
-                textColor: 255, 
-                fontSize: 9, 
+            headStyles: {
+                fillColor: [30, 41, 59],
+                textColor: 255,
+                fontSize: 9,
                 fontStyle: 'bold',
                 halign: 'center'
             },
-            styles: { 
-                fontSize: 8, 
-                cellPadding: 3, 
-                lineColor: [226, 232, 240], 
-                lineWidth: 0.1 
+            styles: {
+                fontSize: 8,
+                cellPadding: 3,
+                lineColor: [226, 232, 240],
+                lineWidth: 0.1
             },
             columnStyles: {
                 0: { fontStyle: 'bold', halign: 'center' },
-                2: { halign: 'center' },
-                4: { halign: 'center' },
-                6: { halign: 'right', fontStyle: 'bold' }
+                1: { halign: 'center' },
+                3: { halign: 'center' },
+                5: { halign: 'center' },
+                7: { halign: 'right', fontStyle: 'bold' }
             },
             alternateRowStyles: { fillColor: [248, 250, 252] }
         });
@@ -202,7 +216,7 @@ async function generatePDFReport() {
         }
 
         const pageCount = doc.internal.getNumberOfPages();
-        for(let i = 1; i <= pageCount; i++) {
+        for (let i = 1; i <= pageCount; i++) {
             doc.setPage(i);
             doc.setFontSize(8);
             doc.setTextColor(148, 163, 184);
@@ -211,7 +225,7 @@ async function generatePDFReport() {
         }
 
         console.log("Saving PDF...");
-        doc.save(`UBAPS_Report_${yearLabel.replace(/\//g,'-')}.pdf`);
+        doc.save(`UBAPS_Report_${yearLabel.replace(/\//g, '-')}.pdf`);
         showToast("Professional PDF Generated!", "success");
 
     } catch (err) {
@@ -225,13 +239,14 @@ async function populateSchemes() {
         const res = await fetch("/getschemes");
         if (!res.ok) throw new Error("Failed to fetch schemes");
         const schemes = await res.json();
-        const select = document.getElementById('filter-scheme');
-        if (select) {
+        const optgroup = document.getElementById('optgroup-scheme');
+        if (optgroup) {
+            optgroup.innerHTML = "";
             schemes.forEach(scheme => {
                 const option = document.createElement('option');
-                option.value = scheme.scheme_name;
+                option.value = `scheme:${scheme.scheme_name}`;
                 option.textContent = scheme.scheme_name;
-                select.appendChild(option);
+                optgroup.appendChild(option);
             });
         }
     } catch (err) {
@@ -243,58 +258,57 @@ function updatePayloadAndFetch() {
     let statusList = [];
     let statusLabel = "All Applicants";
 
-    if (filter[0].checked) {
+    if (filter[0] && filter[0].checked) {
         statusList.push(filter[0].value);
         statusList.push("considering");
         statusLabel = "Bursary Applicants";
     }
-    if (filter[1].checked) {
+    if (filter[1] && filter[1].checked) {
         statusList.push(filter[1].value);
         statusList.push("paid");
         statusLabel = "Selected Students";
     }
-    if (filter[2].checked) {
+    if (filter[2] && filter[2].checked) {
         statusList.push(filter[2].value);
         statusLabel = "Not Selected Candidates";
     }
 
+    const advanced = window.activeAdvancedFilters || {};
+
     currentPayload = {
         statuses: statusList,
         search: document.getElementById('filter-search')?.value || '',
-        department: document.getElementById('filter-dept')?.value || '',
-        scheme: document.getElementById('filter-scheme')?.value || '',
-        parent: document.getElementById('filter-parent')?.value || '',
-        employment: document.getElementById('filter-employment')?.value || '',
-        gender: document.getElementById('filter-gender')?.value || ''
+        department: advanced.dept || [],
+        scheme: advanced.scheme || [],
+        parent: advanced.parent || [],
+        employment: advanced.employment || [],
+        gender: advanced.gender || [],
+        date_start: document.getElementById('filter-date-start')?.value || '',
+        date_end: document.getElementById('filter-date-end')?.value || '',
+        cohort_start: document.getElementById('filter-cohort-start')?.value || '',
+        cohort_end: document.getElementById('filter-cohort-end')?.value || ''
     };
 
+    window.currentReportTitle = statusLabel;
     const titleEl = document.getElementById('current-report-title');
     if (titleEl) titleEl.firstChild.textContent = statusLabel + " ";
 
-    updateDynamicHeading();
     fetchApplicants(currentPage);
-}
+    fetchReportStats();
 
-function updateDynamicHeading() {
-    const year     = document.getElementById('period-year')?.value     || 'All Years';
-    const semester = document.getElementById('period-semester')?.value || '';
-    const month    = document.getElementById('period-month')?.value    || '';
-
-    let periodText = `- ${year}`;
-    if (semester) periodText += ` | Semester ${semester}`;
-    if (month) {
-        const monthNames = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        periodText += ` | ${monthNames[parseInt(month)]}`;
+    if (window.renderFilterTags) {
+        window.renderFilterTags(currentPayload, () => {
+            currentPage = 1;
+            updatePayloadAndFetch();
+        });
     }
-
-    const periodEl = document.getElementById('current-report-period');
-    if (periodEl) periodEl.textContent = periodText;
 }
+
 
 async function fetchApplicants(page) {
-    const year     = document.getElementById('period-year')?.value     || '';
+    const year = document.getElementById('period-year')?.value || '';
     const semester = document.getElementById('period-semester')?.value || '';
-    const month    = document.getElementById('period-month')?.value    || '';
+    const month = document.getElementById('period-month')?.value || '';
 
     try {
         const response = await fetch(`/applicants?page=${page}&limit=${limit}&year=${year}&semester=${semester}&month=${month}`, {
@@ -306,7 +320,7 @@ async function fetchApplicants(page) {
         });
 
         const result = await response.json();
-        
+
         const countEl = document.getElementById('report-result-count');
         if (countEl) countEl.textContent = `Showing ${result.data?.length || 0} of ${result.total || 0} records`;
 
@@ -317,29 +331,51 @@ async function fetchApplicants(page) {
             result.data.forEach(item => {
                 const tr = document.createElement("tr");
 
-                const icons = {
-                    review: `<svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor"><path d="M560-680v-80h320v80H560Zm0 160v-80h320v80H560Zm0 160v-80h320v80H560Zm-240-40q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35ZM80-160v-76q0-21 10-40t28-30q45-27 95.5-40.5T320-360q56 0 106.5 13.5T522-306q18 11 28 30t10 40v76H80Zm86-80h308q-35-20-74-30t-80-10q-41 0-80 10t-74 30Zm154-240q17 0 28.5-11.5T360-520q0-17-11.5-28.5T320-560q-17 0-28.5 11.5T280-520q0 17 11.5 28.5T320-480Zm0-40Zm0 280Z" /></svg>`,
-                    reject: `<svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor"><path d="M240-840h440v520L400-40l-50-50q-7-7-11.5-19t-4.5-23v-14l44-174H120q-32 0-56-24t-24-56v-80q0-7 2-15t4-15l120-282q9-20 30-34t44-14Zm360 80H240L120-480v80h360l-54 220 174-174v-406Zm0 406v-406 406Zm80 34v-80h120v-360H680v-80h200v520H680Z" /></svg>`,
-                    approve: `<svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor"><path d="M720-120H280v-520l280-280 50 50q7 7 11.5 19t4.5 23v14l-44 174h258q32 0 56 24t24 56v80q0 7-2 15t-4 15L794-168q-9 20-30 34t-44 14Zm-360-80h360l120-280v-80H480l54-220-174 174v406Zm0-406v406-406Zm-80-34v80H160v360h120v80H80v-520h200Z" /></svg>`
-                };
+                // Assign status-based accent classes
+                const status = (item.status || '').toLowerCase();
+                if (status === 'selected' || status === 'paid') {
+                    tr.classList.add('row-selected');
+                } else if (status === 'not selected') {
+                    tr.classList.add('row-rejected');
+                } else {
+                    tr.classList.add('row-pending');
+                }
 
-                let actions = `<button title="Review" class="action-btn review-btn" data-id="${item.registration_number}">${icons.review}</button>`;
-                if (item.status === "submitted" || item.status === "considering") {
-                    actions += `<button title="Approve" class="action-btn approve-btn" data-name="${item.first_name} ${item.last_name}" data-id="${item.registration_number}">${icons.approve}</button>`;
-                }
-                if (["submitted", "selected", "considering"].includes(item.status)) {
-                    actions += `<button title="Reject" class="action-btn reject-btn" data-name="${item.first_name} ${item.last_name}" data-id="${item.registration_number}">${icons.reject}</button>`;
-                }
+                const schemeDisplay = (status === 'selected' || status === 'paid')
+                    ? (item.scheme_name && item.scheme_name !== 'No Scheme' ? item.scheme_name : 'Not Assigned')
+                    : 'Not Assigned';
+
+                // Stamp hover data for the hover-card feature
+                tr.dataset.hover = JSON.stringify({
+                    name:       `${item.first_name} ${item.last_name}`,
+                    reg:        item.registration_number,
+                    status:     item.status || '',
+                    gender:     item.gender || '—',
+                    parent:     item.parent_guardian_status || '—',
+                    employment: item.guardian_employment_status || '—',
+                    support:    item.relative_support || '—',
+                    scheme:     schemeDisplay
+                });
+
+                const icons = {
+                    review: `<svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 -960 960 960" width="18" fill="currentColor"><path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T35-500q61-137 181-218.5T480-800q146 0 266 81.5T925-500q-61 137-181 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z"/></svg>`
+                };
 
                 tr.innerHTML = `
                     <td>${item.first_name} ${item.last_name}</td>
-                    <td>${item.registration_number}</td>
+                    <td><span class="reg-badge">${item.registration_number}</span></td>
+                    <td>${new Date(item.application_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
                     <td>${item.gender}</td>
                     <td>${item.parent_guardian_status}</td>
                     <td>${item.guardian_employment_status}</td>
                     <td>${item.relative_support}</td>
-                    <td>${(item.status && (item.status.toLowerCase() === "selected" || item.status.toLowerCase() === "paid")) ? (item.scheme_name && item.scheme_name !== 'No Scheme' ? item.scheme_name : "Not Assigned") : "Not Assigned"}</td>
-                    <td>${actions}</td>
+                    <td>${schemeDisplay}</td>
+                    <td>
+                      <button title="Review" class="review-btn" data-id="${item.registration_number}">
+                        ${icons.review}
+                        Review
+                      </button>
+                    </td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -348,7 +384,6 @@ async function fetchApplicants(page) {
         }
 
         renderPagination(result.total, page);
-        initModalLogic();
 
         // Trigger filter after dynamic load
         if (window.triggerTableFilter) window.triggerTableFilter();
@@ -399,84 +434,22 @@ function renderPagination(total, page) {
     container.appendChild(nextBtn);
 }
 
-function initModalLogic() {
-    const tbody = document.getElementById("judge_tbody");
-    const approveModal = document.getElementById("approveModal");
-    const rejectModal = document.getElementById("rejectModal");
-    let activeStudent = null;
-
-    tbody.onclick = e => {
-        const btn = e.target.closest(".action-btn");
-        if (!btn) return;
-
-        const name = btn.getAttribute("data-name");
-        const id = btn.getAttribute("data-id");
-        activeStudent = { name, id };
-
-        if (btn.classList.contains("approve-btn")) {
-            document.getElementById("approveName").textContent = name;
-            approveModal.classList.add("active");
-        } else if (btn.classList.contains("reject-btn")) {
-            document.getElementById("rejectName").textContent = name;
-            rejectModal.classList.add("active");
-        } else if (btn.classList.contains("review-btn")) {
-            // Review logic is handled by other scripts like card.js
-        }
-    };
-
-    const closeModals = () => {
-        approveModal.classList.remove("active");
-        rejectModal.classList.remove("active");
-    };
-
-    document.querySelectorAll(".close-modal, .cancel").forEach(btn => {
-        btn.addEventListener("click", closeModals);
-    });
-
-    document.getElementById("confirmApprove").onclick = () => {
-        fetch("/considerstudent", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(activeStudent)
-        }).then(async response => {
-            if (!response.ok) throw new Error(await response.text() || "Approval failed");
-            return response.json();
-        }).then(data => {
-            showToast(`${activeStudent.name} marked for consideration!`, "success");
-            fetchApplicants(currentPage);
-        }).catch(error => {
-            showToast(error.message, "error");
-        });
-        closeModals();
-    };
-
-    document.getElementById("confirmReject").onclick = () => {
-        fetch("/rejectstudent", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(activeStudent)
-        }).then(async response => {
-            if (!response.ok) throw new Error(await response.text() || "Rejection failed");
-            return response.json();
-        }).then(data => {
-            showToast(`${activeStudent.name} application rejected.`, "success");
-            fetchApplicants(currentPage);
-        }).catch(error => {
-            showToast(error.message, "error");
-        });
-        closeModals();
-    };
-}
 
 async function fetchReportStats() {
-    const year     = document.getElementById('period-year')?.value     || '';
+    const year = document.getElementById('period-year')?.value || '';
     const semester = document.getElementById('period-semester')?.value || '';
-    const month    = document.getElementById('period-month')?.value    || '';
+    const month = document.getElementById('period-month')?.value || '';
 
-    console.log('Fetching stats for:', { year, semester, month });
+    console.log('Fetching stats for:', { year, semester, month, currentPayload });
 
     try {
-        const res = await fetch(`/api/reports/stats?year=${year}&semester=${semester}&month=${month}`);
+        const res = await fetch(`/api/reports/stats?year=${year}&semester=${semester}&month=${month}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(currentPayload || {})
+        });
         if (!res.ok) {
             const errorText = await res.text();
             throw new Error(`Stats fetch failed: ${res.status} ${errorText}`);
@@ -484,15 +457,86 @@ async function fetchReportStats() {
         const s = await res.json();
         console.log('Received stats:', s);
 
-        const set = (id, val) => { 
-            const el = document.getElementById(id); 
-            if (el) el.textContent = val; 
+        const set = (id, val) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = val;
         };
 
-        set('stat-total',    s.total_applications ?? '0');
-        set('stat-approved', s.approved           ?? '0');
-        set('stat-pending',  s.pending            ?? '0');
-        set('stat-rejected', s.rejected           ?? '0');
+        const total = s.total_applications || 0;
+        set('stat-total', total);
+        set('stat-approved', s.approved || 0);
+        set('stat-pending', s.pending || 0);
+        set('stat-rejected', s.rejected || 0);
+
+        if (total > 0) {
+            set('rate-selection', ((s.approved / total) * 100).toFixed(1) + '%');
+            set('rate-pending', ((s.pending / total) * 100).toFixed(1) + '%');
+            set('rate-rejection', ((s.rejected / total) * 100).toFixed(1) + '%');
+        } else {
+            set('rate-selection', '—%');
+            set('rate-pending', '—%');
+            set('rate-rejection', '—%');
+        }
+
+        const grid = document.getElementById('department-insights-grid');
+        if (grid) {
+            grid.innerHTML = '';
+
+            const deptNames = {
+                'cen': 'Computer Engineering',
+                'fsn': 'Food Security and Nutrients',
+                'edu': 'Education in Humanities',
+                'bph': 'Bachelors in Public Health'
+            };
+
+            const modalTitle = document.getElementById('dept-modal-title');
+            if (modalTitle) {
+                if (currentPayload && currentPayload.department && currentPayload.department.length > 0) {
+                    if (currentPayload.department.length === 1) {
+                        const rawName = currentPayload.department[0].toLowerCase();
+                        const dName = deptNames[rawName] || currentPayload.department[0].toUpperCase();
+                        modalTitle.textContent = `${dName} Breakdown`;
+                    } else {
+                        modalTitle.textContent = `Filtered Departments Breakdown (${currentPayload.department.length})`;
+                    }
+                } else {
+                    modalTitle.textContent = `Overall Department Breakdown`;
+                }
+            }
+
+            if (s.faculty_breakdown && s.faculty_breakdown.length > 0) {
+                s.faculty_breakdown.forEach(dept => {
+                    const dTotal = dept.count || 0;
+                    const dSel = dept.selected_count || 0;
+
+                    const selRate = dTotal > 0 ? ((dSel / dTotal) * 100).toFixed(1) : '0.0';
+                    const shareApp = total > 0 ? ((dTotal / total) * 100).toFixed(1) : '0.0';
+                    const shareSel = (s.approved || 0) > 0 ? ((dSel / s.approved) * 100).toFixed(1) : '0.0';
+
+                    const rawName = (dept.faculty || '').toLowerCase();
+                    const displayName = deptNames[rawName] ? `${deptNames[rawName]} (${dept.faculty.toUpperCase()})` : (dept.faculty || 'Unknown');
+
+                    const card = document.createElement('div');
+                    card.className = 'dept-card';
+                    card.innerHTML = `
+                        <h4>${displayName}</h4>
+                        <div class="dept-stat">
+                            <span class="dept-stat-label">Selection Rate</span>
+                            <span class="dept-stat-val" style="color: #10b981;">${selRate}%</span>
+                        </div>
+                        <div class="dept-stat">
+                            <span class="dept-stat-label">Share of Applicants</span>
+                            <span class="dept-stat-val">${shareApp}%</span>
+                        </div>
+                        <div class="dept-stat">
+                            <span class="dept-stat-label">Share of Selections</span>
+                            <span class="dept-stat-val" style="color: #2563eb;">${shareSel}%</span>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            }
+        }
 
     } catch (err) {
         console.error('fetchReportStats error:', err);

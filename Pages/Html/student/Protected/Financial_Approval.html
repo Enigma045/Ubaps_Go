@@ -6,12 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/Css/Navbar/Navbar.css">
   <link rel="stylesheet" href="/Css/Layout.css">
-  <link rel="stylesheet" href="/Css/Dashboard.css">
   <link rel="stylesheet" href="/Css/Notification.css">
-  <script src="/Js/Toast.js"></script>
   <link rel="stylesheet" href="/Css/Financial_Approval.css" />
-  <link rel="stylesheet" href="/Css/Filter_Bar.css">
-  <title>Bursary Scheme</title>
+  <link rel="stylesheet" href="/Css/Student_reports.css">
+  <title>Financial Approval</title>
 </head>
 
 <body>
@@ -72,75 +70,76 @@
       </header>
 
       <div class="app">
-        <!-- Header -->
-        <header class="head">
-          <div>
+        <!-- Report Top Bar -->
+        <div class="report-topbar">
+          <div class="report-title-block">
             <h1>Financial Approvals</h1>
             <p class="subtitle">Bursary Award Processing System · Production</p>
           </div>
-          <div class="time">
-            Jan 6, 2026 · 01:34 AM
-          </div>
-        </header>
-
-        <!-- Tabs -->
-        <div class="tabs">
-          <div class="tab-item">
-            <input type="checkbox" class="active" data-tab="applications" value="selected" id="Selected" checked>
-            <label for="Selected">Selected Students</label>
-          </div>
-          <div class="tab-item">
-            <input type="checkbox" data-tab="applications" value="paid" id="Paid">
-            <label for="Paid">Paid Students</label>
+          <div class="report-selection">
+            <div class="time" style="font-size: 0.75rem; color: var(--sr-slate-500);">
+              Jan 6, 2026 · 01:34 AM
+            </div>
           </div>
         </div>
 
-        <!-- Advanced Filters -->
+        <!-- Selection Tabs -->
+        <div class="tabs">
+          <div class="tab-options">
+            <label class="tab-item">
+              <input type="checkbox" data-tab="applications" value="selected" id="Selected" checked>
+              <span class="tab-btn">Selected Students</span>
+            </label>
+            <label class="tab-item">
+              <input type="checkbox" data-tab="applications" value="paid" id="Paid">
+              <span class="tab-btn">Paid Students</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Filter Bar -->
         <div class="filter-bar">
-          <div class="filter-group search-wide">
+          <div class="filter-group" style="flex: 1.5;">
             <label>Search Approvals</label>
             <input type="text" id="filter-search" placeholder="Name or registration number..." />
           </div>
           <div class="filter-group">
-            <label>Department</label>
-            <select id="filter-dept">
-              <option value="">All Departments</option>
-              <option value="CEN">CEN</option>
-              <option value="BPH">BPH</option>
-              <option value="FSN">FSN</option>
-              <option value="EDU">EDU</option>
-            </select>
-          </div>
-          <div class="filter-group">
-            <label>Bursary Scheme</label>
-            <select id="filter-scheme">
-              <option value="">All Schemes</option>
-              <!-- Populated if needed -->
-            </select>
-          </div>
-          <div class="filter-group">
-            <label>Parent Status</label>
-            <select id="filter-parent">
-              <option value="">All Status</option>
-              <option value="Both Deceased">Both Deceased</option>
-              <option value="One Deceased">One Deceased</option>
-              <option value="Both Alive">Both Alive</option>
-            </select>
-          </div>
-          <div class="filter-group">
-            <label>Employment</label>
-            <select id="filter-employment">
-              <option value="">All Types</option>
-              <option value="Unemployed">Unemployed</option>
-              <option value="Self-Employed">Self-Employed</option>
-              <option value="Formal">Formal</option>
-              <option value="Informal">Informal</option>
+            <label>Advanced Filters</label>
+            <select id="filter-advanced">
+              <option value="">Add Filter...</option>
+              <optgroup label="Department">
+                <option value="dept:CEN">CEN</option>
+                <option value="dept:BPH">BPH</option>
+                <option value="dept:FSN">FSN</option>
+                <option value="dept:EDU">EDU</option>
+              </optgroup>
+              <optgroup label="Priority">
+                <option value="priority:High">High</option>
+                <option value="priority:Medium">Medium</option>
+                <option value="priority:Low">Low</option>
+              </optgroup>
+              <optgroup label="Parent Status">
+                <option value="parent:Both Deceased">Both Deceased</option>
+                <option value="parent:One Deceased">One Deceased</option>
+                <option value="parent:Both Alive">Both Alive</option>
+              </optgroup>
+              <optgroup label="Employment">
+                <option value="employment:Unemployed">Unemployed</option>
+                <option value="employment:Self-Employed">Self-Employed</option>
+                <option value="employment:Formal">Formal</option>
+                <option value="employment:Informal">Informal</option>
+              </optgroup>
+              <optgroup label="Gender">
+                <option value="gender:Male">Male</option>
+                <option value="gender:Female">Female</option>
+              </optgroup>
             </select>
           </div>
           <button id="clear-filters" class="btn-clear">Clear</button>
         </div>
+        <div id="active-filters-container" class="active-filters"></div>
 
-        <!-- Logs Table -->
+        <!-- Table Container -->
         <div class="table-container">
           <table class="log-table active" id="applications">
             <thead>
@@ -151,7 +150,7 @@
                 <th>Employment Status</th>
                 <th>Bursary Scheme</th>
                 <th>Amount Assigned</th>
-                <th>Action</th>
+                <th style="width: 100px;">Action</th>
               </tr>
             </thead>
             <tbody id="financial-requests-body">
@@ -160,23 +159,23 @@
           </table>
         </div>
 
+        <div class="pagination" id="pagination-controls">
+          <!-- Dynamically populated -->
+        </div>
       </div>
 
-
-
-      <!-- Modal Overlay 2 -->
+      <!-- Payment Confirmation Modal -->
       <div class="modal" id="modal">
         <div class="modal-card">
           <form>
-            <div class="filter-row">
-              <h3>Pay Richard Sambo Fees?</h3>
-              <div class="close" id="closeModal">X</div>
+            <div class="filter-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--sr-slate-200); padding-bottom: 10px;">
+              <h2 style="margin: 0; font-size: 1.1rem; color: var(--sr-slate-900);">Process Payment?</h2>
+              <div class="close" id="closeModal" style="cursor: pointer; font-size: 1.2rem; color: var(--sr-slate-500);">✕</div>
             </div>
-            <p style="margin-bottom: 20px; color: var(--text-secondary);">Are you sure you want to process this payment
-              installment?</p>
-            <div class="filter-row">
-              <button class="form-group" id="closeModal2" type="button">Close</button>
-              <button class="form-group" id="closeModal3" type="submit">Confirm</button>
+            <p style="margin-bottom: 25px; color: var(--sr-slate-600); font-size: 0.9rem;">Are you sure you want to process this payment installment? This action will update the student's financial status.</p>
+            <div class="filter-row" style="display: flex; gap: 10px;">
+              <button class="btn-cancel" id="closeModal2" type="button" style="flex: 1;">Cancel</button>
+              <button class="confirm-btn" id="closeModal3" type="submit" style="flex: 1; padding: 10px; background: var(--sr-blue); color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer;">Confirm Payment</button>
             </div>
           </form>
         </div>
@@ -184,8 +183,6 @@
     </div>
   </div>
 
-
-  </div>
   <script src="/Js/Dashboard.js"></script>
   <script src="/Js/Profile_Loader.js"></script>
   <script src="/Js/Financial_Approval.js"></script>

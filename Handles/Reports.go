@@ -56,28 +56,32 @@ func GetComprehensiveReport(pool *pgxpool.Pool, ctx context.Context, limit, offs
 		params = append(params, "%"+filters.Search+"%")
 		paramCount++
 	}
-	if filters.Department != "" {
-		whereClause += fmt.Sprintf(" AND a.registration_number ILIKE $%d", paramCount)
-		params = append(params, filters.Department+"%")
+	if len(filters.Department) > 0 {
+		patterns := make([]string, len(filters.Department))
+		for i, d := range filters.Department {
+			patterns[i] = d + "%"
+		}
+		whereClause += fmt.Sprintf(" AND a.registration_number ILIKE ANY($%d)", paramCount)
+		params = append(params, patterns)
 		paramCount++
 	}
-	if filters.Scheme != "" {
-		whereClause += fmt.Sprintf(" AND s.scheme_name = $%d", paramCount)
+	if len(filters.Scheme) > 0 {
+		whereClause += fmt.Sprintf(" AND s.scheme_name = ANY($%d)", paramCount)
 		params = append(params, filters.Scheme)
 		paramCount++
 	}
-	if filters.Parent != "" {
-		whereClause += fmt.Sprintf(" AND a.parent_guardian_status = $%d", paramCount)
+	if len(filters.Parent) > 0 {
+		whereClause += fmt.Sprintf(" AND a.parent_guardian_status = ANY($%d)", paramCount)
 		params = append(params, filters.Parent)
 		paramCount++
 	}
-	if filters.Employment != "" {
-		whereClause += fmt.Sprintf(" AND a.guardian_employment_status = $%d", paramCount)
+	if len(filters.Employment) > 0 {
+		whereClause += fmt.Sprintf(" AND a.guardian_employment_status = ANY($%d)", paramCount)
 		params = append(params, filters.Employment)
 		paramCount++
 	}
-	if filters.Gender != "" {
-		whereClause += fmt.Sprintf(" AND a.gender = $%d", paramCount)
+	if len(filters.Gender) > 0 {
+		whereClause += fmt.Sprintf(" AND a.gender = ANY($%d)", paramCount)
 		params = append(params, filters.Gender)
 		paramCount++
 	}
@@ -105,6 +109,31 @@ func GetComprehensiveReport(pool *pgxpool.Pool, ctx context.Context, limit, offs
 		} else if semester == "2" {
 			whereClause += " AND EXTRACT(MONTH FROM a.application_date) BETWEEN 1 AND 6"
 		}
+	}
+
+	if filters.DateStart != "" {
+		whereClause += fmt.Sprintf(" AND a.application_date >= $%d", paramCount)
+		params = append(params, filters.DateStart)
+		paramCount++
+	}
+	if filters.DateEnd != "" {
+		whereClause += fmt.Sprintf(" AND a.application_date <= $%d", paramCount)
+		params = append(params, filters.DateEnd+" 23:59:59")
+		paramCount++
+	}
+
+	if filters.CohortStart != "" && filters.CohortEnd != "" {
+		whereClause += fmt.Sprintf(" AND SUBSTRING(a.registration_number FROM '\\d+$')::integer BETWEEN $%d AND $%d", paramCount, paramCount+1)
+		params = append(params, filters.CohortStart, filters.CohortEnd)
+		paramCount += 2
+	} else if filters.CohortStart != "" {
+		whereClause += fmt.Sprintf(" AND SUBSTRING(a.registration_number FROM '\\d+$')::integer >= $%d", paramCount)
+		params = append(params, filters.CohortStart)
+		paramCount++
+	} else if filters.CohortEnd != "" {
+		whereClause += fmt.Sprintf(" AND SUBSTRING(a.registration_number FROM '\\d+$')::integer <= $%d", paramCount)
+		params = append(params, filters.CohortEnd)
+		paramCount++
 	}
 
 	countQuery := fmt.Sprintf(`

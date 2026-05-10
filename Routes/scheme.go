@@ -303,6 +303,11 @@ func SendScheme_Info(w http.ResponseWriter, r *http.Request) {
 	`, schemeinfo.Reg, schemeinfo.Scheme, schemeinfo.Amount)
 	services.SendEmail("richardsambo94@gmail.com", subject, body)
 
+	// 4. Notify Finance Office
+	if financeIDs, err := Handles.GetUserIDsOfDifferentTypes(tx, "finance_office"); err == nil {
+		notifications.BroadcastNotification(financeIDs, tx, fmt.Sprintf("Student %s has been selected for the %s scheme. Please process their fee payment (MWK %s).", schemeinfo.Reg, schemeinfo.Scheme, schemeinfo.Amount), "Pending Payment Required")
+	}
+
 	// 3. Audit Log (APPLICATION_LOG)
 	parsedAmount := 0.0
 	fmt.Sscanf(schemeinfo.Amount, "%f", &parsedAmount)

@@ -56,14 +56,16 @@ type ReportStats struct {
 	Approved          int           `json:"approved"`
 	Pending           int           `json:"pending"`
 	Rejected          int           `json:"rejected"`
+	Paid              int           `json:"paid"`
 	TotalValue        float64       `json:"total_value"`
 	AvgProcessingTime float64       `json:"avg_processing_time"`
 	FacultyBreakdown  []FacultyStat `json:"faculty_breakdown"`
 }
 
 type FacultyStat struct {
-	Faculty string `json:"faculty"`
-	Count   int    `json:"count"`
+	Faculty       string `json:"faculty"`
+	Count         int    `json:"count"`
+	SelectedCount int    `json:"selected_count"`
 }
 
 // UserProfile holds the name and role of the current user
@@ -131,9 +133,6 @@ func GetRegistrarStats(pool *pgxpool.Pool, ctx context.Context) (RegistrarStats,
 	if err != nil {
 		return stats, err
 	}
-
-	// Assuming pending letters are applications that are 'selected' but haven't had some letter-specific action?
-	// For now, let's just use pending applications count as a placeholder.
 
 	// Number of Schemes
 	querySchemes := `SELECT COUNT(*) FROM bursary_schemes`
@@ -233,52 +232,125 @@ func GetDetailedUserProfile(pool *pgxpool.Pool, ctx context.Context, userID int6
 }
 
 // GetReportStats fetches comprehensive statistics for reporting
-func GetReportStats(pool *pgxpool.Pool, ctx context.Context, year, semester, month string) (ReportStats, error) {
+func GetReportStats(pool *pgxpool.Pool, ctx context.Context, year, semester, month string, filters ReportFilters) (ReportStats, error) {
 	var stats ReportStats
 	stats.FacultyBreakdown = []FacultyStat{}
 
-	// Basic filtering logic for period
-	// In a real app, you'd parse these into a WHERE clause
-	// For now, let's assume we filter by application_date if year/month provided
+	var realStatuses []string
+	var feesPaidRequested bool
+	for _, s := range filters.Statuses {
+		realStatuses = append(realStatuses, s)
+		if s == "paid" {
+			feesPaidRequested = true
+		}
+	}
+
 	whereClause := "WHERE 1=1"
 	params := []interface{}{}
 	paramCount := 1
 
+	if len(realStatuses) > 0 || feesPaidRequested {
+		whereClause += fmt.Sprintf(" AND ((a.status = ANY($%d)) OR ($%d = true AND EXISTS (SELECT 1 FROM financial_request fr WHERE fr.user_id = a.user_id AND fr.request_status = 'approved')))", paramCount, paramCount+1)
+		params = append(params, realStatuses, feesPaidRequested)
+		paramCount += 2
+	}
+
+	if filters.Search != "" {
+		whereClause += fmt.Sprintf(" AND (u.name ILIKE $%d OR u.surname ILIKE $%d OR a.registration_number ILIKE $%d)", paramCount, paramCount, paramCount)
+		params = append(params, "%"+filters.Search+"%")
+		paramCount++
+	}
+	if len(filters.Department) > 0 {
+		patterns := make([]string, len(filters.Department))
+		for i, d := range filters.Department {
+			patterns[i] = d + "%"
+		}
+		whereClause += fmt.Sprintf(" AND a.registration_number ILIKE ANY($%d)", paramCount)
+		params = append(params, patterns)
+		paramCount++
+	}
+	if len(filters.Scheme) > 0 {
+		whereClause += fmt.Sprintf(" AND s.scheme_name = ANY($%d)", paramCount)
+		params = append(params, filters.Scheme)
+		paramCount++
+	}
+	if len(filters.Parent) > 0 {
+		whereClause += fmt.Sprintf(" AND a.parent_guardian_status = ANY($%d)", paramCount)
+		params = append(params, filters.Parent)
+		paramCount++
+	}
+	if len(filters.Employment) > 0 {
+		whereClause += fmt.Sprintf(" AND a.guardian_employment_status = ANY($%d)", paramCount)
+		params = append(params, filters.Employment)
+		paramCount++
+	}
+	if len(filters.Gender) > 0 {
+		whereClause += fmt.Sprintf(" AND a.gender = ANY($%d)", paramCount)
+		params = append(params, filters.Gender)
+		paramCount++
+	}
+
 	if year != "" {
 		if len(year) > 4 && strings.Contains(year, "/") {
 			parts := strings.Split(year, "/")
-			whereClause += fmt.Sprintf(" AND (EXTRACT(YEAR FROM application_date) = $%d OR EXTRACT(YEAR FROM application_date) = $%d)", paramCount, paramCount+1)
+			whereClause += fmt.Sprintf(" AND (EXTRACT(YEAR FROM a.application_date) = $%d OR EXTRACT(YEAR FROM a.application_date) = $%d)", paramCount, paramCount+1)
 			params = append(params, parts[0], parts[1])
 			paramCount += 2
 		} else {
-			whereClause += fmt.Sprintf(" AND EXTRACT(YEAR FROM application_date) = $%d", paramCount)
+			whereClause += fmt.Sprintf(" AND EXTRACT(YEAR FROM a.application_date) = $%d", paramCount)
 			params = append(params, year)
 			paramCount++
 		}
 	}
 	if month != "" {
-		whereClause += fmt.Sprintf(" AND EXTRACT(MONTH FROM application_date) = $%d", paramCount)
+		whereClause += fmt.Sprintf(" AND EXTRACT(MONTH FROM a.application_date) = $%d", paramCount)
 		params = append(params, month)
 		paramCount++
 	}
 	if semester != "" {
-		// Semester 1: July-Dec, Semester 2: Jan-June (example logic)
 		if semester == "1" {
-			whereClause += " AND EXTRACT(MONTH FROM application_date) BETWEEN 7 AND 12"
+			whereClause += " AND EXTRACT(MONTH FROM a.application_date) BETWEEN 7 AND 12"
 		} else if semester == "2" {
-			whereClause += " AND EXTRACT(MONTH FROM application_date) BETWEEN 1 AND 6"
+			whereClause += " AND EXTRACT(MONTH FROM a.application_date) BETWEEN 1 AND 6"
 		}
 	}
 
-	// 1. Status counts and Total Value
+	if filters.DateStart != "" {
+		whereClause += fmt.Sprintf(" AND a.application_date >= $%d", paramCount)
+		params = append(params, filters.DateStart)
+		paramCount++
+	}
+	if filters.DateEnd != "" {
+		whereClause += fmt.Sprintf(" AND a.application_date <= $%d", paramCount)
+		params = append(params, filters.DateEnd+" 23:59:59")
+		paramCount++
+	}
+
+	if filters.CohortStart != "" && filters.CohortEnd != "" {
+		whereClause += fmt.Sprintf(" AND SUBSTRING(a.registration_number FROM '\\d+$')::integer BETWEEN $%d AND $%d", paramCount, paramCount+1)
+		params = append(params, filters.CohortStart, filters.CohortEnd)
+		paramCount += 2
+	} else if filters.CohortStart != "" {
+		whereClause += fmt.Sprintf(" AND SUBSTRING(a.registration_number FROM '\\d+$')::integer >= $%d", paramCount)
+		params = append(params, filters.CohortStart)
+		paramCount++
+	} else if filters.CohortEnd != "" {
+		whereClause += fmt.Sprintf(" AND SUBSTRING(a.registration_number FROM '\\d+$')::integer <= $%d", paramCount)
+		params = append(params, filters.CohortEnd)
+		paramCount++
+	}
+
 	query := fmt.Sprintf(`
 		SELECT 
 			COUNT(*),
-			COUNT(*) FILTER (WHERE status = 'selected' OR status = 'paid'),
-			COUNT(*) FILTER (WHERE status = 'submitted' OR status = 'considering'),
-			COUNT(*) FILTER (WHERE status = 'not selected'),
-			COALESCE(SUM(CAST(NULLIF(TRIM(CAST(bursary_amount AS TEXT)), '') AS DOUBLE PRECISION)) FILTER (WHERE status = 'selected' OR status = 'paid'), 0)
-		FROM applications
+			COUNT(*) FILTER (WHERE a.status = 'selected' OR a.status = 'paid'),
+			COUNT(*) FILTER (WHERE a.status = 'submitted' OR a.status = 'considering'),
+			COUNT(*) FILTER (WHERE a.status = 'not selected'),
+			COUNT(*) FILTER (WHERE a.status = 'paid'),
+			COALESCE(SUM(CAST(NULLIF(TRIM(CAST(a.bursary_amount AS TEXT)), '') AS DOUBLE PRECISION)) FILTER (WHERE a.status = 'selected' OR a.status = 'paid'), 0)
+		FROM applications a
+		LEFT JOIN users u ON a.user_id = u.user_id
+		LEFT JOIN bursary_schemes s ON a.scheme_id = s.scheme_id
 		%s
 	`, whereClause)
 
@@ -287,21 +359,22 @@ func GetReportStats(pool *pgxpool.Pool, ctx context.Context, year, semester, mon
 		&stats.Approved,
 		&stats.Pending,
 		&stats.Rejected,
+		&stats.Paid,
 		&stats.TotalValue,
 	)
 	if err != nil {
 		return stats, err
 	}
 
-	// 2. Average Processing Time (Placeholder)
 	stats.AvgProcessingTime = 4.5
 
-	// 3. Faculty Breakdown (mapped to 'programme' column)
 	facultyQuery := fmt.Sprintf(`
-		SELECT programme, COUNT(*)
-		FROM applications
+		SELECT SUBSTRING(a.registration_number FROM '^[A-Za-z]+'), COUNT(*), COUNT(*) FILTER (WHERE a.status = 'selected' OR a.status = 'paid')
+		FROM applications a
+		LEFT JOIN users u ON a.user_id = u.user_id
+		LEFT JOIN bursary_schemes s ON a.scheme_id = s.scheme_id
 		%s
-		GROUP BY programme
+		GROUP BY SUBSTRING(a.registration_number FROM '^[A-Za-z]+')
 		ORDER BY COUNT(*) DESC
 	`, whereClause)
 
@@ -313,11 +386,70 @@ func GetReportStats(pool *pgxpool.Pool, ctx context.Context, year, semester, mon
 
 	for rows.Next() {
 		var f FacultyStat
-		if err := rows.Scan(&f.Faculty, &f.Count); err != nil {
+		if err := rows.Scan(&f.Faculty, &f.Count, &f.SelectedCount); err != nil {
 			continue
 		}
 		stats.FacultyBreakdown = append(stats.FacultyBreakdown, f)
 	}
 
 	return stats, nil
+}
+
+// SchemeReports holds comprehensive analytics for bursary schemes
+type SchemeReports struct {
+	Summary []SchemeSummary `json:"summary"`
+}
+
+type SchemeSummary struct {
+	BenefactorName    string  `json:"benefactor_name"`
+	SchemeName        string  `json:"scheme_name"`
+	TotalFund         float64 `json:"total_fund"`
+	Committed         float64 `json:"committed"`
+	Remaining         float64 `json:"remaining"`
+	UsagePercent      float64 `json:"usage_percent"`
+	NumberOfApplicants int     `json:"number_of_applicants"`
+	Status            string  `json:"status"`
+}
+
+// GetSchemeReports fetches multi-dimensional analytics for bursary schemes unified into one table
+func GetSchemeReports(pool *pgxpool.Pool, ctx context.Context) (SchemeReports, error) {
+	var reports SchemeReports
+
+	query := `
+		SELECT 
+			s.benefactor_name,
+			s.scheme_name,
+			s.total_fund_amount,
+			(s.total_fund_amount - s.available_balance) as committed,
+			s.available_balance as remaining,
+			CASE WHEN s.total_fund_amount > 0 THEN ((s.total_fund_amount - s.available_balance) / s.total_fund_amount) * 100 ELSE 0 END as usage_percent,
+			(SELECT COUNT(*) FROM applications WHERE scheme_id = s.scheme_id) as applicants,
+			CASE WHEN COALESCE(s.available_balance, 0) <= 0 THEN 'Exhausted' ELSE 'Active' END as status
+		FROM bursary_schemes s
+		ORDER BY s.scheme_name ASC
+	`
+	
+	rows, err := pool.Query(ctx, query)
+	if err != nil {
+		return reports, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var s SchemeSummary
+		if err := rows.Scan(
+			&s.BenefactorName,
+			&s.SchemeName,
+			&s.TotalFund,
+			&s.Committed,
+			&s.Remaining,
+			&s.UsagePercent,
+			&s.NumberOfApplicants,
+			&s.Status,
+		); err == nil {
+			reports.Summary = append(reports.Summary, s)
+		}
+	}
+
+	return reports, nil
 }

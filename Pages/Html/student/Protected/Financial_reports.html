@@ -6,10 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/Css/Navbar/Navbar.css">
     <link rel="stylesheet" href="/Css/Layout.css">
-    <link rel="stylesheet" href="/Css/Dashboard.css">
     <link rel="stylesheet" href="/Css/Notification.css">
-    <script src="/Js/Toast.js"></script>
-    <link rel="stylesheet" href="/Css/Financial_reports.css">
+    <link rel="stylesheet" href="/Css/Bursary_Scheme.css">
+    <link rel="stylesheet" href="/Css/Delete_Modal.css">
+    <link rel="stylesheet" href="/Css/card.css">
+    <link rel="stylesheet" href="/Css/Role_Selector.css">
+    <link rel="stylesheet" href="/Css/Student_reports.css">
     <title>Financial Reports</title>
 </head>
 
@@ -51,9 +53,7 @@
                 <span class="label"><a href="/logout" class="text-link" style="color: inherit;">Logout</a></span>
             </div>
         </nav>
-        <!-- Main Area -->
         <div class="main">
-
             <!-- Header -->
             <header class="header">
                 <div class="breadcrumb">
@@ -64,104 +64,337 @@
                         <img class="svg" src="/Image/svgviewer-output (5).svg" alt="">
                         <span id="badge-nav" class="badge-nav">0</span>
                     </div>
-                    <div id="user-avatar" class="user-avatar">
-                        RS
-                    </div>
+                    <div id="user-avatar" class="user-avatar">RS</div>
                 </div>
             </header>
 
             <div class="app">
+                <!-- Report Top Bar -->
+                <div class="report-topbar">
+                  <div class="report-title-block">
+                    <h1>Financial Reports</h1>
+                    <p class="subtitle" id="current-report-title">Financial Status </p>
+                  </div>
+                  <div class="report-selection">
+                    <button id="dept-modal-btn" class="btn-insights">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                      Dept. Insights
+                    </button>
+                    <button id="generate-report-btn" class="btn-export">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                      Export PDF
+                    </button>
+                  </div>
+                </div>
 
-                <!-- Header -->
-                <header class="head">
+                <!-- Analytics Strip -->
+                <div class="analytics-strip">
+                  <div class="astat blue">
+                    <span class="astat-dot"></span>
+                    <span class="astat-label">Total Candidates</span>
+                    <span class="astat-value" id="stat-total">—</span>
+                  </div>
+                  <div class="astat-sep"></div>
+                  <div class="astat green">
+                    <span class="astat-dot"></span>
+                    <span class="astat-label">Selected</span>
+                    <span class="astat-value" id="stat-approved">—</span>
+                    <span class="astat-rate" id="rate-selection">—%</span>
+                  </div>
+                  <div class="astat-sep"></div>
+                  <div class="astat purple">
+                    <span class="astat-dot" style="background-color: #a855f7;"></span>
+                    <span class="astat-label">Paid</span>
+                    <span class="astat-value" id="stat-paid">—</span>
+                    <span class="astat-rate" id="rate-paid">—%</span>
+                  </div>
+                  <div class="astat-sep"></div>
+                  <div class="astat amber">
+                    <span class="astat-dot"></span>
+                    <span class="astat-label">Pending</span>
+                    <span class="astat-value" id="stat-pending">—</span>
+                    <span class="astat-rate" id="rate-pending">—%</span>
+                  </div>
+                  <div class="astat-sep"></div>
+                  <div class="astat red">
+                    <span class="astat-dot"></span>
+                    <span class="astat-label">Rejected</span>
+                    <span class="astat-value" id="stat-rejected">—</span>
+                    <span class="astat-rate" id="rate-rejection">—%</span>
+                  </div>
+                </div>
+
+                <!-- Department Insights Modal -->
+                <div id="deptModal" style="display: none;">
+                  <div class="modal-content">
                     <div>
-                        <h1>Financial Reports</h1>
-                        <p class="subtitle">Bursary Award Processing System · Production</p>
+                      <h2 id="dept-modal-title">Overall Department Breakdown</h2>
+                      <button id="close-dept-modal">×</button>
                     </div>
-                    <div class="time">
-                        Jan 6, 2026 · 01:34 AM
-                    </div>
-                </header>
-
-                <!-- Filters -->
-                <div class="filter-section">
-                    <div class="filter-group">
-                        <label for="startDate">Start Date:</label>
-                        <input type="date" id="startDate" />
-                    </div>
-                    <div class="filter-group">
-                        <label for="endDate">End Date:</label>
-                        <input type="date" id="endDate" />
-                    </div>
-                    <button class="filter-btn" onclick="applyDateFilter()">Apply Filter</button>
-                    <button class="export-btn" onclick="exportReport()">Export Report</button>
+                    <div id="department-insights-grid" class="department-grid"></div>
+                  </div>
                 </div>
 
-                <!-- Search -->
-                <div class="search-bar">
-                    <input type="text" placeholder="Search reports by period, scheme, or amount..." />
+                <script>
+                  const deptModal = document.getElementById('deptModal');
+                  const deptBtn = document.getElementById('dept-modal-btn');
+                  const closeDeptBtn = document.getElementById('close-dept-modal');
+        
+                  deptBtn.addEventListener('click', () => {
+                    deptModal.style.display = 'flex';
+                  });
+        
+                  closeDeptBtn.addEventListener('click', () => {
+                    deptModal.style.display = 'none';
+                  });
+        
+                  window.addEventListener('click', (event) => {
+                    if (event.target == deptModal) {
+                      deptModal.style.display = 'none';
+                    }
+                  });
+                </script>
+
+                <!-- Filter Bar -->
+                <div class="filter-bar">
+                  <div class="filter-group">
+                    <label>Search Student</label>
+                    <input type="text" id="filter-search" placeholder="Name or Reg #..." />
+                  </div>
+                  <div class="filter-group" style="flex: 0.8;">
+                    <label>Advanced Filters</label>
+                    <select id="filter-advanced">
+                      <option value="">Add Filter...</option>
+                      <optgroup label="Department">
+                        <option value="dept:CEN">CEN</option>
+                        <option value="dept:BPH">BPH</option>
+                        <option value="dept:FSN">FSN</option>
+                        <option value="dept:EDU">EDU</option>
+                      </optgroup>
+                      <optgroup label="Bursary Scheme" id="optgroup-scheme"></optgroup>
+                      <optgroup label="Gender">
+                        <option value="gender:Male">Male</option>
+                        <option value="gender:Female">Female</option>
+                      </optgroup>
+                    </select>
+                  </div>
+                  <div class="filter-group">
+                    <label>Date Range</label>
+                    <div style="display:flex; gap:6px; align-items:center;">
+                      <input type="date" id="filter-date-start" />
+                      <input type="date" id="filter-date-end" />
+                    </div>
+                  </div>
+                  <div class="filter-group" style="flex: 0.5;">
+                    <label>Cohort</label>
+                    <div style="display:flex; gap:6px; align-items:center;">
+                      <input type="number" id="filter-cohort-start" placeholder="22" min="0" max="99" />
+                      <input type="number" id="filter-cohort-end" placeholder="23" min="0" max="99" />
+                    </div>
+                  </div>
+                  <button id="clear-filters" class="btn-clear">Clear</button>
                 </div>
+
+                <!-- Selection Logic -->
+                <div class="tabs">
+                  <div class="tab-options">
+                    <label class="tab-item">
+                      <input type="checkbox" data-tab="applications" value="submitted" checked>
+                      <span class="tab-btn">Applicants</span>
+                    </label>
+                    <label class="tab-item">
+                      <input type="checkbox" data-tab="users" value="selected">
+                      <span class="tab-btn">Selected</span>
+                    </label>
+                    <label class="tab-item">
+                      <input type="checkbox" data-tab="applications" value="not selected">
+                      <span class="tab-btn">Not Selected</span>
+                    </label>
+                    <label class="tab-item">
+                      <input type="checkbox" data-tab="applications" value="paid">
+                      <span class="tab-btn">Paid</span>
+                    </label>
+                  </div>
+                  <div id="report-result-count" class="result-count"></div>
+                </div>
+                <div id="active-filters-container" class="active-filters"></div>
 
                 <!-- Logs Table -->
                 <div class="table-container">
-                    <table class="log-table active" id="financial-reports">
-                        <thead>
-                            <tr>
-                                <th>Report ID</th>
-                                <th>Period</th>
-                                <th>Total Disbursed</th>
-                                <th>Total Pending</th>
-                                <th>Total Schemes</th>
-                                <th>Date Generated</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                            <tr class="success">
-                                <td>FR-2026-001</td>
-                                <td>January 2026</td>
-                                <td>MWK 5,000,000</td>
-                                <td>MWK 1,500,000</td>
-                                <td>12</td>
-                                <td>2026-01-31</td>
-                                <td>
-                                    <button class="view-btn">View Details</button>
-                                    <button class="export-btn">Export</button>
-                                </td>
-                            </tr>
-
-                            <tr class="success">
-                                <td>FR-2025-012</td>
-                                <td>December 2025</td>
-                                <td>MWK 4,800,000</td>
-                                <td>MWK 800,000</td>
-                                <td>10</td>
-                                <td>2025-12-31</td>
-                                <td>
-                                    <button class="view-btn">View Details</button>
-                                    <button class="export-btn">Export</button>
-                                </td>
-                            </tr>
-
-                        </tbody>
-
-                    </table>
+                  <table class="log-table active" id="applications">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Reg #</th>
+                        <th>Date</th>
+                        <th>Gender</th>
+                        <th>Parent Status</th>
+                        <th>Employment Status</th>
+                        <th>Relative Support</th>
+                        <th>Bursary Scheme</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="judge_tbody">
+        
+                    </tbody>
+        
+                  </table>
+        
                 </div>
-
+        
                 <div class="pagination" id="pagination-controls">
-                    <!-- Dynamically populated -->
+                  <!-- Dynamically populated -->
                 </div>
-
             </div>
         </div>
 
-
     </div>
+
+    <!-- Review Card Modal -->
+    <div class="modal-overlay" id="reviewModalOverlay">
+      <div class="applicant-card no-sidebar">
+        <span class="close-review-modal" id="closeReviewCard">&times;</span>
+  
+        <div class="card-main-content">
+          <!-- MAIN CARD INFO -->
+          <div class="main-card">
+            <div class="card-header">
+              <div class="applicant-info">
+                <h1 id="review-name">Student Name</h1>
+                <h2>
+                  <span id="review-course">Course Name</span> • <span id="review-id">ID Number</span>
+                </h2>
+              </div>
+            </div>
+  
+            <!-- STATEMENTS -->
+            <div class="statements">
+              <h3>Verification Documents</h3>
+              <div class="statement-actions">
+                <button class="card-btn primary">Request Statements</button>
+                <button class="card-btn outline">View Full Dossier</button>
+              </div>
+            </div>
+          </div>
+  
+          <!-- INFO GRID -->
+          <div class="info-grid">
+            <div class="info-item">
+              <h4>Gender</h4>
+              <p id="review-gender">N/A</p>
+            </div>
+            <div class="info-item">
+              <h4>Parents Status</h4>
+              <p id="review-parents">Both Alive</p>
+            </div>
+            <div class="info-item">
+              <h4>Employment</h4>
+              <p id="review-employment">Self-Employed</p>
+            </div>
+            <div class="info-item">
+              <h4>Relative Support</h4>
+              <p id="review-income">MWK 500,000</p>
+            </div>
+            <div class="info-item">
+              <h4>Priority Level</h4>
+              <p id="review-priority">Low</p>
+            </div>
+            <div class="info-item">
+              <h4>Residence</h4>
+              <p id="review-residence">Lilongwe</p>
+            </div>
+            <div class="info-item">
+              <h4>Guardian</h4>
+              <p id="review-guardian">Father</p>
+            </div>
+          </div>
+  
+          <!-- APPROVAL STATUS TRACKER -->
+          <div class="approval-tracker">
+            <h3>Approval Status</h3>
+            <div class="approval-items" id="approval-items">
+              <div class="approval-item">
+                <span class="approval-role">Registrar</span>
+                <span class="approval-badge pending" id="approval-registrar">Pending</span>
+              </div>
+              <div class="approval-item">
+                <span class="approval-role">Dean of Students</span>
+                <span class="approval-badge pending" id="approval-dean_of_student">Pending</span>
+              </div>
+              <div class="approval-item">
+                <span class="approval-role">Dean of Faculty</span>
+                <span class="approval-badge pending" id="approval-dean_of_facult">Pending</span>
+              </div>
+              <div class="approval-item">
+                <span class="approval-role">Dean of Science</span>
+                <span class="approval-badge pending" id="approval-dean_of_science">Pending</span>
+              </div>
+              <div class="approval-item">
+                <span class="approval-role">Finance Office</span>
+                <span class="approval-badge pending" id="approval-finance_office">Pending</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Dossier Modal -->
+    <div class="modal" id="dossierModal">
+      <div class="modal-content" style="max-width: 800px;">
+        <button class="close-modal" id="closeDossier">&times;</button>
+        <div class="modal-header">
+          <div class="icon-container" style="background: #f0f9ff;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+            </svg>
+          </div>
+          <h2>Student Financial Dossier</h2>
+        </div>
+        <div class="modal-body">
+          <div class="student-dossier-summary"
+            style="margin-bottom: 20px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+            <h4 id="dossier-student-name" style="margin-bottom: 5px; color: #1e293b;">Student Name</h4>
+            <p id="dossier-student-reg" style="font-size: 0.9rem; color: #64748b;">Registration Number</p>
+          </div>
+          <div class="table-container" style="max-height: 400px; overflow-y: auto;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+              <thead style="background: #f1f5f9; position: sticky; top: 0;">
+                <tr>
+                  <th style="padding: 10px; text-align: left; border-bottom: 2px solid #e2e8f0;">Semester</th>
+                  <th style="padding: 10px; text-align: left; border-bottom: 2px solid #e2e8f0;">Date</th>
+                  <th style="padding: 10px; text-align: left; border-bottom: 2px solid #e2e8f0;">Details</th>
+                  <th style="padding: 10px; text-align: right; border-bottom: 2px solid #e2e8f0;">Amount (MWK)</th>
+                </tr>
+              </thead>
+              <tbody id="dossier-history-tbody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="cancel" id="closeDossierFooter">Close Dossier</button>
+        </div>
+      </div>
+    </div>
+  
     <script src="/Js/Dashboard.js"></script>
     <script src="/Js/Profile_Loader.js"></script>
+    <script src="/Js/Role_Selector.js"></script>
+    <script src="/Js/Toast.js"></script>
     <script src="/Js/Financial_reports.js"></script>
     <script src="/Js/Notification_Feature.js"></script>
+    <script src="/Js/Notification_counter.js"></script>
+    <script src="/Js/Dossier_Feature.js"></script>
+    <script src="/Js/card.js"></script>
+    <script src="/Js/Filter_Feature.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
 </body>
 
 </html>

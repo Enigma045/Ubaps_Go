@@ -6,13 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/Css/Navbar/Navbar.css">
   <link rel="stylesheet" href="/Css/Layout.css">
-  <link rel="stylesheet" href="/Css/Dashboard.css">
   <link rel="stylesheet" href="/Css/Notification.css">
-  <script src="/Js/Toast.js"></script>
   <link rel="stylesheet" href="/Css/Bursary_Scheme.css">
   <link rel="stylesheet" href="/Css/Delete_Modal.css">
   <link rel="stylesheet" href="/Css/card.css">
-  <link rel="stylesheet" href="/Css/Filter_Bar.css">
+  <link rel="stylesheet" href="/Css/Student_reports.css">
   <title>Bursary Decisions</title>
 </head>
 
@@ -74,85 +72,80 @@
       </header>
       <div class="app">
 
-        <!-- Header -->
-        <header class="head">
-          <div>
+        <!-- Report Top Bar -->
+        <div class="report-topbar">
+          <div class="report-title-block">
             <h1>Committee Review</h1>
-            <p class="subtitle">Filter and Review Applicants</p>
+            <p class="subtitle">Financial Review · Filter and Review Applicants</p>
           </div>
-          <div class="time">
-            Jan 6, 2026 · 01:34 AM
+          <div class="report-selection">
+            <div class="time" style="font-size: 0.75rem; color: var(--sr-slate-500);">
+              Jan 6, 2026 · 01:34 AM
+            </div>
           </div>
-        </header>
-
-        <!-- Tabs -->
-        <div class="tabs">
-          <label for="Applicants">Applicants</label>
-          <input type="checkbox" class="active" data-tab="applications" value="submitted">
-          <!-- <label for="Considered">Considered</label>
-          <input type="checkbox" data-tab="payments" value="considered"> -->
-          <label for="Selected">Selected</label>
-          <input type="checkbox" data-tab="users" value="selected">
-          <label for="Not Selected">Not Selected</label>
-          <input type="checkbox" class="active" data-tab="applications" value="not selected">
         </div>
 
-        <!-- Advanced Filters -->
+        <!-- Selection Tabs -->
+        <div class="tabs">
+          <div class="tab-options">
+            <label class="tab-item">
+              <input type="checkbox" data-tab="applications" value="submitted" checked>
+              <span class="tab-btn">Applicants</span>
+            </label>
+            <label class="tab-item">
+              <input type="checkbox" data-tab="users" value="selected">
+              <span class="tab-btn">Selected</span>
+            </label>
+            <label class="tab-item">
+              <input type="checkbox" data-tab="applications" value="not selected">
+              <span class="tab-btn">Not Selected</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Filter Bar -->
         <div class="filter-bar">
-          <div class="filter-group search-wide">
+          <div class="filter-group" style="flex: 1.5;">
             <label>Search Student</label>
             <input type="text" id="filter-search" placeholder="Name or registration number..." />
           </div>
           <div class="filter-group">
-            <label>Department</label>
-            <select id="filter-dept">
-              <option value="">All Departments</option>
-              <option value="CEN">CEN</option>
-              <option value="BPH">BPH</option>
-              <option value="FSN">FSN</option>
-              <option value="EDU">EDU</option>
-            </select>
-          </div>
-          <div class="filter-group">
-            <label>Priority</label>
-            <select id="filter-priority">
-              <option value="">All Priorities</option>
-              <option value="High">High</option>
-              <option value="Medium">Medium</option>
-              <option value="Low">Low</option>
-            </select>
-          </div>
-          <div class="filter-group">
-            <label>Parent Status</label>
-            <select id="filter-parent">
-              <option value="">All Status</option>
-              <option value="Both Deceased">Both Deceased</option>
-              <option value="One Deceased">One Deceased</option>
-              <option value="Both Alive">Both Alive</option>
-            </select>
-          </div>
-          <div class="filter-group">
-            <label>Employment</label>
-            <select id="filter-employment">
-              <option value="">All Types</option>
-              <option value="Unemployed">Unemployed</option>
-              <option value="Self-Employed">Self-Employed</option>
-              <option value="Formal">Formal</option>
-              <option value="Informal">Informal</option>
-            </select>
-          </div>
-          <div class="filter-group">
-            <label>Gender</label>
-            <select id="filter-gender">
-              <option value="">All Genders</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
+            <label>Advanced Filters</label>
+            <select id="filter-advanced">
+              <option value="">Add Filter...</option>
+              <optgroup label="Department">
+                <option value="dept:CEN">CEN</option>
+                <option value="dept:BPH">BPH</option>
+                <option value="dept:FSN">FSN</option>
+                <option value="dept:EDU">EDU</option>
+              </optgroup>
+              <optgroup label="Priority">
+                <option value="priority:High">High</option>
+                <option value="priority:Medium">Medium</option>
+                <option value="priority:Low">Low</option>
+              </optgroup>
+              <optgroup label="Parent Status">
+                <option value="parent:Both Deceased">Both Deceased</option>
+                <option value="parent:One Deceased">One Deceased</option>
+                <option value="parent:Both Alive">Both Alive</option>
+              </optgroup>
+              <optgroup label="Employment">
+                <option value="employment:Unemployed">Unemployed</option>
+                <option value="employment:Self-Employed">Self-Employed</option>
+                <option value="employment:Formal">Formal</option>
+                <option value="employment:Informal">Informal</option>
+              </optgroup>
+              <optgroup label="Gender">
+                <option value="gender:Male">Male</option>
+                <option value="gender:Female">Female</option>
+              </optgroup>
             </select>
           </div>
           <button id="clear-filters" class="btn-clear">Clear</button>
         </div>
+        <div id="active-filters-container" class="active-filters"></div>
 
-        <!-- Logs Table -->
+        <!-- Table Container -->
         <div class="table-container">
           <table class="log-table active" id="applications">
             <thead>
@@ -164,15 +157,17 @@
                 <th>Employment Status</th>
                 <th>Relative Support</th>
                 <th>Priority</th>
-                <th>Actions</th>
+                <th style="width: 120px;">Actions</th>
               </tr>
             </thead>
             <tbody id="judge_tbody">
-
+              <!-- Content populated by JS -->
             </tbody>
-
           </table>
+        </div>
 
+        <div class="pagination" id="pagination-controls">
+          <!-- Dynamically populated -->
         </div>
 
       </div>
@@ -180,83 +175,89 @@
 
     <!-- Approve Modal -->
     <div class="modal" id="approveModal">
-      <div class="modal-content">
-        <button class="close-modal" id="closeApprove">&times;</button>
-        <div class="modal-header">
-          <div class="icon-container" style="background: #e0f2fe;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-              stroke="#0369a1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-              <polyline points="22 4 12 14.01 9 11.01"></polyline>
-            </svg>
+      <div class="modal-content" style="max-width: 400px;">
+        <button class="close-modal" id="closeApprove" style="position: absolute; right: 15px; top: 15px; background: none; border: none; font-size: 1.2rem; cursor: pointer;">&times;</button>
+        <div class="modal-header" style="display: flex; align-items: center; gap: 12px; margin-bottom: 15px;">
+          <div class="icon-container" style="background: #e0f2fe; padding: 8px; border-radius: 50%; color: #0369a1;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
           </div>
-          <h2>Approve Application</h2>
+          <h2 style="margin: 0; font-size: 1.1rem; color: var(--sr-slate-900);">Approve Application</h2>
         </div>
         <div class="modal-body">
-          <p class="modal-text">Are you sure you want to approve <span id="approveName">this student</span>'s
-            application? This action will mark them for consideration.</p>
+          <p style="color: var(--sr-slate-600); font-size: 0.85rem; margin-bottom: 20px;">Are you sure you want to approve <span id="approveName" style="font-weight: 700;">this student</span>'s application? This action will mark them for consideration.</p>
         </div>
-        <div class="modal-footer">
-          <button class="cancel" id="cancelApprove">Cancel</button>
-          <button class="confirm-btn" id="confirmApprove" style="background: #0369a1;">Confirm Approval</button>
+        <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 10px;">
+          <button class="btn-cancel" id="cancelApprove">Cancel</button>
+          <button class="confirm-btn" id="confirmApprove" style="padding: 8px 16px; background: #0369a1; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">Confirm Approval</button>
         </div>
       </div>
     </div>
 
     <!-- Reject Modal -->
     <div class="modal" id="rejectModal">
-      <div class="modal-content">
-        <button class="close-modal" id="closeReject">&times;</button>
-        <div class="modal-header">
-          <div class="icon-container">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="15" y1="9" x2="9" y2="15"></line>
-              <line x1="9" y1="9" x2="15" y2="15"></line>
-            </svg>
+      <div class="modal-content" style="max-width: 400px;">
+        <button class="close-modal" id="closeReject" style="position: absolute; right: 15px; top: 15px; background: none; border: none; font-size: 1.2rem; cursor: pointer;">&times;</button>
+        <div class="modal-header" style="display: flex; align-items: center; gap: 12px; margin-bottom: 15px;">
+          <div class="icon-container" style="background: #fee2e2; padding: 8px; border-radius: 50%; color: #ef4444;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
           </div>
-          <h2>Reject Application</h2>
+          <h2 style="margin: 0; font-size: 1.1rem; color: var(--sr-slate-900);">Reject Application</h2>
         </div>
         <div class="modal-body">
-          <p class="modal-text">Are you sure you want to reject <span id="rejectName">this student</span>'s application?
-            This action cannot be easily undone.</p>
+          <p style="color: var(--sr-slate-600); font-size: 0.85rem; margin-bottom: 20px;">Are you sure you want to reject <span id="rejectName" style="font-weight: 700;">this student</span>'s application? This action cannot be easily undone.</p>
         </div>
-        <div class="modal-footer">
-          <button class="cancel" id="cancelReject">Cancel</button>
-          <button class="confirm-btn" id="confirmReject" style="background: #ef4444;">Confirm Rejection</button>
+        <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 10px;">
+          <button class="btn-cancel" id="cancelReject">Cancel</button>
+          <button class="confirm-btn" id="confirmReject" style="padding: 8px 16px; background: #ef4444; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">Confirm Rejection</button>
         </div>
       </div>
     </div>
 
-    <!-- Request Statement Confirmation Modal -->
+    <!-- Request Statement Modal -->
     <div class="modal" id="requestStatementModal">
-      <div class="modal-content">
-        <button class="close-modal" id="closeStatementModal">&times;</button>
-        <div class="modal-header">
-          <div class="icon-container" style="background: #fef3c7;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-              stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <polyline points="14 2 14 8 20 8"></polyline>
-              <line x1="16" y1="13" x2="8" y2="13"></line>
-              <line x1="16" y1="17" x2="8" y2="17"></line>
-              <polyline points="10 9 9 9 8 9"></polyline>
-            </svg>
+      <div class="modal-content" style="max-width: 400px;">
+        <button class="close-modal" id="closeStatementModal" style="position: absolute; right: 15px; top: 15px; background: none; border: none; font-size: 1.2rem; cursor: pointer;">&times;</button>
+        <div class="modal-header" style="display: flex; align-items: center; gap: 12px; margin-bottom: 15px;">
+          <div class="icon-container" style="background: #fef3c7; padding: 8px; border-radius: 50%; color: #d97706;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
           </div>
-          <h2>Request Statement</h2>
+          <h2 style="margin: 0; font-size: 1.1rem; color: var(--sr-slate-900);">Request Statement</h2>
         </div>
         <div class="modal-body">
-          <p class="modal-text">Are you sure you want to request a financial statement from <span
-              id="statementStudentName">this student</span>? This will notify them to provide their payment history.</p>
+          <p style="color: var(--sr-slate-600); font-size: 0.85rem; margin-bottom: 20px;">Are you sure you want to request a financial statement from <span id="statementStudentName" style="font-weight: 700;">this student</span>? This will notify them to provide their payment history.</p>
         </div>
-        <div class="modal-footer">
-          <button class="cancel" id="cancelStatement">Cancel</button>
-          <button class="confirm-btn" id="confirmStatementRequest" style="background: #d97706;">Confirm Request</button>
+        <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 10px;">
+          <button class="btn-cancel" id="cancelStatement">Cancel</button>
+          <button class="confirm-btn" id="confirmStatementRequest" style="padding: 8px 16px; background: #d97706; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">Confirm Request</button>
         </div>
       </div>
     </div>
 
+    <!-- Comment Modal -->
+    <div class="modal" id="commentModal">
+      <div class="modal-content" style="max-width: 500px;">
+        <button class="close-modal" id="closeCommentModal" style="position: absolute; right: 15px; top: 15px; background: none; border: none; font-size: 1.2rem; cursor: pointer;">&times;</button>
+        <div class="modal-header" style="display: flex; align-items: center; gap: 12px; margin-bottom: 15px;">
+          <div class="icon-container" style="background: var(--sr-blue-light); padding: 8px; border-radius: 50%; color: var(--sr-blue);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          </div>
+          <h2 style="margin: 0; font-size: 1.1rem; color: var(--sr-slate-900);">Application Comments</h2>
+        </div>
+        <div class="modal-body">
+          <div id="comments-list" style="max-height: 250px; overflow-y: auto; margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px; padding: 10px; background: var(--sr-slate-50); border-radius: 8px;">
+            <!-- Comments will be populated here -->
+          </div>
+          <div class="comment-input-area">
+            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--sr-slate-500); text-transform: uppercase; margin-bottom: 8px;">Write a comment</label>
+            <textarea id="new-comment-text" style="width: 100%; height: 80px; padding: 10px; border: 1px solid var(--sr-slate-200); border-radius: 8px; background: white; resize: none; font-size: 0.85rem;" placeholder="Type your observation or note here..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+          <button class="btn-cancel" id="cancelComment">Cancel</button>
+          <button class="confirm-btn" id="submitCommentBtn" style="padding: 8px 16px; background: var(--sr-blue); color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">Post Comment</button>
+        </div>
+      </div>
+    </div>
 
   </div>
 
@@ -264,20 +265,14 @@
   <div class="modal-overlay" id="reviewModalOverlay">
     <div class="applicant-card no-sidebar">
       <span class="close-review-modal" id="closeReviewCard">&times;</span>
-
       <div class="card-main-content">
-        <!-- MAIN CARD INFO -->
         <div class="main-card">
           <div class="card-header">
             <div class="applicant-info">
               <h1 id="review-name">Student Name</h1>
-              <h2>
-                <span id="review-course">Course Name</span> • <span id="review-id">ID Number</span>
-              </h2>
+              <h2><span id="review-course">Course Name</span> • <span id="review-id">ID Number</span></h2>
             </div>
           </div>
-
-          <!-- STATEMENTS -->
           <div class="statements">
             <h3>Verification Documents</h3>
             <div class="statement-actions">
@@ -286,63 +281,23 @@
             </div>
           </div>
         </div>
-
-        <!-- INFO GRID -->
         <div class="info-grid">
-          <div class="info-item">
-            <h4>Gender</h4>
-            <p id="review-gender">N/A</p>
-          </div>
-          <div class="info-item">
-            <h4>Parents Status</h4>
-            <p id="review-parents">Both Alive</p>
-          </div>
-          <div class="info-item">
-            <h4>Employment</h4>
-            <p id="review-employment">Self-Employed</p>
-          </div>
-          <div class="info-item">
-            <h4>Relative Support</h4>
-            <p id="review-income">MWK 500,000</p>
-          </div>
-          <div class="info-item">
-            <h4>Priority Level</h4>
-            <p id="review-priority">Low</p>
-          </div>
-          <div class="info-item">
-            <h4>Residence</h4>
-            <p id="review-residence">Lilongwe</p>
-          </div>
-          <div class="info-item">
-            <h4>Guardian</h4>
-            <p id="review-guardian">Father</p>
-          </div>
+          <div class="info-item"><h4>Gender</h4><p id="review-gender">N/A</p></div>
+          <div class="info-item"><h4>Parents Status</h4><p id="review-parents">Both Alive</p></div>
+          <div class="info-item"><h4>Employment</h4><p id="review-employment">Self-Employed</p></div>
+          <div class="info-item"><h4>Relative Support</h4><p id="review-income">MWK 500,000</p></div>
+          <div class="info-item"><h4>Priority Level</h4><p id="review-priority">Low</p></div>
+          <div class="info-item"><h4>Residence</h4><p id="review-residence">Lilongwe</p></div>
+          <div class="info-item"><h4>Guardian</h4><p id="review-guardian">Father</p></div>
         </div>
-
-        <!-- APPROVAL STATUS TRACKER -->
         <div class="approval-tracker">
           <h3>Approval Status</h3>
           <div class="approval-items" id="approval-items">
-            <div class="approval-item">
-              <span class="approval-role">Registrar</span>
-              <span class="approval-badge pending" id="approval-registrar">Pending</span>
-            </div>
-            <div class="approval-item">
-              <span class="approval-role">Dean of Students</span>
-              <span class="approval-badge pending" id="approval-dean_of_student">Pending</span>
-            </div>
-            <div class="approval-item">
-              <span class="approval-role">Dean of Faculty</span>
-              <span class="approval-badge pending" id="approval-dean_of_facult">Pending</span>
-            </div>
-            <div class="approval-item">
-              <span class="approval-role">Dean of Science</span>
-              <span class="approval-badge pending" id="approval-dean_of_science">Pending</span>
-            </div>
-            <div class="approval-item">
-              <span class="approval-role">Finance Office</span>
-              <span class="approval-badge pending" id="approval-finance_office">Pending</span>
-            </div>
+            <div class="approval-item"><span class="approval-role">Registrar</span><span class="approval-badge pending" id="approval-registrar">Pending</span></div>
+            <div class="approval-item"><span class="approval-role">Dean of Students</span><span class="approval-badge pending" id="approval-dean_of_student">Pending</span></div>
+            <div class="approval-item"><span class="approval-role">Dean of Faculty</span><span class="approval-badge pending" id="approval-dean_of_facult">Pending</span></div>
+            <div class="approval-item"><span class="approval-role">Dean of Science</span><span class="approval-badge pending" id="approval-dean_of_science">Pending</span></div>
+            <div class="approval-item"><span class="approval-role">Finance Office</span><span class="approval-badge pending" id="approval-finance_office">Pending</span></div>
           </div>
         </div>
       </div>
@@ -354,40 +309,19 @@
     <div class="modal-content" style="max-width: 800px;">
       <button class="close-modal" id="closeDossier">&times;</button>
       <div class="modal-header">
-        <div class="icon-container" style="background: #f0f9ff;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-            stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-            <polyline points="14 2 14 8 20 8"></polyline>
-          </svg>
-        </div>
+        <div class="icon-container" style="background: #f0f9ff;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg></div>
         <h2>Student Financial Dossier</h2>
       </div>
       <div class="modal-body">
-        <div class="student-dossier-summary"
-          style="margin-bottom: 20px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
-          <h4 id="dossier-student-name" style="margin-bottom: 5px; color: #1e293b;">Student Name</h4>
-          <p id="dossier-student-reg" style="font-size: 0.9rem; color: #64748b;">Registration Number</p>
-        </div>
+        <div class="student-dossier-summary" style="margin-bottom: 20px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;"><h4 id="dossier-student-name" style="margin-bottom: 5px; color: #1e293b;">Student Name</h4><p id="dossier-student-reg" style="font-size: 0.9rem; color: #64748b;">Registration Number</p></div>
         <div class="table-container" style="max-height: 400px; overflow-y: auto;">
           <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
-            <thead style="background: #f1f5f9; position: sticky; top: 0;">
-              <tr>
-                <th style="padding: 10px; text-align: left; border-bottom: 2px solid #e2e8f0;">Semester</th>
-                <th style="padding: 10px; text-align: left; border-bottom: 2px solid #e2e8f0;">Date</th>
-                <th style="padding: 10px; text-align: left; border-bottom: 2px solid #e2e8f0;">Details</th>
-                <th style="padding: 10px; text-align: right; border-bottom: 2px solid #e2e8f0;">Amount (MWK)</th>
-              </tr>
-            </thead>
-            <tbody id="dossier-history-tbody">
-              <!-- Dynamically populated -->
-            </tbody>
+            <thead style="background: #f1f5f9; position: sticky; top: 0;"><tr><th style="padding: 10px; text-align: left; border-bottom: 2px solid #e2e8f0;">Semester</th><th style="padding: 10px; text-align: left; border-bottom: 2px solid #e2e8f0;">Date</th><th style="padding: 10px; text-align: left; border-bottom: 2px solid #e2e8f0;">Details</th><th style="padding: 10px; text-align: right; border-bottom: 2px solid #e2e8f0;">Amount (MWK)</th></tr></thead>
+            <tbody id="dossier-history-tbody"></tbody>
           </table>
         </div>
       </div>
-      <div class="modal-footer">
-        <button class="cancel" id="closeDossierFooter">Close Dossier</button>
-      </div>
+      <div class="modal-footer"><button class="btn-cancel" id="closeDossierFooter">Close Dossier</button></div>
     </div>
   </div>
 

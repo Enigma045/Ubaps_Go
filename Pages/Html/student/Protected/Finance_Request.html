@@ -3,16 +3,14 @@
 
 <head>
   <meta charset="UTF-8" />
-  <title>Financial page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/Css/Navbar/Navbar.css">
   <link rel="stylesheet" href="/Css/Layout.css">
-  <link rel="stylesheet" href="/Css/Dashboard.css">
   <link rel="stylesheet" href="/Css/Notification.css">
-  <script src="/Js/Toast.js"></script>
   <link rel="stylesheet" href="/Css/Finance_Request.css" />
   <link rel="stylesheet" href="/Css/Delete_Modal.css">
-  <link rel="stylesheet" href="/Css/Filter_Bar.css">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/Css/Student_reports.css">
+  <title>Financial History</title>
 </head>
 
 <body>
@@ -73,70 +71,72 @@
       </header>
 
       <div class="app">
-        <!-- Header -->
-        <header class="head">
-          <div>
+        <!-- Report Top Bar -->
+        <div class="report-topbar">
+          <div class="report-title-block">
             <h1>Financial History</h1>
-            <p class="subtitle">Bursary Award Processing System · Production</p>
+            <p class="subtitle" id="current-report-title">Full trail of disbursements and installment status</p>
           </div>
-          <div class="time">
-            Jan 6, 2026 · 01:34 AM
+          <div class="report-selection">
+            <div class="time" style="font-size: 0.75rem; color: var(--sr-slate-500);">
+              Jan 6, 2026 · 01:34 AM
+            </div>
           </div>
-        </header>
+        </div>
 
         <!-- Tabs -->
         <div class="tabs">
-          <button class="active" data-tab="applications">Student Financial History</button>
+          <div class="tab-options">
+            <label class="tab-item">
+              <input type="checkbox" data-tab="applications" value="submitted" checked>
+              <span class="tab-btn">Student Financial History</span>
+            </label>
+          </div>
         </div>
 
-        <!-- Advanced Filters -->
+        <!-- Filter Bar -->
         <div class="filter-bar">
-          <div class="filter-group search-wide">
+          <div class="filter-group" style="flex: 1.5;">
             <label>Search Records</label>
             <input type="text" id="filter-search" placeholder="Name or registration number..." />
           </div>
           <div class="filter-group">
-            <label>Department</label>
-            <select id="filter-dept">
-              <option value="">All Departments</option>
-              <option value="CEN">CEN</option>
-              <option value="BPH">BPH</option>
-              <option value="FSN">FSN</option>
-              <option value="EDU">EDU</option>
-            </select>
-          </div>
-          <div class="filter-group">
-            <label>Priority</label>
-            <select id="filter-priority">
-              <option value="">All Priorities</option>
-              <option value="High">High</option>
-              <option value="Medium">Medium</option>
-              <option value="Low">Low</option>
-            </select>
-          </div>
-          <div class="filter-group">
-            <label>Parent Status</label>
-            <select id="filter-parent">
-              <option value="">All Status</option>
-              <option value="Both Deceased">Both Deceased</option>
-              <option value="One Deceased">One Deceased</option>
-              <option value="Both Alive">Both Alive</option>
-            </select>
-          </div>
-          <div class="filter-group">
-            <label>Employment</label>
-            <select id="filter-employment">
-              <option value="">All Types</option>
-              <option value="Unemployed">Unemployed</option>
-              <option value="Self-Employed">Self-Employed</option>
-              <option value="Formal">Formal</option>
-              <option value="Informal">Informal</option>
+            <label>Advanced Filters</label>
+            <select id="filter-advanced">
+              <option value="">Add Filter...</option>
+              <optgroup label="Department">
+                <option value="dept:CEN">CEN</option>
+                <option value="dept:BPH">BPH</option>
+                <option value="dept:FSN">FSN</option>
+                <option value="dept:EDU">EDU</option>
+              </optgroup>
+              <optgroup label="Priority">
+                <option value="priority:High">High</option>
+                <option value="priority:Medium">Medium</option>
+                <option value="priority:Low">Low</option>
+              </optgroup>
+              <optgroup label="Parent Status">
+                <option value="parent:Both Deceased">Both Deceased</option>
+                <option value="parent:One Deceased">One Deceased</option>
+                <option value="parent:Both Alive">Both Alive</option>
+              </optgroup>
+              <optgroup label="Employment">
+                <option value="employment:Unemployed">Unemployed</option>
+                <option value="employment:Self-Employed">Self-Employed</option>
+                <option value="employment:Formal">Formal</option>
+                <option value="employment:Informal">Informal</option>
+              </optgroup>
+              <optgroup label="Gender">
+                <option value="gender:Male">Male</option>
+                <option value="gender:Female">Female</option>
+              </optgroup>
             </select>
           </div>
           <button id="clear-filters" class="btn-clear">Clear</button>
         </div>
+        <div id="active-filters-container" class="active-filters"></div>
 
-        <!-- Logs Table -->
+        <!-- Table Container -->
         <div class="table-container">
           <table class="log-table active" id="applications">
             <thead>
@@ -147,7 +147,7 @@
                 <th>Employment Status</th>
                 <th>Monthly Income</th>
                 <th>Priority</th>
-                <th>Action</th>
+                <th style="width: 100px;">Action</th>
               </tr>
             </thead>
             <tbody id="statement-requests-body">
@@ -155,97 +155,71 @@
             </tbody>
           </table>
         </div>
+
+        <div class="pagination" id="pagination-controls">
+          <!-- Dynamically populated -->
+        </div>
       </div>
 
-      <!-- Modal Overlay -->
+      <!-- Fees Statement Modal -->
       <div class="modal" id="modal">
         <div class="modal-card">
           <form id="request_info">
-            <div class="filter-row">
-              <h1>Fees Statement</h1>
-              <div class="close" id="closeModal">X</div>
+            <div class="filter-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--sr-slate-200); padding-bottom: 10px;">
+              <h2 style="margin: 0; font-size: 1.1rem; color: var(--sr-slate-900);">Fees Statement</h2>
+              <div class="close" id="closeModal" style="cursor: pointer; font-size: 1.2rem; color: var(--sr-slate-500);">✕</div>
             </div>
-            <div class="filter-row">
-              <div class="form-group">
-                <label>Semester</label>
-                <select name="semester">
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
-                  <option>6</option>
-                  <option>7</option>
-                  <option>8</option>
+            <div class="filter-row" style="display: flex; gap: 15px; margin-bottom: 15px;">
+              <div class="form-group" style="flex: 1;">
+                <label style="display: block; font-size: 0.7rem; font-weight: 700; color: var(--sr-slate-500); text-transform: uppercase; margin-bottom: 5px;">Semester</label>
+                <select name="semester" style="width: 100%; padding: 8px; border: 1px solid var(--sr-slate-200); border-radius: 6px; background: var(--sr-slate-50);">
+                  <option>1</option><option>2</option><option>3</option><option>4</option>
+                  <option>5</option><option>6</option><option>7</option><option>8</option>
                 </select>
               </div>
-              <div class="form-group">
-                <label for="Date">Date</label>
-                <input type="date" id="Date" name="date" required>
+              <div class="form-group" style="flex: 1;">
+                <label style="display: block; font-size: 0.7rem; font-weight: 700; color: var(--sr-slate-500); text-transform: uppercase; margin-bottom: 5px;">Date</label>
+                <input type="date" id="Date" name="date" required style="width: 100%; padding: 8px; border: 1px solid var(--sr-slate-200); border-radius: 6px; background: var(--sr-slate-50);">
+              </div>
+            </div>
+            <div class="filter-row" style="display: flex; gap: 15px; margin-bottom: 15px;">
+              <div class="form-group" style="flex: 1.5;">
+                <label style="display: block; font-size: 0.7rem; font-weight: 700; color: var(--sr-slate-500); text-transform: uppercase; margin-bottom: 5px;">Detail</label>
+                <input type="text" id="Detail" name="detail" value="First Installment" required style="width: 100%; padding: 8px; border: 1px solid var(--sr-slate-200); border-radius: 6px; background: var(--sr-slate-50);">
+              </div>
+              <div class="form-group" style="flex: 1;">
+                <label style="display: block; font-size: 0.7rem; font-weight: 700; color: var(--sr-slate-500); text-transform: uppercase; margin-bottom: 5px;">Amount</label>
+                <input type="number" id="amount" name="amount" value="400000" required style="width: 100%; padding: 8px; border: 1px solid var(--sr-slate-200); border-radius: 6px; background: var(--sr-slate-50);">
               </div>
             </div>
             <div class="filter-row">
-              <div class="form-group">
-                <label for="Detail">Detail</label>
-                <input type="text" id="Detail" name="detail" value="First Installment" required>
-              </div>
-              <div class="form-group">
-                <label for="amount">Amount</label>
-                <input type="number" id="amount" name="amount" value="400000" required>
-              </div>
-            </div>
-            <div class="filter-row">
-              <button class="form-group" id="closeModal2" style="width: 100%; padding: 12px; font-weight: 600;">Submit
-                Statement</button>
+              <button class="form-group" id="closeModal2" style="width: 100%; padding: 12px; background: var(--sr-blue); color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; transition: background 0.2s;">Submit Statement</button>
             </div>
           </form>
         </div>
       </div>
-    </div>
-  </div>
 
-
-  </div>
-
-  <!-- Dossier Modal -->
-  <div class="modal" id="dossierModal">
-    <div class="modal-content" style="max-width: 800px;">
-      <button class="close-modal" id="closeDossier">&times;</button>
-      <div class="modal-header">
-        <div class="icon-container" style="background: #f0f9ff;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-            stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-            <polyline points="14 2 14 8 20 8"></polyline>
-          </svg>
-        </div>
-        <h2>Student Financial Dossier</h2>
-      </div>
-      <div class="modal-body">
-        <div class="student-dossier-summary"
-          style="margin-bottom: 20px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
-          <h4 id="dossier-student-name" style="margin-bottom: 5px; color: #1e293b;">Student Name</h4>
-          <p id="dossier-student-reg" style="font-size: 0.9rem; color: #64748b;">Registration Number</p>
-        </div>
-        <div class="table-container" style="max-height: 400px; overflow-y: auto;">
-          <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
-            <thead style="background: #f1f5f9; position: sticky; top: 0;">
-              <tr>
-                <th style="padding: 10px; text-align: left; border-bottom: 2px solid #e2e8f0;">Semester</th>
-                <th style="padding: 10px; text-align: left; border-bottom: 2px solid #e2e8f0;">Date</th>
-                <th style="padding: 10px; text-align: left; border-bottom: 2px solid #e2e8f0;">Details</th>
-                <th style="padding: 10px; text-align: right; border-bottom: 2px solid #e2e8f0;">Amount (MWK)</th>
-              </tr>
-            </thead>
-            <tbody id="dossier-history-tbody">
-              <!-- Dynamically populated -->
-            </tbody>
-          </table>
+      <!-- Dossier Modal -->
+      <div class="modal" id="dossierModal">
+        <div class="modal-content" style="max-width: 800px;">
+          <button class="close-modal" id="closeDossier">&times;</button>
+          <div class="modal-header">
+            <div class="icon-container" style="background: #f0f9ff;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg></div>
+            <h2>Student Financial Dossier</h2>
+          </div>
+          <div class="modal-body">
+            <div class="student-dossier-summary" style="margin-bottom: 20px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;"><h4 id="dossier-student-name" style="margin-bottom: 5px; color: #1e293b;">Student Name</h4><p id="dossier-student-reg" style="font-size: 0.9rem; color: #64748b;">Registration Number</p></div>
+            <div class="table-container" style="max-height: 400px; overflow-y: auto;">
+              <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                <thead style="background: #f1f5f9; position: sticky; top: 0;"><tr><th style="padding: 10px; text-align: left; border-bottom: 2px solid #e2e8f0;">Semester</th><th style="padding: 10px; text-align: left; border-bottom: 2px solid #e2e8f0;">Date</th><th style="padding: 10px; text-align: left; border-bottom: 2px solid #e2e8f0;">Details</th><th style="padding: 10px; text-align: right; border-bottom: 2px solid #e2e8f0;">Amount (MWK)</th></tr></thead>
+                <tbody id="dossier-history-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="modal-footer"><button class="btn-cancel" id="closeDossierFooter">Close Dossier</button></div>
         </div>
       </div>
-      <div class="modal-footer">
-        <button class="cancel" id="closeDossierFooter">Close Dossier</button>
-      </div>
+
     </div>
   </div>
 

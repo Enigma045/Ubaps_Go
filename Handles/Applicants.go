@@ -3,8 +3,10 @@ package Handles
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"strings"
+	"time"
 	"ubaps/utils"
 
 	"github.com/jackc/pgx/v5"
@@ -28,17 +30,21 @@ type Applicant struct {
 	Bursary_amount string `json:"bursary_amount"`
 	Reason sql.NullString `json:"reason"`
 	SchemeName string `json:"scheme_name"`
-
+	Comments json.RawMessage `json:"comments"`
 }
 
 type ReportFilters struct {
-	Statuses   []string `json:"statuses"`
-	Search     string   `json:"search"`
-	Department string   `json:"department"`
-	Scheme     string   `json:"scheme"`
-	Parent     string   `json:"parent"`
-	Employment string   `json:"employment"`
-	Gender     string   `json:"gender"`
+	Statuses    []string `json:"statuses"`
+	Search      string   `json:"search"`
+	Department  []string `json:"department"`
+	Scheme      []string `json:"scheme"`
+	Parent      []string `json:"parent"`
+	Employment  []string `json:"employment"`
+	Gender      []string `json:"gender"`
+	DateStart   string   `json:"date_start"`
+	DateEnd     string   `json:"date_end"`
+	CohortStart string   `json:"cohort_start"`
+	CohortEnd   string   `json:"cohort_end"`
 }
 
 func Applicants(
@@ -76,28 +82,32 @@ func Applicants(
 		params = append(params, "%"+filters.Search+"%")
 		paramCount++
 	}
-	if filters.Department != "" {
-		whereClause += fmt.Sprintf(" AND a.registration_number ILIKE $%d", paramCount)
-		params = append(params, filters.Department+"%")
+	if len(filters.Department) > 0 {
+		patterns := make([]string, len(filters.Department))
+		for i, d := range filters.Department {
+			patterns[i] = d + "%"
+		}
+		whereClause += fmt.Sprintf(" AND a.registration_number ILIKE ANY($%d)", paramCount)
+		params = append(params, patterns)
 		paramCount++
 	}
-	if filters.Scheme != "" {
-		whereClause += fmt.Sprintf(" AND s.scheme_name = $%d", paramCount)
+	if len(filters.Scheme) > 0 {
+		whereClause += fmt.Sprintf(" AND s.scheme_name = ANY($%d)", paramCount)
 		params = append(params, filters.Scheme)
 		paramCount++
 	}
-	if filters.Parent != "" {
-		whereClause += fmt.Sprintf(" AND a.parent_guardian_status = $%d", paramCount)
+	if len(filters.Parent) > 0 {
+		whereClause += fmt.Sprintf(" AND a.parent_guardian_status = ANY($%d)", paramCount)
 		params = append(params, filters.Parent)
 		paramCount++
 	}
-	if filters.Employment != "" {
-		whereClause += fmt.Sprintf(" AND a.guardian_employment_status = $%d", paramCount)
+	if len(filters.Employment) > 0 {
+		whereClause += fmt.Sprintf(" AND a.guardian_employment_status = ANY($%d)", paramCount)
 		params = append(params, filters.Employment)
 		paramCount++
 	}
-	if filters.Gender != "" {
-		whereClause += fmt.Sprintf(" AND a.gender = $%d", paramCount)
+	if len(filters.Gender) > 0 {
+		whereClause += fmt.Sprintf(" AND a.gender = ANY($%d)", paramCount)
 		params = append(params, filters.Gender)
 		paramCount++
 	}
@@ -125,6 +135,31 @@ func Applicants(
 		} else if semester == "2" {
 			whereClause += " AND EXTRACT(MONTH FROM a.application_date) BETWEEN 1 AND 6"
 		}
+	}
+
+	if filters.DateStart != "" {
+		whereClause += fmt.Sprintf(" AND a.application_date >= $%d", paramCount)
+		params = append(params, filters.DateStart)
+		paramCount++
+	}
+	if filters.DateEnd != "" {
+		whereClause += fmt.Sprintf(" AND a.application_date <= $%d", paramCount)
+		params = append(params, filters.DateEnd+" 23:59:59")
+		paramCount++
+	}
+
+	if filters.CohortStart != "" && filters.CohortEnd != "" {
+		whereClause += fmt.Sprintf(" AND SUBSTRING(a.registration_number FROM '\\d+$')::integer BETWEEN $%d AND $%d", paramCount, paramCount+1)
+		params = append(params, filters.CohortStart, filters.CohortEnd)
+		paramCount += 2
+	} else if filters.CohortStart != "" {
+		whereClause += fmt.Sprintf(" AND SUBSTRING(a.registration_number FROM '\\d+$')::integer >= $%d", paramCount)
+		params = append(params, filters.CohortStart)
+		paramCount++
+	} else if filters.CohortEnd != "" {
+		whereClause += fmt.Sprintf(" AND SUBSTRING(a.registration_number FROM '\\d+$')::integer <= $%d", paramCount)
+		params = append(params, filters.CohortEnd)
+		paramCount++
 	}
 
 	countQuery := fmt.Sprintf(`
@@ -318,4 +353,52 @@ func PayInstallment(tx pgx.Tx, ctx context.Context, userId int64) (string, error
 	// }
 	 
 	return "Payment processed successfully", nil
+}
+func RollbackSelection(tx pgx.Tx, ctx context.Context, userId int64) (string, error) {
+	// 1. Get scheme_id and bursary_amount
+	var schemeId int64
+	var amountStr string
+	err := tx.QueryRow(ctx, "SELECT scheme_id, bursary_amount FROM applications WHERE user_id = $1", userId).Scan(&schemeId, &amountStr)
+	if err != nil {
+		return "", fmt.Errorf("failed to fetch application info: %w", err)
+	}
+
+	// 2. Return money to scheme
+	amount, _ := utils.Strtofloat(amountStr)
+	_, err = tx.Exec(ctx, "UPDATE bursary_schemes SET available_balance = available_balance + $1 WHERE scheme_id = $2", amount, schemeId)
+	if err != nil {
+		return "", fmt.Errorf("failed to restore scheme balance: %w", err)
+	}
+
+	// 3. Reset application
+	_, err = tx.Exec(ctx, "UPDATE applications SET status = 'submitted', scheme_id = NULL, bursary_amount = '0' WHERE user_id = $1", userId)
+	if err != nil {
+		return "", fmt.Errorf("failed to reset application status: %w", err)
+	}
+
+	return "Selection rolled back successfully", nil
+}
+
+func AddComment(tx pgx.Tx, ctx context.Context, userId int64, comment string, userName string, userRole string) error {
+	newComment := map[string]string{
+		"name": userName,
+		"role": userRole,
+		"text": comment,
+		"date": utils.Floattostr(float64(utils.AutoTime(context.Background()).Time().Unix())), // Using existing helpers or simple format
+	}
+	// Re-formatted date for readability
+	newComment["date"] = utils.Floattostr(float64(time.Now().Unix())) 
+
+	commentJSON, _ := json.Marshal(newComment)
+
+	query := `
+        UPDATE applications 
+        SET comments = COALESCE(comments, '[]'::jsonb) || jsonb_build_array($1::jsonb) 
+        WHERE user_id = $2
+    `
+	_, err := tx.Exec(ctx, query, string(commentJSON), userId)
+	if err != nil {
+		return fmt.Errorf("failed to add comment to DB: %w", err)
+	}
+	return nil
 }

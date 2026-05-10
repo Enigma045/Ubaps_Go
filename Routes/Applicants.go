@@ -326,3 +326,131 @@ func PayInstallment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+func RollbackSelection(w http.ResponseWriter, r *http.Request) {
+	start := time.Now()
+	w.Header().Set("Content-Type", "application/json")
+	ctx := r.Context()
+
+	adminID, _ := middleware.UserIDFromContext(ctx)
+	Role, _ := middleware.RoleFromContext(ctx)
+
+	tx, err := Db.DB.Begin(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer tx.Rollback(ctx)
+
+	var student activeStudent
+	if err := json.NewDecoder(r.Body).Decode(&student); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	email := fmt.Sprintf("%s@unilia.ac.mw", student.StudentID)
+	UserId, err := Handles.GetUserIDByEmail(email, tx)
+	if err != nil {
+		http.Error(w, "Student not found", http.StatusNotFound)
+		return
+	}
+
+	msg, err := Handles.RollbackSelection(tx, ctx, UserId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// 1. Audit Logs
+	user_logs.Create_user_log(tx, &adminID, Role, "ROLLBACK_SELECTION", fmt.Sprintf("Student:%s", student.StudentID), "SUCCESS", time.Since(start), &UserId)
+	user_logs.Create_application_log(tx, &adminID, Role, "ROLLBACK_SELECTION", fmt.Sprintf("Student:%s", student.StudentID), "SUCCESS", time.Since(start), student.StudentID, nil, &UserId)
+
+	// 2. Notifications
+	// To Initiator (Registrar)
+	notifications.Send_notification(adminID, tx, fmt.Sprintf("You have successfully rolled back the selection for student %s.", student.StudentID), "Rollback Successful")
+
+	// To Deans and Finance Office
+	staffRoles := []string{"dean_of_student", "dean_of_facult", "dean_of_science", "finance_office"}
+	for _, role := range staffRoles {
+		if staffIDs, err := Handles.GetUserIDsOfDifferentTypes(tx, role); err == nil {
+			notifications.BroadcastNotification(staffIDs, tx, fmt.Sprintf("The selection for student %s has been rolled back and funds restored.", student.StudentID), "Selection Rollback Alert")
+		}
+	}
+
+	if err := tx.Commit(ctx); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(map[string]string{"message": msg})
+}
+
+type commentRequest struct {
+	StudentID string `json:"id"`
+	Comment   string `json:"comment"`
+}
+
+func AddComment(w http.ResponseWriter, r *http.Request) {
+	start := time.Now()
+	w.Header().Set("Content-Type", "application/json")
+	ctx := r.Context()
+
+	adminID, _ := middleware.UserIDFromContext(ctx)
+	Role, _ := middleware.RoleFromContext(ctx)
+
+	tx, err := Db.DB.Begin(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer tx.Rollback(ctx)
+
+	var req commentRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	email := fmt.Sprintf("%s@unilia.ac.mw", req.StudentID)
+	UserId, err := Handles.GetUserIDByEmail(email, tx)
+	if err != nil {
+		http.Error(w, "Student not found", http.StatusNotFound)
+		return
+	}
+
+	// Get commenter name
+	commenterName, _ := Handles.GetEmailByUserID(adminID, tx)
+
+	err = Handles.AddComment(tx, ctx, UserId, req.Comment, commenterName, Role)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// 1. Audit Logs
+	user_logs.Create_user_log(tx, &adminID, Role, "APPLICATION_COMMENT_ADDED", fmt.Sprintf("Student:%s, Comment:%s", req.StudentID, req.Comment), "SUCCESS", time.Since(start), &UserId)
+	user_logs.Create_application_log(tx, &adminID, Role, "APPLICATION_COMMENT_ADDED", fmt.Sprintf("Student:%s, Comment:%s", req.StudentID, req.Comment), "SUCCESS", time.Since(start), req.StudentID, nil, &UserId)
+
+	// 2. Notifications to other staff members
+	allStaffRoles := []string{"registrar", "dean_of_student", "dean_of_facult", "dean_of_science", "finance_office"}
+	for _, role := range allStaffRoles {
+		if staffIDs, err := Handles.GetUserIDsOfDifferentTypes(tx, role); err == nil {
+			// Filter out the commenter themselves
+			var filteredIDs []int64
+			for _, id := range staffIDs {
+				if id != adminID {
+					filteredIDs = append(filteredIDs, id)
+				}
+			}
+			if len(filteredIDs) > 0 {
+				notifications.BroadcastNotification(filteredIDs, tx, fmt.Sprintf("%s (%s) made a comment on student %s's application.", commenterName, Role, req.StudentID), "New Application Comment")
+			}
+		}
+	}
+
+	if err := tx.Commit(ctx); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(map[string]string{"message": "Comment added successfully"})
+}

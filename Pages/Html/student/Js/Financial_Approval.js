@@ -44,22 +44,56 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  const searchEl = document.getElementById('filter-search');
+  if (searchEl) {
+      searchEl.addEventListener('input', () => {
+          fetchFinancialRequests(getInitialStatuses());
+      });
+  }
+
+  const advancedFilter = document.getElementById('filter-advanced');
+  if (advancedFilter) {
+      window.onFilterChange = () => {
+          fetchFinancialRequests(getInitialStatuses());
+      };
+  }
+
+  const clearBtn = document.getElementById('clear-filters');
+  if (clearBtn) {
+      clearBtn.addEventListener('click', () => {
+          if (searchEl) searchEl.value = '';
+          if (advancedFilter) advancedFilter.value = '';
+          window.activeAdvancedFilters = {};
+          fetchFinancialRequests(getInitialStatuses());
+      });
+  }
+
   // ── Fetch ─────────────────────────────────────────────────────────────────────
   const fetchFinancialRequests = async (statuses = ["selected"]) => {
     try {
       if (statuses.length === 0) { renderTable([]); return; }
 
-      const response = await fetch("/applicants", {
+      const advanced = window.activeAdvancedFilters || {};
+      const payload = {
+        statuses: statuses,
+        search: searchEl ? searchEl.value : "",
+        department: advanced.dept || [],
+        scheme: advanced.scheme || [],
+        parent: advanced.parent || [],
+        employment: advanced.employment || [],
+        gender: advanced.gender || []
+      };
+
+      if (window.renderFilterTags) {
+          window.renderFilterTags(payload, () => {
+              fetchFinancialRequests(getInitialStatuses());
+          });
+      }
+
+      const response = await fetch("/applicants?page=1&limit=1000", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          statuses: statuses,
-          search: "",
-          department: "",
-          scheme: "",
-          parent: "",
-          employment: ""
-        }),
+        body: JSON.stringify(payload),
         credentials: "include"
       });
 

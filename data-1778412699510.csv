@@ -33,6 +33,9 @@
 "postgresql","Ubaps","public","letters","user_id",2,"integer",NULL,"FOREIGN KEY","public","users","user_id"
 "postgresql","Ubaps","public","letters","user_id",2,"integer",NULL,"FOREIGN KEY","public","users","user_id"
 "postgresql","Ubaps","public","letters","user_id",2,"integer",NULL,"FOREIGN KEY","public","users","user_id"
+"postgresql","Ubaps","public","password_resets","email",2,"text",NULL,"UNIQUE",NULL,NULL,NULL
+"postgresql","Ubaps","public","password_resets","email",2,"text",NULL,"FOREIGN KEY","public","users","email"
+"postgresql","Ubaps","public","password_resets","id",1,"bigint",NULL,"PRIMARY KEY",NULL,NULL,NULL
 "postgresql","Ubaps","public","bursary_schemes","created_at",14,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","financial_history","updated_at",12,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","financial_history","installment_status",10,"boolean",NULL,NULL,NULL,NULL,NULL
@@ -46,9 +49,11 @@
 "postgresql","Ubaps","public","financial_request","previous_amount",3,"numeric",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","applications","home_district",8,"character varying",100,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","users","last_login",12,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","password_resets","expires_at",4,"timestamp with time zone",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","financial_request","updated_at",8,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","financial_history","semester",3,"character varying",20,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","applications","dean_of_science_approval_status",30,"USER-DEFINED",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","password_resets","created_at",5,"timestamp with time zone",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","audit_user_logs","amount",10,"numeric",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","applications","parent_guardian_status",14,"character varying",50,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","financial_history","student_id",2,"integer",NULL,NULL,NULL,NULL,NULL
@@ -62,6 +67,7 @@
 "postgresql","Ubaps","public","applications","gender",7,"character varying",10,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","financial_history","created_at",11,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","bursary_schemes","updated_at",15,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","password_resets","token",3,"text",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","dusbersment","assigned_amount",4,"numeric",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","financial_history","payment_date",13,"date",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","users","is_verified",9,"boolean",NULL,NULL,NULL,NULL,NULL
@@ -82,6 +88,7 @@
 "postgresql","Ubaps","public","applications","programme",9,"character varying",100,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","audit_user_logs","target",6,"text",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","letters","letter",3,"bytea",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","audit_user_logs","target_user_id",11,"bigint",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","users","updated_at",11,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","users","password_hash",6,"character varying",255,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","bursary_schemes","conditions",10,"text",NULL,NULL,NULL,NULL,NULL
@@ -109,10 +116,12 @@
 "postgresql","Ubaps","public","bursary_schemes","benefactor_email",4,"character varying",150,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","applications","registrar_approval_status",33,"USER-DEFINED",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","applications","guardian_employment_status",15,"character varying",100,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","applications","rejection_reason",34,"character varying",255,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","email_verifications","token",3,"text",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","letters","created_at",4,"timestamp with time zone",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","financial_request","details",9,"text",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","notifications","title",8,"text",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","users","account_status",15,"text",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","users","user_type",7,"USER-DEFINED",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","notifications","created_at",6,"timestamp with time zone",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","applications","dean_of_student_approval_status",32,"USER-DEFINED",NULL,NULL,NULL,NULL,NULL
