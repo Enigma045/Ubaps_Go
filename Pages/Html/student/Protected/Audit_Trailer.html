@@ -141,8 +141,68 @@
       padding: 0;
     }
 
+    /* Premium Table Styling */
+    :root {
+      --sr-slate-900: #0f172a;
+      --sr-slate-800: #1e293b;
+      --sr-slate-600: #475569;
+      --sr-slate-500: #64748b;
+      --sr-slate-100: #f1f5f9;
+      --sr-slate-50:  #f8fafc;
+      --sr-blue: #2563eb;
+      --sr-blue-light: #eff6ff;
+      --sr-blue-border: #bfdbfe;
+    }
+
+    .table-container {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid var(--sr-slate-200);
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      flex: 1;
+      margin-top: 20px;
+    }
+
+    .log-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      table-layout: fixed;
+    }
+
+    .log-table thead {
+      background: var(--sr-slate-900);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .log-table th {
+      padding: 12px 16px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      text-align: left;
+    }
+
+    .log-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--sr-slate-100);
+      color: var(--sr-slate-600);
+      vertical-align: middle;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .log-table tbody tr:hover td {
+      background: #f0f9ff;
+    }
+
     tr { cursor: pointer; transition: background 0.2s; }
-    tr:hover { background-color: var(--background-color) !important; }
   </style>
 </head>
 

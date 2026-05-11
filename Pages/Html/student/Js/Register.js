@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Regex rules
   const nameRegex = /^[A-Za-z]{2,}(?:\s[A-Za-z]{2,})*$/;
   const phoneRegex = /^(09|08)\d{8}$/;
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%*?#&]{8,}$/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
   const twoDigitRegex = /^\d{2}$/;
   const regNumberRegex = /^(CEN|BPH|EDH|FSN)-\d{2}-\d{2}-\d{2}$/;
 

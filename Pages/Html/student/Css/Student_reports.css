@@ -364,7 +364,7 @@ html, body {
 .table-container {
   flex: 1;
   min-height: 0;
-  overflow-y: auto;
+  overflow: auto; /* Enable both horizontal and vertical scrolling if needed */
   background: var(--sr-white);
   width: 100%;
 }
@@ -372,6 +372,7 @@ html, body {
 /* ── Data Table ──────────────────────────────────────────────── */
 .log-table {
   width: 100%;
+  min-width: 1000px; /* Ensure table doesn't get too squeezed */
   border-collapse: collapse;
   font-size: 0.8rem;
   table-layout: fixed;
@@ -403,6 +404,11 @@ html, body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.log-table td:last-child {
+  overflow: visible;
+  text-overflow: clip;
 }
 
 .log-table tr:last-child td { border-bottom: none; }

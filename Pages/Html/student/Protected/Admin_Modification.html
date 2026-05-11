@@ -14,6 +14,102 @@
   <link rel="stylesheet" href="/Css/Delete_Modal.css" />
   <link rel="stylesheet" href="/Css/Edit_User_Modal.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* Premium Table Styling */
+    :root {
+      --sr-slate-900: #0f172a;
+      --sr-slate-800: #1e293b;
+      --sr-slate-600: #475569;
+      --sr-slate-500: #64748b;
+      --sr-slate-100: #f1f5f9;
+      --sr-slate-50: #f8fafc;
+      --sr-blue: #2563eb;
+      --sr-blue-light: #eff6ff;
+      --sr-blue-border: #bfdbfe;
+    }
+
+    .table-container {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid var(--sr-slate-200);
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      flex: 1;
+      margin-top: 20px;
+    }
+
+    .log-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      table-layout: fixed;
+    }
+
+    .log-table thead {
+      background: var(--sr-slate-900);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .log-table th {
+      padding: 12px 16px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      text-align: left;
+    }
+
+    .log-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--sr-slate-100);
+      color: var(--sr-slate-600);
+      vertical-align: middle;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .log-table tbody tr:hover td {
+      background: #f0f9ff;
+    }
+
+    .btn-edit,
+    .btn-delete {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+    }
+
+    .btn-edit {
+      background: var(--sr-blue-light);
+      color: var(--sr-blue);
+      border-color: var(--sr-blue-border);
+      margin-right: 8px;
+    }
+
+    .btn-edit:hover {
+      background: var(--sr-blue);
+      color: white;
+    }
+
+    .btn-delete {
+      background: #fee2e2;
+      color: #ef4444;
+      border-color: #fecaca;
+    }
+
+    .btn-delete:hover {
+      background: #ef4444;
+      color: white;
+    }
+  </style>
 </head>
 
 <body>
@@ -119,11 +215,11 @@
             </tbody>
 
           </table>
-        <!-- first -->
+          <!-- first -->
         </div>
 
         <div class="pagination" id="pagination-controls">
-            <!-- Dynamically populated -->
+          <!-- Dynamically populated -->
         </div>
       </div>
     </div>
@@ -166,27 +262,27 @@
       </div>
       <form id="editUserForm">
         <div class="edit-section-title">Personal Information</div>
-        
+
         <div class="edit-form-group">
           <label for="editFirstName">First Name</label>
           <input type="text" id="editFirstName" placeholder="e.g. John" required>
         </div>
-        
+
         <div class="edit-form-group">
           <label for="editLastName">Surname</label>
           <input type="text" id="editLastName" placeholder="e.g. Doe" required>
         </div>
-        
+
         <div class="edit-form-group full-width">
           <label for="editEmail">Email Address</label>
           <input type="email" id="editEmail" placeholder="john.doe@example.com" required>
         </div>
-        
+
         <div class="edit-form-group">
           <label for="editPhone">Phone Number</label>
           <input type="tel" id="editPhone" placeholder="099..." required>
         </div>
-        
+
         <div class="edit-form-group">
           <label for="editStatus">Account Status</label>
           <select id="editStatus">
@@ -194,9 +290,9 @@
             <option value="false">Deactivate</option>
           </select>
         </div>
-        
+
         <div class="edit-section-title">Security & Compliance</div>
-        
+
         <div class="edit-form-group full-width">
           <label>Password Management</label>
           <button type="button" class="trigger-reset-btn" id="triggerReset">Trigger Password Reset</button>

@@ -59,6 +59,9 @@ func UpdateApplication(
 	guardianEmploymentStatus *string,
 	otherFinancialSupport *string,
 	reasonForBursary *string,
+	feeResponsibility *string,
+	financialHardship *string,
+	impactOfNoBursary *string,
 	submissionTimestamp *time.Time,
 	userID int64,
 ) error {
@@ -78,11 +81,14 @@ func UpdateApplication(
 		bursary_amount             = 0,
 		other_financial_support    = $10,
 		reason_for_bursary         = $11,
+		fee_responsibility         = $15,
+		financial_hardship         = $16,
+		impact_of_no_bursary       = $17,
 		submission_timestamp       = $12,
 		last_updated               = NOW(),
 		application_date           = $14
 	WHERE user_id = $13
-	  AND submission_timestamp IS NULL;
+	  AND status IN ('not submitted', 'submitted');
 	`
 	today := time.Now()
 	ct, err := tx.Exec(
@@ -102,6 +108,9 @@ func UpdateApplication(
 		submissionTimestamp,
 		userID,
 		time.Date(today.Year(), today.Month(), today.Day(), 0, 0, 0, 0, today.Location()),
+		feeResponsibility,
+		financialHardship,
+		impactOfNoBursary,
 	)
 
 	if err != nil {

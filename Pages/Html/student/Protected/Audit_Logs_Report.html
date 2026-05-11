@@ -6,209 +6,373 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/Css/Navbar/Navbar.css">
   <link rel="stylesheet" href="/Css/Layout.css">
-  <link rel="stylesheet" href="/Css/Dashboard.css">
   <link rel="stylesheet" href="/Css/Notification.css">
-  <script src="/Js/Toast.js"></script>
+  <link rel="stylesheet" href="/Css/Bursary_Scheme.css">
+  <link rel="stylesheet" href="/Css/card.css">
+  <link rel="stylesheet" href="/Css/Role_Selector.css">
   <link rel="stylesheet" href="/Css/Audit_Trailer.css">
-  <link rel="stylesheet" href="/Css/Bursary_Scheme.css" />
-  <title>Audit Logs Reports</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+  <title>Audit Log Reports</title>
   <style>
-    .filter-section {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-      align-items: flex-end;
-      background: var(--surface-color);
-      padding: 1rem;
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-sm);
+    :root {
+      --sr-blue: #0ea5e9;
+      --sr-blue-light: #f0f9ff;
+      --sr-slate-50: #f8fafc;
+      --sr-slate-100: #f1f5f9;
+      --sr-slate-200: #e2e8f0;
+      --sr-slate-400: #94a3b8;
+      --sr-slate-500: #64748b;
+      --sr-slate-600: #475569;
+      --sr-slate-800: #1e293b;
+      --sr-slate-900: #0f172a;
     }
-    .filter-group {
+
+    /* Report Layout Overrides */
+    .app {
+      padding: 0 !important;
+      background: white;
+      min-height: calc(100vh - 70px);
       display: flex;
       flex-direction: column;
-      gap: 0.25rem;
     }
-    .filter-group label {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-    }
-    .filter-group input {
-      padding: 0.5rem;
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-sm);
-    }
-    .actions-btn-group {
-      margin-left: auto;
+
+    /* Top Bar */
+    .report-topbar {
+      padding: 24px 32px;
       display: flex;
-      gap: 0.5rem;
-    }
-    .export-btn {
-      background-color: var(--success-color);
-    }
-    .export-btn:hover {
-      background-color: #059669;
-    }
-    .pagination {
-      display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      gap: 0.5rem;
-      margin-top: 1.5rem;
-      padding: 1rem;
+      border-bottom: 1px solid var(--sr-slate-200);
+      background: white;
     }
-    .pagination button {
-      padding: 0.5rem 1rem;
-      border: 1px solid var(--border-color);
-      background: var(--surface-color);
-      border-radius: var(--radius-sm);
+
+    .report-title-block h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--sr-slate-900);
+      margin: 0 0 4px 0;
+      letter-spacing: -0.025em;
+    }
+
+    .report-title-block .subtitle {
+      font-size: 0.875rem;
+      color: var(--sr-slate-500);
+      margin: 0;
+    }
+
+    .report-selection {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-export {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      background: var(--sr-slate-900);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.875rem;
       cursor: pointer;
       transition: all 0.2s;
     }
-    .pagination button:hover:not(:disabled) {
-      background: var(--background-color);
-      border-color: var(--primary-color);
-    }
-    .pagination button.active {
-      background: var(--primary-color);
-      color: white;
-      border-color: var(--primary-color);
-    }
-    .pagination button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
+
+    .btn-export:hover {
+      background: #000;
+      transform: translateY(-1px);
     }
 
-    /* Modal Styles */
+    /* Analytics Strip */
+    .analytics-strip {
+      display: flex;
+      align-items: center;
+      padding: 16px 32px;
+      background: var(--sr-slate-50);
+      border-bottom: 1px solid var(--sr-slate-200);
+      gap: 40px;
+    }
+
+    .astat {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .astat-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .astat.blue .astat-dot { background: var(--sr-blue); }
+    .astat.green .astat-dot { background: #10b981; }
+    .astat.red .astat-dot { background: #ef4444; }
+
+    .astat-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--sr-slate-500);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .astat-value {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--sr-slate-900);
+    }
+
+    .astat-sep {
+      width: 1px;
+      height: 24px;
+      background: var(--sr-slate-200);
+    }
+
+    /* Filter Bar */
+    .filter-bar {
+      padding: 16px 32px;
+      background: white;
+      border-bottom: 1px solid var(--sr-slate-200);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: flex-end;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .filter-group label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--sr-slate-500);
+      text-transform: uppercase;
+      letter-spacing: 0.025em;
+    }
+
+    .filter-group input, .filter-group select {
+      padding: 8px 12px;
+      border: 1px solid var(--sr-slate-200);
+      border-radius: 6px;
+      font-size: 0.875rem;
+      color: var(--sr-slate-900);
+      background: white;
+      min-width: 140px;
+    }
+
+    /* Multi-select styling */
+    .multi-select {
+      position: relative;
+      min-width: 180px;
+    }
+    .select-box {
+      padding: 8px 12px;
+      border: 1px solid var(--sr-slate-200);
+      border-radius: 6px;
+      background: white;
+      font-size: 0.875rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+    .options-list {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid var(--sr-slate-200);
+      border-radius: 6px;
+      margin-top: 4px;
+      z-index: 100;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      padding: 8px;
+    }
+    .options-list label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      cursor: pointer;
+      text-transform: none;
+      letter-spacing: normal;
+      font-size: 0.85rem;
+      color: var(--sr-slate-700);
+    }
+    .options-list label:hover {
+      background: var(--sr-slate-50);
+    }
+    .options-list.show {
+      display: block;
+    }
+
+    .btn-apply {
+      padding: 9px 20px;
+      background: var(--sr-blue);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-apply:hover {
+      background: #0ea5e9;
+    }
+
+    /* Table container */
+    .report-content {
+      padding: 32px;
+      flex-grow: 1;
+      background: white;
+    }
+
+    .table-container {
+      border: 1px solid var(--sr-slate-200);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .log-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .log-table thead {
+      background: var(--sr-slate-900);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .log-table th {
+      padding: 12px 16px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--sr-slate-800);
+    }
+
+    .log-table td {
+      padding: 14px 16px;
+      font-size: 0.875rem;
+      color: var(--sr-slate-600);
+      border-bottom: 1px solid var(--sr-slate-100);
+    }
+
+    .log-table tr:hover {
+      background: var(--sr-slate-50);
+      cursor: pointer;
+    }
+
+    /* Modal Styling */
     .modal {
       display: none;
       position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
+      inset: 0;
+      background: rgba(15, 23, 42, 0.5);
       backdrop-filter: blur(4px);
-      justify-content: center;
+      z-index: 1000;
       align-items: center;
+      justify-content: center;
+      padding: 20px;
     }
 
     .modal-content {
-      background: var(--surface-color);
-      padding: 0;
-      border-radius: var(--radius-lg);
-      width: 500px;
-      max-width: 90%;
-      box-shadow: var(--shadow-lg);
+      background: white;
+      width: 100%;
+      max-width: 500px;
+      border-radius: 16px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
       overflow: hidden;
-      animation: modalSlideUp 0.3s ease-out;
+      animation: slideUp 0.3s ease-out;
     }
 
-    @keyframes modalSlideUp {
+    @keyframes slideUp {
       from { transform: translateY(20px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
 
     .modal-header {
-      padding: 1.5rem;
-      background: var(--primary-color);
+      padding: 20px 24px;
+      background: var(--sr-slate-900);
       color: white;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .modal-header h3 {
-      margin: 0;
-      font-size: 1.25rem;
-    }
-
-    .close-modal {
-      font-size: 1.5rem;
-      cursor: pointer;
-      opacity: 0.8;
-      transition: opacity 0.2s;
-    }
-
-    .close-modal:hover {
-      opacity: 1;
-    }
-
     .modal-body {
-      padding: 1.5rem;
+      padding: 24px;
     }
 
     .detail-row {
       display: flex;
       justify-content: space-between;
-      padding: 0.75rem 0;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .detail-row:last-child {
-      border-bottom: none;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--sr-slate-100);
     }
 
     .detail-label {
       font-weight: 600;
-      color: var(--text-secondary);
+      color: var(--sr-slate-500);
       font-size: 0.875rem;
     }
 
     .detail-value {
-      font-weight: 500;
-      color: var(--text-primary);
-      text-align: right;
+      font-weight: 600;
+      color: var(--sr-slate-900);
+      font-size: 0.875rem;
     }
 
     .status-pill {
-      padding: 0.25rem 0.75rem;
+      padding: 4px 10px;
       border-radius: 100px;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       font-weight: 700;
-      text-transform: uppercase;
     }
 
     .status-pill.SUCCESS { background: #dcfce7; color: #166534; }
     .status-pill.FAILED { background: #fee2e2; color: #991b1b; }
 
-    /* Specialized Card Enhancements */
-    .detail-row.highlight {
-      background: #f1f5f9;
-      margin: -1.5rem -1.5rem 1rem -1.5rem;
-      padding: 1.5rem;
-      border-bottom: 2px solid var(--primary-color);
+    .pagination {
+      margin-top: 24px;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
     }
 
-    .detail-row.highlight .detail-value {
-      font-size: 1.25rem;
-      color: var(--primary-color);
-      font-weight: 800;
+    .pagination button {
+      padding: 8px 14px;
+      border: 1px solid var(--sr-slate-200);
+      background: white;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--sr-slate-600);
+      cursor: pointer;
     }
 
-    .detail-row.highlight-amount {
-      background: #ecfdf5;
-      margin: -1.5rem -1.5rem 1rem -1.5rem;
-      padding: 1.5rem;
-      border-bottom: 2px solid var(--success-color);
+    .pagination button.active {
+      background: var(--sr-blue);
+      color: white;
+      border-color: var(--sr-blue);
     }
-
-    .detail-row.highlight-amount .detail-value {
-      font-size: 1.5rem;
-      color: #059669;
-      font-weight: 900;
-    }
-
-    .detail-row.separator {
-      height: 1px;
-      background: var(--border-color);
-      margin: 1rem 0;
-      padding: 0;
-    }
-
-    tr { cursor: pointer; transition: background 0.2s; }
-    tr:hover { background-color: var(--background-color) !important; }
   </style>
 </head>
 
@@ -252,9 +416,9 @@
         <span class="label"><a href="/logout" class="text-link" style="color: inherit;">Logout</a></span>
       </div>
     </nav>
+
     <!-- Main Area -->
     <div class="main">
-
       <!-- Header -->
       <header class="header">
         <div class="breadcrumb">
@@ -265,27 +429,66 @@
             <img class="svg" src="/Image/svgviewer-output (5).svg" alt="">
             <span id="badge-nav" class="badge-nav">0</span>
           </div>
-          <div id="user-avatar" class="user-avatar">
-            RS
-          </div>
+          <div id="user-avatar" class="user-avatar">AD</div>
         </div>
       </header>
 
       <div class="app">
-
-        <!-- Header -->
-        <header class="head">
-          <div>
+        <!-- Report Top Bar -->
+        <div class="report-topbar">
+          <div class="report-title-block">
             <h1>Audit Log Reports</h1>
-            <p class="subtitle">Bursary Award Processing System · Production</p>
+            <p class="subtitle" id="current-report-subtitle">System-wide activity audit trail</p>
           </div>
-          <div class="time" id="current-time">
-            Jan 6, 2026 · 01:34 AM
+          <div class="report-selection">
+            <button id="export-pdf-btn" class="btn-export">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Generate PDF
+            </button>
           </div>
-        </header>
+        </div>
 
-        <!-- Filters -->
-        <div class="filter-section">
+        <!-- Analytics Strip -->
+        <div class="analytics-strip">
+          <div class="astat blue">
+            <span class="astat-dot"></span>
+            <span class="astat-label">Total Logs</span>
+            <span class="astat-value" id="stat-total">—</span>
+          </div>
+          <div class="astat-sep"></div>
+          <div class="astat green">
+            <span class="astat-dot"></span>
+            <span class="astat-label">Success Rate</span>
+            <span class="astat-value" id="stat-success-rate">—%</span>
+          </div>
+          <div class="astat-sep"></div>
+          <div class="astat red">
+            <span class="astat-dot"></span>
+            <span class="astat-label">Critical Failures</span>
+            <span class="astat-value" id="stat-failures">—</span>
+          </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+          <div class="filter-group">
+            <label>Categories</label>
+            <div class="multi-select" id="logTypeContainer">
+              <div class="select-box" id="selectBox">
+                <span id="selectedCountText">All Categories</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+              <div class="options-list" id="optionsList">
+                <label><input type="checkbox" class="type-checkbox" value="applications" checked> Applications</label>
+                <label><input type="checkbox" class="type-checkbox" value="payments" checked> Payments</label>
+                <label><input type="checkbox" class="type-checkbox" value="users" checked> System/Users</label>
+              </div>
+            </div>
+          </div>
+          <div class="filter-group">
+            <label for="userId">Performer ID</label>
+            <input type="text" id="userId" placeholder="Admin User ID">
+          </div>
           <div class="filter-group">
             <label for="startDate">Start Date</label>
             <input type="date" id="startDate">
@@ -294,45 +497,35 @@
             <label for="endDate">End Date</label>
             <input type="date" id="endDate">
           </div>
-          <div class="filter-group">
-            <label for="logType">Log Type</label>
-            <select id="logType" style="padding: 0.5rem; border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
-                <option value="applications">Applications</option>
-                <option value="payments">Payments</option>
-                <option value="users">Users</option>
-            </select>
-          </div>
-          <div class="actions-btn-group">
-            <button class="btn" id="apply-filters">Apply Filter</button>
-            <button class="btn export-btn" id="export-report">Export Report</button>
-          </div>
+          <button id="apply-filters" class="btn-apply">Apply Filters</button>
         </div>
 
-        <!-- Logs Table -->
-        <div class="table-container">
-          <table class="log-table active" id="reports-table">
-            <thead id="table-head">
-              <!-- Dynamically populated -->
-            </thead>
-            <tbody id="table-body">
-              <!-- Dynamically populated -->
-            </tbody>
-          </table>
-        </div>
+        <!-- Main Content -->
+        <div class="report-content">
+          <div class="table-container">
+            <table class="log-table active" id="reports-table">
+              <thead id="table-head">
+                <!-- Dynamically populated -->
+              </thead>
+              <tbody id="table-body">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
 
-        <!-- Pagination -->
-        <div class="pagination" id="pagination-controls">
+          <!-- Pagination -->
+          <div class="pagination" id="pagination-controls">
             <!-- Dynamically populated -->
+          </div>
         </div>
-
       </div>
 
-      <!-- Log Detail Modal -->
+      <!-- Detail Modal -->
       <div id="log-detail-modal" class="modal">
         <div class="modal-content">
-          <div class="modal-header" id="modal-header">
-            <h3>Audit Log Details</h3>
-            <span class="close-modal" id="close-modal">&times;</span>
+          <div class="modal-header">
+            <h3 id="modal-title">Log Details</h3>
+            <span class="close-modal" id="close-modal" style="cursor:pointer; font-size: 1.5rem;">&times;</span>
           </div>
           <div class="modal-body" id="modal-details-body">
             <!-- Populated via JS -->
@@ -345,6 +538,7 @@
       <script src="/Js/Audit_Logs_Report.js"></script>
       <script src="/Js/Notification_Feature.js"></script>
     </div>
+  </div>
 </body>
 
 </html>

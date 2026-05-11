@@ -1,16 +1,19 @@
 package Routes
 
 import (
+	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
+	user_logs "ubaps/Audit_logs"
 	"ubaps/Db"
 	"ubaps/Handles"
 	middleware "ubaps/Middleware"
-	"ubaps/utils"
-	user_logs "ubaps/Audit_logs"
 	notifications "ubaps/Notifications"
-	"fmt"
+	"ubaps/utils"
+
+	"github.com/jackc/pgx/v5"
 )
 
 func SubmitForm(w http.ResponseWriter, r *http.Request) {
@@ -67,6 +70,9 @@ func SubmitForm(w http.ResponseWriter, r *http.Request) {
 		Handles.StrPtr(r.FormValue("Guardian Employment Status")),
 		Handles.StrPtr(r.FormValue("otherSupport")),
 		Handles.StrPtr(r.FormValue("Reason")),
+		Handles.StrPtr(r.FormValue("feeResponsibility")),
+		Handles.StrPtr(r.FormValue("financialHardship")),
+		Handles.StrPtr(r.FormValue("impactOfNoBursary")),
 		&submission,
 		userId,
 	)
@@ -96,4 +102,107 @@ func SubmitForm(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("You have successfully submitted the application form"))
+}
+
+func GetMyApplication(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	userID, ok := middleware.UserIDFromContext(ctx)
+	if !ok {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	var data struct {
+		Status                   string    `json:"status"`
+		Dob                      *time.Time `json:"dob"`
+		Gender                   string    `json:"gender"`
+		HomeDistrict             string    `json:"home_district"`
+		Accommodation            string    `json:"accommodation"`
+		GuardianStatus           string    `json:"guardian_status"`
+		GuardianEmploymentStatus string    `json:"guardian_employment_status"`
+		OtherSupport             string    `json:"other_support"`
+		Reason                   string    `json:"reason"`
+		FeeResponsibility        string    `json:"fee_responsibility"`
+		FinancialHardship        string    `json:"financial_hardship"`
+		ImpactOfNoBursary        string    `json:"impact_of_no_bursary"`
+	}
+
+	query := `
+		SELECT 
+			COALESCE(status, 'not submitted'), date_of_birth, COALESCE(gender, ''), 
+			COALESCE(home_district, ''), COALESCE(accommodation, ''), 
+			COALESCE(parent_guardian_status, ''), COALESCE(guardian_employment_status, ''), 
+			COALESCE(other_financial_support, ''), COALESCE(reason_for_bursary, ''), 
+			COALESCE(fee_responsibility, ''), COALESCE(financial_hardship, ''), 
+			COALESCE(impact_of_no_bursary, '')
+		FROM applications
+		WHERE user_id = $1
+	`
+	
+	err := Db.DB.QueryRow(ctx, query, userID).Scan(
+		&data.Status, &data.Dob, &data.Gender, &data.HomeDistrict,
+		&data.Accommodation, &data.GuardianStatus, &data.GuardianEmploymentStatus,
+		&data.OtherSupport, &data.Reason, &data.FeeResponsibility,
+		&data.FinancialHardship, &data.ImpactOfNoBursary,
+	)
+
+	if err != nil && err != pgx.ErrNoRows {
+		log.Println("GetMyApplication Error:", err)
+		http.Error(w, "Failed to fetch application", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(data)
+}
+
+func GetApplicantHardship(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	// Only authorized staff should see this
+	_, ok := middleware.UserIDFromContext(ctx)
+	if !ok {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	regNumber := r.URL.Query().Get("id")
+	if regNumber == "" {
+		http.Error(w, "Missing registration number", http.StatusBadRequest)
+		return
+	}
+
+	var data struct {
+		Reason            string `json:"reason"`
+		FeeResponsibility string `json:"fee_responsibility"`
+		FinancialHardship string `json:"financial_hardship"`
+		ImpactOfNoBursary string `json:"impact_of_no_bursary"`
+	}
+
+	query := `
+		SELECT 
+			COALESCE(reason_for_bursary, ''), 
+			COALESCE(fee_responsibility, ''), 
+			COALESCE(financial_hardship, ''), 
+			COALESCE(impact_of_no_bursary, '')
+		FROM applications
+		WHERE registration_number = $1
+	`
+	
+	err := Db.DB.QueryRow(ctx, query, regNumber).Scan(
+		&data.Reason, &data.FeeResponsibility,
+		&data.FinancialHardship, &data.ImpactOfNoBursary,
+	)
+
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			http.Error(w, "Applicant not found", http.StatusNotFound)
+		} else {
+			log.Println("GetApplicantHardship Error:", err)
+			http.Error(w, "Failed to fetch hardship details", http.StatusInternalServerError)
+		}
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(data)
 }

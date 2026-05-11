@@ -13,7 +13,7 @@ async function loadUsers(page) {
                 'Content-Type': 'application/json'
             }
         });
-        
+
         const result = await response.json();
         const tbody = document.querySelector(".tbody");
         tbody.innerHTML = "";

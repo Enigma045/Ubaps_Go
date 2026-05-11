@@ -138,6 +138,45 @@ document.addEventListener('DOMContentLoaded', () => {
     if (closeStatementBtn) closeStatementBtn.addEventListener('click', closeStatementModals);
     if (cancelStatementBtn) cancelStatementBtn.addEventListener('click', closeStatementModals);
 
+    // Hardship Modal Logic
+    const hardshipBtn = document.getElementById('view-hardship-btn');
+    const hardshipModal = document.getElementById('hardshipModal');
+    const closeHardshipBtn = document.getElementById('closeHardship');
+    const closeHardshipFooter = document.getElementById('closeHardshipFooter');
+
+    if (hardshipBtn) {
+        hardshipBtn.addEventListener('click', async () => {
+            const studentId = fields.id.textContent.trim();
+            if (!studentId || studentId === "ID Number") {
+                showToast("No student selected.", "error");
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/applicant/hardship?id=${studentId}`);
+                if (!res.ok) throw new Error("Failed to fetch hardship details");
+                const data = await res.json();
+
+                document.getElementById('h-fee-resp').textContent = data.fee_responsibility || 'No details provided';
+                document.getElementById('h-hardship').textContent = data.financial_hardship || 'No details provided';
+                document.getElementById('h-impact').textContent = data.impact_of_no_bursary || 'No details provided';
+                document.getElementById('h-remarks').textContent = data.reason || 'No details provided';
+
+                if (hardshipModal) hardshipModal.classList.add('active');
+            } catch (err) {
+                console.error(err);
+                showToast(err.message, "error");
+            }
+        });
+    }
+
+    const closeHardshipModals = () => {
+        if (hardshipModal) hardshipModal.classList.remove('active');
+    };
+
+    if (closeHardshipBtn) closeHardshipBtn.addEventListener('click', closeHardshipModals);
+    if (closeHardshipFooter) closeHardshipFooter.addEventListener('click', closeHardshipModals);
+
     if (confirmStatementBtn) {
         confirmStatementBtn.addEventListener('click', () => {
             const studentId = fields.id.textContent.trim();
@@ -173,6 +212,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const studentId = fields.id.textContent.trim();
             const studentName = fields.name.textContent.trim();
             openDossier(studentId, studentName);
+        });
+    }
+
+    const cardCommentBtn = document.getElementById('card-comment-btn');
+    if (cardCommentBtn) {
+        cardCommentBtn.addEventListener('click', () => {
+            const studentId = fields.id.textContent.trim();
+            if (!studentId || studentId === "ID Number") {
+                showToast("No student selected.", "error");
+                return;
+            }
+            const student = (window.currentApplicants || []).find(a => a.registration_number === studentId);
+            if (student && window.openCommentModal) {
+                window.openCommentModal(student);
+            } else {
+                showToast("Could not open comment modal.", "error");
+            }
         });
     }
 

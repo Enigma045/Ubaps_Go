@@ -32,6 +32,8 @@ func main() {
 	mux.Handle("/countnotifications", middleware.RequireAuth(http.HandlerFunc(Routes.NotificationCounter)))
 	mux.Handle("/benefactor", middleware.RequireAuth(http.HandlerFunc(Routes.Scheme_Info)))
 	mux.Handle("/SubmitForm", middleware.RequireAuth(http.HandlerFunc(Routes.SubmitForm)))
+	mux.Handle("/api/application/my", middleware.RequireAuth(http.HandlerFunc(Routes.GetMyApplication)))
+	mux.Handle("/api/applicant/hardship", middleware.RequireAuth(http.HandlerFunc(Routes.GetApplicantHardship)))
 	//admin routes
 	mux.Handle("/getuserdetails", middleware.RequireAuth(http.HandlerFunc(Routes.Getuserdetails)))
 	mux.Handle("/deleteaccount", middleware.RequireAuth(http.HandlerFunc(Routes.DeleteAccount)))
@@ -39,6 +41,7 @@ func main() {
 	mux.Handle("/userlog", middleware.RequireAuth(http.HandlerFunc(Routes.UserLogs)))
 	mux.Handle("/paymentlog", middleware.RequireAuth(http.HandlerFunc(Routes.PaymentLogs)))
 	mux.Handle("/applicationlog", middleware.RequireAuth(http.HandlerFunc(Routes.ApplicationLogs)))
+	mux.Handle("/api/audit/all", middleware.RequireAuth(http.HandlerFunc(Routes.AllLogs)))
 	//registrar routes
 	mux.Handle("/applicants", middleware.RequireAuth(http.HandlerFunc(Routes.Applicants)))
 	mux.Handle("/getbenefactor", middleware.RequireAuth(http.HandlerFunc(Routes.GetBenefactor)))

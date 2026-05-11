@@ -12,6 +12,7 @@ let currentPayload = {
     employment: [],
     gender: []
 };
+window.currentApplicants = [];
 
 document.addEventListener("DOMContentLoaded", function () {
     // Initial fetch
@@ -101,6 +102,7 @@ async function fetchApplicants(page) {
         });
 
         const result = await response.json();
+        window.currentApplicants = result.data || [];
         const tbody = document.getElementById("judge_tbody");
         tbody.innerHTML = "";
 
@@ -117,16 +119,16 @@ async function fetchApplicants(page) {
                 };
 
                 let actions = `<button title="Review" class="action-btn review-btn" data-id="${item.registration_number}">${icons.review}</button>`;
-                actions += `<button title="Comment" class="action-btn comment-btn" data-id="${item.registration_number}" data-name="${item.first_name} ${item.last_name}" data-comments='${JSON.stringify(item.comments || [])}'>${icons.comment}</button>`;
-                
+                actions += `<button title="Comment" class="action-btn comment-btn" data-id="${item.registration_number}">${icons.comment}</button>`;
+
                 if (item.status === "submitted" || item.status === "considering") {
-                    actions += `<button title="Approve" class="action-btn approve-btn" data-name="${item.first_name} ${item.last_name}" data-id="${item.registration_number}">${icons.approve}</button>`;
+                    actions += `<button title="Approve" class="action-btn approve-btn" data-id="${item.registration_number}">${icons.approve}</button>`;
                 }
                 if (["submitted", "selected", "considering"].includes(item.status)) {
-                    actions += `<button title="Reject" class="action-btn reject-btn" data-name="${item.first_name} ${item.last_name}" data-id="${item.registration_number}">${icons.reject}</button>`;
+                    actions += `<button title="Reject" class="action-btn reject-btn" data-id="${item.registration_number}">${icons.reject}</button>`;
                 }
                 if (item.status === "selected") {
-                    actions += `<button title="Rollback" class="action-btn rollback-btn" data-name="${item.first_name} ${item.last_name}" data-id="${item.registration_number}">${icons.rollback}</button>`;
+                    actions += `<button title="Rollback" class="action-btn rollback-btn" data-id="${item.registration_number}">${icons.rollback}</button>`;
                 }
 
                 tr.innerHTML = `
@@ -137,7 +139,7 @@ async function fetchApplicants(page) {
                     <td>${item.guardian_employment_status}</td>
                     <td>${item.relative_support}</td>
                     <td>low</td>
-                    <td>${actions}</td>
+                    <td><div style="display: flex; gap: 8px;">${actions}</div></td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -147,6 +149,7 @@ async function fetchApplicants(page) {
 
         renderPagination(result.total, page);
         initModalLogic();
+        if (window.initCommentLogic) window.initCommentLogic();
 
         // Trigger filter after dynamic load
         if (window.triggerTableFilter) window.triggerTableFilter();
@@ -199,17 +202,20 @@ function renderPagination(total, page) {
 
 function initModalLogic() {
     const tbody = document.getElementById("judge_tbody");
+    const approveModal = document.getElementById("approveModal");
+    const rejectModal = document.getElementById("rejectModal");
     const rollbackModal = document.getElementById("rollbackModal");
     const commentModal = document.getElementById("commentModal");
-    let activeStudent = null;
-
     tbody.onclick = e => {
         const btn = e.target.closest(".action-btn");
         if (!btn) return;
 
-        const name = btn.getAttribute("data-name");
         const id = btn.getAttribute("data-id");
-        activeStudent = { name, id };
+        const student = window.currentApplicants.find(a => a.registration_number === id);
+        if (!student) return;
+        window.activeStudent = student;
+
+        const name = `${student.first_name} ${student.last_name}`;
 
         if (btn.classList.contains("approve-btn")) {
             document.getElementById("approveName").textContent = name;
@@ -221,16 +227,15 @@ function initModalLogic() {
             document.getElementById("rollbackName").textContent = name;
             rollbackModal.classList.add("active");
         } else if (btn.classList.contains("comment-btn")) {
-            const rawComments = btn.getAttribute("data-comments");
-            openCommentModal(id, name, rawComments);
+            if (window.openCommentModal) window.openCommentModal(student);
         } else if (btn.classList.contains("review-btn")) {
             // Review logic is handled by other scripts like card.js
         }
     };
 
     const closeModals = () => {
-        approveModal.classList.remove("active");
-        rejectModal.classList.remove("active");
+        if (approveModal) approveModal.classList.remove("active");
+        if (rejectModal) rejectModal.classList.remove("active");
         if (rollbackModal) rollbackModal.classList.remove("active");
         if (commentModal) commentModal.classList.remove("active");
     };
@@ -239,113 +244,77 @@ function initModalLogic() {
         btn.addEventListener("click", closeModals);
     });
 
-    function openCommentModal(id, name, rawComments) {
-        let comments = [];
-        try {
-            comments = JSON.parse(rawComments) || [];
-        } catch (e) {
-            console.error("Failed to parse comments", e);
-        }
+    // Removed local openCommentModal as it's now in Comment_Feature.js
 
-        const list = document.getElementById("comments-list");
-        list.innerHTML = "";
+    // Removed local submitCommentBtn logic as it's now in Comment_Feature.js
 
-        if (comments.length === 0) {
-            list.innerHTML = `<p style="text-align: center; color: var(--sr-slate-400); font-size: 0.85rem; margin-top: 20px;">No comments yet.</p>`;
-        } else {
-            comments.forEach(c => {
-                const date = new Date(parseFloat(c.date) * 1000).toLocaleString();
-                const div = document.createElement("div");
-                div.style.background = "white";
-                div.style.padding = "10px";
-                div.style.borderRadius = "6px";
-                div.style.borderLeft = "3px solid var(--sr-blue)";
-                div.style.boxShadow = "0 1px 2px rgba(0,0,0,0.05)";
-                div.innerHTML = `
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                        <span style="font-weight: 700; font-size: 0.8rem; color: var(--sr-slate-700);">${c.name} (${c.role})</span>
-                        <span style="font-size: 0.7rem; color: var(--sr-slate-400);">${date}</span>
-                    </div>
-                    <p style="margin: 0; font-size: 0.85rem; color: var(--sr-slate-600); line-height: 1.4;">${c.text}</p>
-                `;
-                list.appendChild(div);
+    const confirmRollback = document.getElementById("confirmRollback");
+    if (confirmRollback) {
+        confirmRollback.onclick = () => {
+            if (!window.activeStudent) return;
+            fetch("/api/rollback-selection", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: window.activeStudent.registration_number })
+            }).then(async response => {
+                if (!response.ok) throw new Error(await response.text() || "Rollback failed");
+                return response.json();
+            }).then(data => {
+                showToast(`Selection for ${window.activeStudent.first_name} ${window.activeStudent.last_name} rolled back!`, "success");
+                fetchApplicants(currentPage);
+            }).catch(error => {
+                showToast(error.message, "error");
             });
-            list.scrollTop = list.scrollHeight;
-        }
-
-        commentModal.classList.add("active");
+            closeModals();
+        };
     }
 
-    document.getElementById("submitCommentBtn").onclick = () => {
-        const text = document.getElementById("new-comment-text").value.trim();
-        if (!text) return;
+    const confirmApprove = document.getElementById("confirmApprove");
+    if (confirmApprove) {
+        confirmApprove.onclick = () => {
+            if (!window.activeStudent) return;
+            fetch("/considerstudent", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: `${window.activeStudent.first_name} ${window.activeStudent.last_name}`,
+                    id: window.activeStudent.registration_number
+                })
+            }).then(async response => {
+                if (!response.ok) throw new Error(await response.text() || "Approval failed");
+                return response.json();
+            }).then(data => {
+                showToast(`${window.activeStudent.first_name} marked for consideration!`, "success");
+                fetchApplicants(currentPage);
+            }).catch(error => {
+                showToast(error.message, "error");
+            });
+            closeModals();
+        };
+    }
 
-        fetch("/api/add-comment", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: activeStudent.id, comment: text })
-        }).then(async response => {
-            if (!response.ok) throw new Error(await response.text() || "Failed to add comment");
-            return response.json();
-        }).then(data => {
-            showToast("Comment posted!", "success");
-            document.getElementById("new-comment-text").value = "";
-            fetchApplicants(currentPage);
-        }).catch(error => {
-            showToast(error.message, "error");
-        });
-        closeModals();
-    };
-
-    document.getElementById("confirmRollback").onclick = () => {
-        fetch("/api/rollback-selection", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: activeStudent.id })
-        }).then(async response => {
-            if (!response.ok) throw new Error(await response.text() || "Rollback failed");
-            return response.json();
-        }).then(data => {
-            showToast(`Selection for ${activeStudent.name} rolled back!`, "success");
-            fetchApplicants(currentPage);
-        }).catch(error => {
-            showToast(error.message, "error");
-        });
-        closeModals();
-    };
-
-    document.getElementById("confirmApprove").onclick = () => {
-        fetch("/considerstudent", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(activeStudent)
-        }).then(async response => {
-            if (!response.ok) throw new Error(await response.text() || "Approval failed");
-            return response.json();
-        }).then(data => {
-            showToast(`${activeStudent.name} marked for consideration!`, "success");
-            fetchApplicants(currentPage);
-        }).catch(error => {
-            showToast(error.message, "error");
-        });
-        closeModals();
-    };
-
-    document.getElementById("confirmReject").onclick = () => {
-        fetch("/rejectstudent", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(activeStudent)
-        }).then(async response => {
-            if (!response.ok) throw new Error(await response.text() || "Rejection failed");
-            return response.json();
-        }).then(data => {
-            showToast(`${activeStudent.name} application rejected.`, "success");
-            fetchApplicants(currentPage);
-        }).catch(error => {
-            showToast(error.message, "error");
-        });
-        closeModals();
-    };
+    const confirmReject = document.getElementById("confirmReject");
+    if (confirmReject) {
+        confirmReject.onclick = () => {
+            if (!window.activeStudent) return;
+            fetch("/rejectstudent", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: `${window.activeStudent.first_name} ${window.activeStudent.last_name}`,
+                    id: window.activeStudent.registration_number
+                })
+            }).then(async response => {
+                if (!response.ok) throw new Error(await response.text() || "Rejection failed");
+                return response.json();
+            }).then(data => {
+                showToast(`${window.activeStudent.first_name} application rejected.`, "success");
+                fetchApplicants(currentPage);
+            }).catch(error => {
+                showToast(error.message, "error");
+            });
+            closeModals();
+        };
+    }
 }
 

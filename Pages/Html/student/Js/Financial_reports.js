@@ -10,6 +10,7 @@ let currentPayload = {
     employment: [],
     gender: []
 };
+window.currentApplicants = [];
 
 document.addEventListener("DOMContentLoaded", function () {
     tabs = document.querySelectorAll(".tabs input");
@@ -323,6 +324,7 @@ async function fetchApplicants(page) {
         });
 
         const result = await response.json();
+        window.currentApplicants = result.data || [];
 
         const countEl = document.getElementById('report-result-count');
         if (countEl) countEl.textContent = `Showing ${result.data?.length || 0} of ${result.total || 0} records`;
@@ -361,7 +363,8 @@ async function fetchApplicants(page) {
                 });
 
                 const icons = {
-                    review: `<svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 -960 960 960" width="18" fill="currentColor"><path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T35-500q61-137 181-218.5T480-800q146 0 266 81.5T925-500q-61 137-181 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z"/></svg>`
+                    review: `<svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 -960 960 960" width="18" fill="currentColor"><path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T35-500q61-137 181-218.5T480-800q146 0 266 81.5T925-500q-61 137-181 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z"/></svg>`,
+                    comment: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>`
                 };
 
                 tr.innerHTML = `
@@ -374,10 +377,15 @@ async function fetchApplicants(page) {
                     <td>${item.relative_support}</td>
                     <td>${schemeDisplay}</td>
                     <td>
-                      <button title="Review" class="review-btn" data-id="${item.registration_number}">
-                        ${icons.review}
-                        Review
-                      </button>
+                      <div style="display: flex; gap: 6px;">
+                        <button title="Review" class="review-btn" data-id="${item.registration_number}">
+                          ${icons.review}
+                          Review
+                        </button>
+                        <button title="Comment" class="comment-btn action-btn" data-id="${item.registration_number}">
+                          ${icons.comment}
+                        </button>
+                      </div>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -387,6 +395,7 @@ async function fetchApplicants(page) {
         }
 
         renderPagination(result.total, page);
+        initModalLogic();
 
         // Trigger filter after dynamic load
         if (window.triggerTableFilter) window.triggerTableFilter();
@@ -394,6 +403,25 @@ async function fetchApplicants(page) {
     } catch (error) {
         console.error("Error fetching applicants:", error);
     }
+}
+
+function initModalLogic() {
+    const tbody = document.getElementById("judge_tbody");
+    if (window.initCommentLogic) window.initCommentLogic();
+
+    tbody.onclick = e => {
+        const btn = e.target.closest(".action-btn, .comment-btn");
+        if (!btn) return;
+
+        const id = btn.getAttribute("data-id");
+        const student = window.currentApplicants.find(a => a.registration_number === id);
+        if (!student) return;
+        window.activeStudent = student;
+
+        if (btn.classList.contains("comment-btn")) {
+            if (window.openCommentModal) window.openCommentModal(student);
+        }
+    };
 }
 
 function renderPagination(total, page) {

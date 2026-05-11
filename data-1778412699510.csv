@@ -39,6 +39,7 @@
 "postgresql","Ubaps","public","bursary_schemes","created_at",14,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","financial_history","updated_at",12,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","financial_history","installment_status",10,"boolean",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","applications","financial_hardship",36,"text",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","financial_request","request_status",10,"USER-DEFINED",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","bursary_schemes","scheme_name",2,"character varying",200,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","users","name",2,"character varying",100,NULL,NULL,NULL,NULL
@@ -48,6 +49,7 @@
 "postgresql","Ubaps","public","financial_history","request",4,"character varying",20,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","financial_request","previous_amount",3,"numeric",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","applications","home_district",8,"character varying",100,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","applications","impact_of_no_bursary",37,"text",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","users","last_login",12,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","password_resets","expires_at",4,"timestamp with time zone",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","financial_request","updated_at",8,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
@@ -90,6 +92,7 @@
 "postgresql","Ubaps","public","letters","letter",3,"bytea",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","audit_user_logs","target_user_id",11,"bigint",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","users","updated_at",11,"timestamp without time zone",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","applications","comments",38,"jsonb",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","users","password_hash",6,"character varying",255,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","bursary_schemes","conditions",10,"text",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","dusbersment","payed",5,"boolean",NULL,NULL,NULL,NULL,NULL
@@ -115,6 +118,7 @@
 "postgresql","Ubaps","public","letters","letter_name",5,"character varying",80,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","bursary_schemes","benefactor_email",4,"character varying",150,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","applications","registrar_approval_status",33,"USER-DEFINED",NULL,NULL,NULL,NULL,NULL
+"postgresql","Ubaps","public","applications","fee_responsibility",35,"text",NULL,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","applications","guardian_employment_status",15,"character varying",100,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","applications","rejection_reason",34,"character varying",255,NULL,NULL,NULL,NULL
 "postgresql","Ubaps","public","email_verifications","token",3,"text",NULL,NULL,NULL,NULL,NULL

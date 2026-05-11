@@ -14,23 +14,23 @@ import (
 )
 
 type Applicant struct {
-	First  string `json:"first_name"`
-	Last   string `json:"last_name"`
-	Status string `json:"status"`
-	Application_date utils.AutoTime `json:"application_date"`
-	Dob utils.AutoTime `json:"dob"`
-	Gender string `json:"gender"`
-	Home_district string `json:"home_district"`
-	Programme string `json:"programme"`
-	Registration_number string `json:"registration_number"`
-	Accommodation string `json:"accommodation"`
-	Parent_guardian_status string `json:"parent_guardian_status"`
-	Guardian_employment_status string `json:"guardian_employment_status"`
-	Relative_support string `json:"relative_support"`
-	Bursary_amount string `json:"bursary_amount"`
-	Reason sql.NullString `json:"reason"`
-	SchemeName string `json:"scheme_name"`
-	Comments json.RawMessage `json:"comments"`
+	First                      string          `json:"first_name"`
+	Last                       string          `json:"last_name"`
+	Status                     string          `json:"status"`
+	Application_date           utils.AutoTime  `json:"application_date"`
+	Dob                        utils.AutoTime  `json:"dob"`
+	Gender                     string          `json:"gender"`
+	Home_district              string          `json:"home_district"`
+	Programme                  string          `json:"programme"`
+	Registration_number        string          `json:"registration_number"`
+	Accommodation              string          `json:"accommodation"`
+	Parent_guardian_status     string          `json:"parent_guardian_status"`
+	Guardian_employment_status string          `json:"guardian_employment_status"`
+	Relative_support           string          `json:"relative_support"`
+	Bursary_amount             string          `json:"bursary_amount"`
+	Reason                     sql.NullString  `json:"reason"`
+	SchemeName                 string          `json:"scheme_name"`
+	Comments                   json.RawMessage `json:"comments"`
 }
 
 type ReportFilters struct {
@@ -197,7 +197,8 @@ func Applicants(
 	a.other_financial_support,
 	a.bursary_amount,
 	a.reason_for_bursary,
-	COALESCE(s.scheme_name, 'No Scheme')
+	COALESCE(s.scheme_name, 'No Scheme'),
+	a.comments
     FROM applications a
     JOIN users u ON u.user_id = a.user_id
 	LEFT JOIN bursary_schemes s ON s.scheme_id = a.scheme_id
@@ -232,6 +233,7 @@ func Applicants(
 			&a.Bursary_amount,
 			&a.Reason,
 			&a.SchemeName,
+			&a.Comments,
 		); err != nil {
 			return nil, 0, err
 		}
@@ -240,9 +242,8 @@ func Applicants(
 	return results, total, nil
 }
 
-
-func ConsiderStudent(tx pgx.Tx, ctx context.Context, userId int64,Role string) (string, error) {
-//check if application is selected
+func ConsiderStudent(tx pgx.Tx, ctx context.Context, userId int64, Role string) (string, error) {
+	//check if application is selected
 	Check := `
     SELECT EXISTS (
         SELECT 1
@@ -252,22 +253,21 @@ func ConsiderStudent(tx pgx.Tx, ctx context.Context, userId int64,Role string) (
     );
 `
 
-var exists bool
+	var exists bool
 
-err := tx.QueryRow(ctx, Check, userId).Scan(&exists)
-if err != nil {
-    return "", err
-}
+	err := tx.QueryRow(ctx, Check, userId).Scan(&exists)
+	if err != nil {
+		return "", err
+	}
 
-if exists {
-    return "Application already selected", nil
-}
-	
-//check
+	if exists {
+		return "Application already selected", nil
+	}
 
+	//check
 
-	role := fmt.Sprintf("%s_approval_status",Role)
-	query := fmt.Sprintf(`UPDATE applications SET %s = 'approved' , status = 'considering' WHERE user_id = $1`,role)
+	role := fmt.Sprintf("%s_approval_status", Role)
+	query := fmt.Sprintf(`UPDATE applications SET %s = 'approved' , status = 'considering' WHERE user_id = $1`, role)
 	_, err = tx.Exec(ctx, query, userId)
 	if err != nil {
 		return "", err
@@ -275,7 +275,7 @@ if exists {
 	return "Application Considered successfully", nil
 }
 
-func RejectStudent(tx pgx.Tx, ctx context.Context, userId int64,Role string) (string, error) {
+func RejectStudent(tx pgx.Tx, ctx context.Context, userId int64, Role string) (string, error) {
 	//check if application is selected
 	Check := `
     SELECT EXISTS (
@@ -286,20 +286,20 @@ func RejectStudent(tx pgx.Tx, ctx context.Context, userId int64,Role string) (st
     );
     `
 
-   var exists bool
+	var exists bool
 
-   err := tx.QueryRow(ctx, Check, userId).Scan(&exists)
-   if err != nil {
-    return "", err
-   }
+	err := tx.QueryRow(ctx, Check, userId).Scan(&exists)
+	if err != nil {
+		return "", err
+	}
 
-   if exists {
-    return "Application already selected", nil
-   }
-	
-   //check
+	if exists {
+		return "Application already selected", nil
+	}
 
-   //check if application is rejected
+	//check
+
+	//check if application is rejected
 	Check2 := `
     SELECT EXISTS (
         SELECT 1
@@ -309,18 +309,18 @@ func RejectStudent(tx pgx.Tx, ctx context.Context, userId int64,Role string) (st
     );
     `
 
-   var exists2 bool
+	var exists2 bool
 
-   err = tx.QueryRow(ctx, Check2, userId).Scan(&exists2)
-   if err != nil {
-    return "", err
-   }
+	err = tx.QueryRow(ctx, Check2, userId).Scan(&exists2)
+	if err != nil {
+		return "", err
+	}
 
-   if exists2 {
-    return "Application already rejected", nil
-   }
-	
-   //check
+	if exists2 {
+		return "Application already rejected", nil
+	}
+
+	//check
 
 	status := "considering"
 	if Role == "registrar" {
@@ -348,10 +348,10 @@ func PayInstallment(tx pgx.Tx, ctx context.Context, userId int64) (string, error
 	// 2. Approve any pending financial requests for this user
 	// queryReq := `UPDATE financial_request SET request_status = 'approved' WHERE user_id = $1 AND request_status = 'pending'`
 	// _, err = tx.Exec(ctx, queryReq, userId) // We don't strictly care if no pending requests existed
-    // if err != nil {
+	// if err != nil {
 	// 	return "", err
 	// }
-	 
+
 	return "Payment processed successfully", nil
 }
 func RollbackSelection(tx pgx.Tx, ctx context.Context, userId int64) (string, error) {
@@ -384,10 +384,8 @@ func AddComment(tx pgx.Tx, ctx context.Context, userId int64, comment string, us
 		"name": userName,
 		"role": userRole,
 		"text": comment,
-		"date": utils.Floattostr(float64(utils.AutoTime(context.Background()).Time().Unix())), // Using existing helpers or simple format
+		"date": utils.Floattostr(float64(time.Now().Unix())),
 	}
-	// Re-formatted date for readability
-	newComment["date"] = utils.Floattostr(float64(time.Now().Unix())) 
 
 	commentJSON, _ := json.Marshal(newComment)
 

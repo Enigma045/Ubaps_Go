@@ -393,7 +393,7 @@ func AddComment(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 	w.Header().Set("Content-Type", "application/json")
 	ctx := r.Context()
-
+    println("trying")
 	adminID, _ := middleware.UserIDFromContext(ctx)
 	Role, _ := middleware.RoleFromContext(ctx)
 
@@ -403,38 +403,37 @@ func AddComment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer tx.Rollback(ctx)
-
+    println("trying")
 	var req commentRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-
+    println("trying")
 	email := fmt.Sprintf("%s@unilia.ac.mw", req.StudentID)
 	UserId, err := Handles.GetUserIDByEmail(email, tx)
 	if err != nil {
 		http.Error(w, "Student not found", http.StatusNotFound)
 		return
 	}
-
+    println("trying")
 	// Get commenter name
 	commenterName, _ := Handles.GetEmailByUserID(adminID, tx)
-
+    println("trying")
 	err = Handles.AddComment(tx, ctx, UserId, req.Comment, commenterName, Role)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
+    println("trying")
 	// 1. Audit Logs
 	user_logs.Create_user_log(tx, &adminID, Role, "APPLICATION_COMMENT_ADDED", fmt.Sprintf("Student:%s, Comment:%s", req.StudentID, req.Comment), "SUCCESS", time.Since(start), &UserId)
 	user_logs.Create_application_log(tx, &adminID, Role, "APPLICATION_COMMENT_ADDED", fmt.Sprintf("Student:%s, Comment:%s", req.StudentID, req.Comment), "SUCCESS", time.Since(start), req.StudentID, nil, &UserId)
-
+    println("trying")
 	// 2. Notifications to other staff members
 	allStaffRoles := []string{"registrar", "dean_of_student", "dean_of_facult", "dean_of_science", "finance_office"}
-	for _, role := range allStaffRoles {
-		if staffIDs, err := Handles.GetUserIDsOfDifferentTypes(tx, role); err == nil {
-			// Filter out the commenter themselves
+	for _, staffRole := range allStaffRoles {
+		if staffIDs, err := Handles.GetUserIDsByRole(tx, staffRole); err == nil {
 			var filteredIDs []int64
 			for _, id := range staffIDs {
 				if id != adminID {
@@ -446,11 +445,16 @@ func AddComment(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
-
+    println("trying")
+	// 3. Notification to the commenter confirming success
+	if adminID > 0 {
+		notifications.Send_notification(adminID, tx, fmt.Sprintf("You have successfully sent a comment on student %s's application.", req.StudentID), "Comment Posted")
+	}
+    println("trying")
 	if err := tx.Commit(ctx); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
+    println("trying")
 	json.NewEncoder(w).Encode(map[string]string{"message": "Comment added successfully"})
 }
